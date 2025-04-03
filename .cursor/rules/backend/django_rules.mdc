@@ -1,0 +1,77 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+ ---
+description: Foundational rules and conventions for Django development in this project.
+globs: ["apps/**/*.py", "config/**/*.py"]
+tags: ["backend", "django", "style", "patterns", "security"]
+---
+
+# Django Development Rules & Conventions
+
+This document outlines the standard practices for developing the Django backend for the Architectural Visualization Platform. Adhere to these rules alongside the core protocol (@file:.cursor/rules/00_core_assistant_protocol.mdc).
+
+## 1. Project Structure
+
+*   **Apps Location:** All custom Django apps MUST reside within the `apps/` directory at the project root.
+*   **Configuration:** Project-level configuration (settings, main `urls.py`, `wsgi.py`, `asgi.py`) resides in the `config/` directory. Settings should be managed using `django-environ` loading from `.env`.
+*   **Templates:** Place base templates in `templates/`. App-specific templates go in `apps/<app_name>/templates/<app_name>/`.
+*   **Static Files:** Place base static files in `static/`. App-specific static files go in `apps/<app_name>/static/<app_name>/`.
+
+## 2. Naming Conventions
+
+*   **Apps:** Lowercase, underscore-separated if needed (e.g., `user_profiles`).
+*   **Models:** Singular, CamelCase (e.g., `UserProfile`).
+*   **Views:**
+    *   **Class-Based Views (CBVs):** CamelCase, descriptive suffix (e.g., `HomePageView`, `ProjectDetailView`). **Prefer CBVs** for their structure and reusability, especially for standard CRUD operations.
+    *   **Function-Based Views (FBVs):** Lowercase, underscore-separated (e.g., `contact_form_submit`). Use FBVs for simple, unique views or where CBVs add unnecessary complexity.
+*   **Templates:** Lowercase, underscore-separated (e.g., `home_page.html`, `project_detail.html`).
+*   **URLs:** Use kebab-case for URL paths (`/projects/my-cool-project/`) and underscore-separated names for `path(..., name='project_detail')`.
+*   **Variables/Functions:** PEP 8 standard (lowercase, underscore-separated).
+
+## 3. View Patterns
+
+*   **Prefer Class-Based Views (CBVs):** Use Django's generic CBVs (`ListView`, `DetailView`, `CreateView`, `UpdateView`, `DeleteView`, `TemplateView`) whenever possible. They provide structure and reduce boilerplate.
+*   **Function-Based Views (FBVs):** Suitable for simple views, processing forms that don't map directly to a model, or specific AJAX handlers.
+
+## 4. Security Reminders
+
+*   **CSRF Protection:** Ensure all POST forms use the `{% csrf_token %}` template tag. Django's middleware handles most checks, but be mindful.
+*   **Input Validation:** Use Django Forms or Django REST Framework Serializers (if/when an API is added) to validate ALL incoming data before processing or saving. Never trust user input.
+*   **Query Parameterization:** Use the Django ORM. Avoid raw SQL queries unless absolutely necessary and if so, ensure parameters are properly escaped.
+*   **Permissions:** Use Django's permission framework (`@permission_required`, `LoginRequiredMixin`, etc.) to protect views appropriately.
+
+## 5. Code Example (Simple CBV)
+
+```python
+# apps/core/views.py
+
+from django.views.generic import TemplateView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required # Example if login needed
+
+# Simple view rendering a static template
+class HomePageView(TemplateView):
+    template_name = "core/home_page.html" # Corresponds to apps/core/templates/core/home_page.html
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = "Welcome to the Visualization Platform"
+        # Add other context data as needed
+        return context
+
+# Example of protecting a view (if needed later)
+# @method_decorator(login_required, name='dispatch')
+# class ProtectedPageView(TemplateView):
+#    template_name = "core/protected_page.html"
+
+```
+
+## 6. Dependencies
+
+*   Add new dependencies to `requirements.txt` after installing via `pip`.
+*   Justify adding significant new third-party packages.
+
+---
