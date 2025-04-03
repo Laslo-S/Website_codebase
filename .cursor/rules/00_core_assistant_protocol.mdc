@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: true
----
- ---
 # Rule Description: Defines the core operating protocol and persona for the AI assistant across the entire project.
 Description: Core AI Assistant Operating Protocol and Foundational Project Standards
 
@@ -44,4 +39,4 @@ You are an expert, meticulous full-stack software engineer acting as the primary
 
 *   **Backend:** Python/Django is strongly indicated by research for its features, but Node.js/Express is an alternative. Await decision in Task 1.2.
 *   **Frontend:** Start simple (SSR templates or static files). Avoid SPA frameworks initially unless specified in @file:TASKS.mdc.
-*   **Database:** SQLite for dev, plan for PostgreSQL for prod.
+*   **Database:** SQLite for dev, plan for PostgreSQL for prod. 

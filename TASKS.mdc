@@ -1,9 +1,4 @@
----
-description: 
-globs: 
-alwaysApply: true
----
- # TASKS: Architectural Visualization Platform Build
+# TASKS: Architectural Visualization Platform Build
 
 **Project Goal:** Build a website to showcase architectural visualizations (3D scans, photogrammetry, AI imagery) using static embeds (Sketchfab, Vimeo) and image galleries. Plan for minimal client authentication later and potential future AI features (blog, chatbot). Low initial traffic expected.
 
@@ -65,5 +60,4 @@ alwaysApply: true
 
 ---
 
-**(Further Phases: Styling with Tailwind/CSS, Authentication, Database Models, Deployment, AI Features will follow)**
-
+**(Further Phases: Styling with Tailwind/CSS, Authentication, Database Models, Deployment, AI Features will follow)** 
