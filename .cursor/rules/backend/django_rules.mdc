@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: apps/**/*.py, config/**/*.py
 alwaysApply: false
 ---
  ---

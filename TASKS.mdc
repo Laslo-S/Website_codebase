@@ -40,17 +40,41 @@ alwaysApply: true
 
 ---
 
-**Phase 2: Basic Frontend & Layout**
+**Phase 2: Foundational Frontend Layout & Structure (Mobile-First)**
 
-- [ ] **2.1 Frontend Approach Decision:** Recommend a simple frontend approach (likely backend templating like Django Templates/Jinja2) vs. static files. Justify why a complex SPA is not needed initially for displaying embeds. Await user confirmation.
-- [ ] **2.2 Scaffold Frontend Files:** Based on the decision:
-    - Create standard directories: `templates/` (with `base.html`, and app-specific subdirs like `templates/core/`), `static/` (with `css/`, `js/`, `images/`).
-    - Create `templates/base.html` with HTML5 boilerplate.
-    - Create empty `static/css/style.css` and `static/js/script.js`.
-- [ ] **2.3 Implement Core Layout:** Add semantic `<header>`, `<main>` (with content block), and `<footer>` structure to `templates/base.html`.
-- [ ] **2.4 Configure Static Files:** Configure framework settings (`settings.py` or equivalent) for template dirs, `STATIC_URL`, and `STATICFILES_DIRS`. Verify dev server serves static files.
-- [ ] **2.5 Create Frontend Rules:** Create a new rule file `.cursor/rules/frontend/styling_layout.mdc`. Add basic rules for CSS/JS (e.g., "Use BEM for CSS classes", "Write vanilla JS or specify framework later", "Reference @file:templates/base.html for layout structure").
-- [ ] **2.6 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "feat: Set up frontend structure, static files, base layout, and initial frontend rules"). Await confirmation to commit.
+*AI Assistant Guidance: This phase establishes the core HTML structure and basic frontend configuration, guided by mobile-first principles and insights from design blueprints. Styling will be minimal; focus is on structure and semantics.*
+
+- [ ] **2.1 Frontend Approach Decision & Validation:**
+    - **2.1.1 Recommendation:** Based on the goal of displaying embedded content simply and efficiently, confirm that **Server-Side Rendering (SSR) using the backend framework's templating engine** (e.g., Django Templates) is the most suitable initial approach. Justify why a complex SPA framework is not needed now. Reference mobile-first best practices.
+    - **2.1.2 Confirmation:** Await user confirmation.
+- [ ] **2.2 Scaffold Core Frontend Directories & Files:**
+    - **2.2.1 Create Directories:** Ensure the following standard directories exist: `templates/` (with a subdirectory for the core app, e.g., `templates/core/`), `static/`, `static/css/`, `static/js/`, `static/images/`.
+    - **2.2.2 Create Base Files:** Create:
+        - `templates/base.html` (with HTML5 boilerplate, viewport meta tag for responsiveness).
+        - `templates/core/home.html` (initially empty or just extending base).
+        - `static/css/style.css` (empty or with basic resets/body styles).
+        - `static/js/script.js` (empty).
+- [ ] **2.3 Implement Core Semantic Layout (`templates/base.html`):**
+    - **2.3.1 Structure:** Implement the main page structure within `<body>` using semantic HTML5 elements:
+        - `<header>`: Placeholder for logo and main navigation.
+        - `<main>`: Primary content area. Include a content block placeholder (e.g., `{% block content %}{% endblock %}` for Django). Structure inner divs anticipating a simple grid/column layout later.
+        - `<footer>`: Placeholder for copyright and secondary links.
+    - **2.3.2 Mobile-First:** Ensure the structure is inherently mobile-friendly (e.g., linear flow, no fixed widths initially).
+    - **2.3.3 Accessibility:** Use appropriate landmarks (`<nav>` within header, etc.).
+- [ ] **2.4 Configure Static & Template File Serving:**
+    - **2.4.1 Settings:** Configure the backend framework's settings (`settings.py` or equivalent) to correctly locate the `templates/` directory and the `static/` directory (`STATIC_URL`, `STATICFILES_DIRS`).
+    - **2.4.2 Verification:** Briefly test if the development server can find and potentially serve `style.css` (even if empty) when linked from `base.html`. Report success or configuration needed.
+- [ ] **2.5 Create Foundational Frontend Rules:**
+    - **2.5.1 Create Rule File:** Create a *new* rule file: `.cursor/rules/frontend/01_layout_styling_base.mdc`.
+    - **2.5.2 Populate Basic Rules:** Add foundational rules to this file, referencing the design blueprints:
+        - **Guideline:** Enforce **Mobile-First** design approach for all layouts and CSS.
+        - **Guideline:** Mandate use of **semantic HTML5** elements (`header`, `nav`, `main`, `footer`, `section`, `article`).
+        - **Guideline:** Specify basic CSS structure (e.g., recommend CSS resets, basic `box-sizing: border-box;`).
+        - **Guideline:** Note preference for CSS Grid/Flexbox for layout (to be detailed later).
+        - **Guideline:** Include placeholder for typography rules (font stack, base size - e.g., 16px).
+        - **Guideline:** Reference @file:templates/base.html as the core layout structure.
+        - **Example:** Include a small HTML snippet showing correct semantic structure for the header/main/footer.
+- [ ] **2.6 Version Control Checkpoint:** Stage all new/modified frontend files (templates, static files, settings changes) and the new frontend rule file. Generate a Conventional Commit message (e.g., "feat: Establish mobile-first frontend structure, base layout, static files config, and layout rules"). Await user confirmation to commit.
 
 ---
 

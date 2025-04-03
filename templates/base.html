@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Architectural Visualization{% endblock title %}</title>
+    {% block styles %}
+    <!-- Link to main CSS file will go here later -->
+    {% endblock styles %}
+</head>
+<body>
+    <header>
+        {% block header %}
+        <!-- Header content will go here -->
+        {% endblock header %}
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Main page content will go here -->
+        {% endblock content %}
+    </main>
+
+    <footer>
+        {% block footer %}
+        <!-- Footer content will go here -->
+        {% endblock footer %}
+    </footer>
+
+    {% block scripts %}
+    <!-- Link to main JS file will go here later -->
+    {% endblock scripts %}
+</body>
+</html> 
