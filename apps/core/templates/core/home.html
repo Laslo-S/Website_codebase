@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Homepage - {{ block.super }}{% endblock title %}
+
+{% block content %}
+    <h1>Welcome to the Homepage</h1>
+    
+    <h2>Sketchfab Embed</h2>
+    <div class="sketchfab-embed-wrapper"> 
+        <iframe title="Castle 01" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/3f4cbbf0ac3f41d895bea5c3264b8283/embed" style="width: 640px; height: 480px;"> 
+        </iframe> 
+        <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> 
+            <a href="https://sketchfab.com/3d-models/castle-01-3f4cbbf0ac3f41d895bea5c3264b8283?utm_medium=embed&utm_campaign=share-popup&utm_content=3f4cbbf0ac3f41d895bea5c3264b8283" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Castle 01 </a> by 
+            <a href="https://sketchfab.com/Laslo.S?utm_medium=embed&utm_campaign=share-popup&utm_content=3f4cbbf0ac3f41d895bea5c3264b8283" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Laslo.S </a> on 
+            <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=3f4cbbf0ac3f41d895bea5c3264b8283" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+        </p>
+    </div>
+
+    <hr/> <!-- Separator -->
+
+    <h2>Vimeo Embed</h2>
+    <div>
+        <iframe src="https://player.vimeo.com/video/879921418?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="Test03_MichelsRips"></iframe>
+    </div>
+
+    <hr/> <!-- Separator -->
+
+    <h2>Image Gallery Placeholder</h2>
+    <div>
+        <img src="{% static 'images/placeholder1.jpg' %}" alt="Placeholder Image 1" width="200" style="border: 1px solid #ddd; margin: 5px;">
+        <img src="{% static 'images/placeholder2.png' %}" alt="Placeholder Image 2" width="200" style="border: 1px solid #ddd; margin: 5px;">
+    </div>
+
+    <hr/> <!-- Separator -->
+
+    <p>Placeholder content for gallery will go here.</p>
+{% endblock content %} 

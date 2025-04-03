@@ -78,14 +78,75 @@ alwaysApply: true
 
 ---
 
-**Phase 3: Content Display (Placeholders)**
+**Phase 3: Implement Homepage Content & Structure**
 
-- [ ] **3.1 Homepage Route & View:** Implement the route (`/`) and view function/handler to render a specific homepage template (e.g., `templates/core/home.html`) which extends `base.html`.
-- [ ] **3.2 Embed Sketchfab:** In `templates/core/home.html`, add placeholder Sketchfab iframe embed code within the main content block.
-- [ ] **3.3 Embed Vimeo:** Add placeholder Vimeo iframe embed code.
-- [ ] **3.4 Image Gallery:** Add 1-2 placeholder images to `static/images/`. Display them on the homepage using `<img>` tags referencing static paths (use framework's static tag like `{% static 'images/...' %}`).
-- [ ] **3.5 Verification:** Run dev server. Access homepage. Verify layout, embeds (iframes load), and images display. Report success or errors.
-- [ ] **3.6 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "feat: Implement homepage view with placeholder embeds and gallery"). Await confirmation to commit.
+*AI Assistant Guidance: This phase focuses on structuring the homepage (`home.html`) and embedding the core placeholder content (3D models, videos, images). Apply semantic HTML and basic accessibility principles based on @file:.cursor/rules/frontend/01_layout_styling_base.mdc. Reference design blueprint concepts like Hero sections and F/Z patterns for logical placement.*
+
+- [X] **3.1 Homepage Route & View Setup:** *(Assuming this was just completed)*
+    - **3.1.1 Create URL:** Ensure a URL pattern for the root path (`/`) exists in `apps/core/urls.py` (or the relevant app's `urls.py`) and that it's included in the main `config/urls.py`.
+    - **3.1.2 Create View:** Implement the corresponding view function/class (e.g., `HomePageView` in `apps/core/views.py`) that renders the `templates/core/home.html` template, ensuring it extends `templates/base.html`. Pass a basic page title in the context.
+    - **3.1.3 Verify Basic Rendering:** Run the dev server. Access the homepage (`/`). Confirm the base layout (Header/Footer from `base.html`) renders without errors, even with an empty content block. Report success or errors.
+- [ ] **3.2 Structure Homepage Content Area (`templates/core/home.html`):**
+    - **3.2.1 Define Sections:** Within the `{% block content %}` of `home.html`, create primary content sections using semantic tags, considering a typical landing page flow (e.g., Hero, Portfolio/Gallery). Example:
+        ```html
+        <section id="hero" aria-labelledby="hero-heading">
+          <h2 id="hero-heading" class="visually-hidden">Main Showcase</h2>
+          <!-- Embeds will go here -->
+        </section>
+        <section id="image-gallery" aria-labelledby="gallery-heading">
+          <h2 id="gallery-heading">Featured Images</h2>
+          <!-- Image gallery will go here -->
+        </section>
+        ```
+        *(Note: Define `visually-hidden` class in CSS later).*
+    - **3.2.2 Placement Logic:** Briefly explain placement choices based on F/Z patterns (e.g., "Placing primary 3D embed in the #hero section for immediate focus").
+- [ ] **3.3 Embed Sketchfab Model:**
+    - **3.3.1 Add Embed Code:** In the `#hero` section, insert the placeholder Sketchfab `<iframe>` embed code.
+    - **3.3.2 Accessibility:** Add a descriptive `title` attribute to the `<iframe>` (e.g., `title="Interactive 3D Model Viewer - Project Alpha"`).
+- [ ] **3.4 Embed Vimeo Video:**
+    - **3.4.1 Add Embed Code:** In an appropriate section, insert the placeholder Vimeo `<iframe>` embed code.
+    - **3.4.2 Accessibility:** Add a descriptive `title` attribute to the `<iframe>` (e.g., `title="Project Alpha Walkthrough Video"`).
+    - **3.4.3 Responsiveness (Basic):** Wrap the iframe in a `div` container and note the need for responsive CSS (padding-bottom trick) in comments within `style.css`.
+- [ ] **3.5 Implement Static Image Gallery:**
+    - **3.5.1 Add Images:** Ensure 1-2 placeholder `.jpg` or `.png` images exist in `static/images/`. If not, add them now.
+    - **3.5.2 Create HTML Structure:** In the `#image-gallery` section, implement the gallery using semantic HTML (e.g., `<figure>` elements within a container).
+    - **3.5.3 Display Images:** Use Django's `{% static %}` tag within `<img>` tags.
+    - **3.5.4 Accessibility:** Provide meaningful `alt` text for each `<img>` tag.
+- [ ] **3.6 Create Content Display Rules:**
+    - **3.6.1 Create Rule File:** Create a *new* rule file: `.cursor/rules/frontend/02_content_embeds.mdc`.
+    - **3.6.2 Populate Basic Rules:** Add rules to this file covering: `<iframe>` titles, `<img>` alt text, semantic structure for content blocks, placeholder for responsive embeds, placeholder for image optimization. Reference @file:.cursor/rules/frontend/01_layout_styling_base.mdc.
+- [ ] **3.7 Verification:**
+    - **3.7.1 Run Server:** Ensure dev server is running.
+    - **3.7.2 Check Homepage:** Access homepage (`/`). Verify layout structure, iframes appear, images display, alt/title attributes are present via inspection.
+    - **3.7.3 Report:** Confirm successful rendering and report any errors.
+- [ ] **3.8 Version Control Checkpoint:** Stage changes (views, urls, templates, static images, new rule file). Generate commit message (e.g., "feat: Implement homepage content structure with placeholders"). Await confirmation to commit.
+
+---
+
+**Phase 4: Initial Styling, Navigation & Auth Prep**
+
+*AI Assistant Guidance: This phase applies foundational styling using CSS (or optionally Tailwind CSS), makes navigation functional, and prepares the Django authentication structure.*
+
+- [ ] **4.1 Styling Approach Decision:**
+    - **4.1.1 Recommendation:** Recommend **either** basic custom CSS using `static/css/style.css` **or** integrating **Tailwind CSS** now. Justify based on project simplicity vs. utility-first speed/consistency advantages highlighted in blueprints. Mention that Tailwind requires Node.js build steps.
+    - **4.1.2 Confirmation:** Await user confirmation.
+- [ ] **4.2 Basic Styling Implementation:**
+    - **4.2.1 CSS Setup:** If using custom CSS, apply basic styles in `static/css/style.css` for layout (`base.html` header/main/footer spacing, basic typography from rules), embeds (responsive iframe wrapper), and image gallery (`display: grid` or `flex` maybe). Reference @file:.cursor/rules/frontend/01_layout_styling_base.mdc.
+    - **4.2.2 Tailwind Setup (If chosen):** If Tailwind is chosen:
+        - Follow standard Tailwind+Django integration steps (install Node dependencies `tailwindcss`, `postcss`, `autoprefixer`; create `tailwind.config.js`, `postcss.config.js`, input CSS file `static/css/input.css`; configure Django template settings and static files build process).
+        - Apply basic utility classes to `base.html` and `home.html` for layout spacing, background colors, and basic typography consistent with design blueprints.
+        - Add relevant rules to a *new* file `.cursor/rules/frontend/03_tailwind_config.mdc`.
+- [ ] **4.3 Implement Navigation:**
+    - **4.3.1 Create Placeholder Pages:** Create basic view functions/classes and corresponding empty templates (extending `base.html`) for planned navigation links (e.g., About, Contact pages) in the `core` app. Add corresponding URL patterns in `apps/core/urls.py`.
+    - **4.3.2 Update Header:** In `templates/base.html` (or a dedicated header template), make the navigation links functional using Django's `{% url '...' %}` template tag pointing to the names defined in `urls.py`.
+    - **4.3.3 Verification:** Run dev server. Check that navigation links in the header work and load the (currently empty) placeholder pages.
+- [ ] **4.4 Prepare Authentication Structure:**
+    - **4.4.1 Create `accounts` App:** If not already present, create a dedicated Django app for authentication: `python manage.py startapp accounts` (place it inside `apps/` directory). Add `'apps.accounts'` to `INSTALLED_APPS` in settings.
+    - **4.4.2 Configure Auth URLs:** In the main `config/urls.py`, include Django's built-in auth URLs: `path('accounts/', include('django.contrib.auth.urls')),`.
+    - **4.4.3 Create Basic Auth Templates:** Create basic template files within `templates/registration/` (Django's default location for auth templates) for `login.html` and potentially `logged_out.html`. These can be very simple initially, extending `base.html` and containing the necessary form tags (`{% csrf_token %}` for login).
+    - **4.4.4 Create Auth Rules:** Create a *new* rule file `.cursor/rules/backend/auth_rules.mdc`. Add basic rules: "Use Django's built-in auth system", "Place templates in `templates/registration/`", "Protect views with `@login_required` or `LoginRequiredMixin`".
+    - **4.4.5 Verification:** Run dev server. Check if `/accounts/login/` URL loads the basic login template. (Actual login won't work fully without more setup, but the structure should be accessible).
+- [ ] **4.5 Version Control Checkpoint:** Stage all changes (CSS/Tailwind config, templates, views, urls, settings updates, new rule files). Generate commit message (e.g., "feat: Implement initial styling, functional navigation, and auth structure prep"). Await user confirmation to commit.
 
 ---
 
