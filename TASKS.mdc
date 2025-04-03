@@ -1,1 +1,69 @@
- 
+---
+description: 
+globs: 
+alwaysApply: true
+---
+ # TASKS: Architectural Visualization Platform Build
+
+**Project Goal:** Build a website to showcase architectural visualizations (3D scans, photogrammetry, AI imagery) using static embeds (Sketchfab, Vimeo) and image galleries. Plan for minimal client authentication later and potential future AI features (blog, chatbot). Low initial traffic expected.
+
+**AI Assistant Guidance:** Please follow these tasks sequentially, adhering to all guidelines in @file:.cursor/rules/00_core_assistant_protocol.mdc and any technology-specific rules referenced or created. Await confirmation before proceeding to the next numbered task.
+
+---
+
+**Phase 1: Foundation & Backend Setup**
+
+- [ ] **1.1 Environment Verification:** (User confirmed completed) Confirm necessary tools (Python 3.x, pip, Node.js LTS, npm, Git) are installed and report versions.
+- [ ] **1.2 Backend Framework Decision & Scaffolding:**
+    - **1.2.1 Recommendation:** Based on project goals and reviewed blueprints, recommend **either Django or Node.js/Express**. Justify the choice referencing built-in features (auth, admin), development speed, security, maintainability, and suitability for potential AI integration. Reference @file:.cursor/rules/00_core_assistant_protocol.mdc.
+    - **1.2.2 Confirmation:** Await user confirmation.
+    - **1.2.3 Scaffolding:** Upon confirmation:
+        - Scaffold the chosen framework's project structure (e.g., `django-admin startproject config .` & `python manage.py startapp core` potentially in an `apps/` dir for Django; standard Express setup for Node).
+        - Use the activated `.venv` for Python package installs (`pip install ...`).
+        - Create/update `requirements.txt` or `package.json` with core dependencies.
+        - Report created files/folders.
+- [ ] **1.3 Configure Core Settings & Environment:**
+    - **1.3.1 Env Package:** Install and configure environment variable loading (`django-environ` or `dotenv`). Update @file:.gitignore if needed.
+    - **1.3.2 `.env.example` Check:** Ensure @file:.env.example contains placeholders for `SECRET_KEY`, `DEBUG=True`, `DATABASE_URL=sqlite:///db.sqlite3`.
+    - **1.3.3 Framework Settings:** Configure the main settings file (`config/settings/base.py` or similar) to load these variables. Set `DEBUG` and `ALLOWED_HOSTS` (`['localhost', '127.0.0.1']` for dev).
+    - **1.3.4 Database:** Configure the framework for SQLite dev database. Run initial migrations (e.g., `python manage.py migrate`). Verify success.
+- [ ] **1.4 Create Foundational Framework Rules:**
+    - **1.4.1 Create Rule File:** Create a *new* rule file in the appropriate subfolder, e.g., `.cursor/rules/backend/django_rules.mdc` or `.cursor/rules/backend/node_express_rules.mdc`.
+    - **1.4.2 Populate Basic Rules:** Add foundational rules to this *new file*, including:
+        - Preferred project structure (e.g., Django apps in `apps/`, Node modules).
+        - Naming conventions (files, variables, classes).
+        - View/Controller patterns (e.g., Class-Based Views vs Functions).
+        - Basic framework-specific security reminders (CSRF, input validation).
+        - **Include a simple code example** demonstrating the preferred style (e.g., a basic Django view or Express route handler).
+    - **1.4.3 Reference Core Protocol:** Ensure this new rule file implicitly uses the core protocol (or add `@file:.cursor/rules/00_core_assistant_protocol.mdc` if needed, though broad globs might cover it).
+- [ ] **1.5 Version Control Checkpoint:** Add all new/modified files (framework code, `.env.example` updates, new rule file) to Git staging. Generate a Conventional Commit message (e.g., "feat: Scaffold [Django/Node] backend, configure settings, add initial framework rules"). Await user confirmation to commit.
+
+---
+
+**Phase 2: Basic Frontend & Layout**
+
+- [ ] **2.1 Frontend Approach Decision:** Recommend a simple frontend approach (likely backend templating like Django Templates/Jinja2) vs. static files. Justify why a complex SPA is not needed initially for displaying embeds. Await user confirmation.
+- [ ] **2.2 Scaffold Frontend Files:** Based on the decision:
+    - Create standard directories: `templates/` (with `base.html`, and app-specific subdirs like `templates/core/`), `static/` (with `css/`, `js/`, `images/`).
+    - Create `templates/base.html` with HTML5 boilerplate.
+    - Create empty `static/css/style.css` and `static/js/script.js`.
+- [ ] **2.3 Implement Core Layout:** Add semantic `<header>`, `<main>` (with content block), and `<footer>` structure to `templates/base.html`.
+- [ ] **2.4 Configure Static Files:** Configure framework settings (`settings.py` or equivalent) for template dirs, `STATIC_URL`, and `STATICFILES_DIRS`. Verify dev server serves static files.
+- [ ] **2.5 Create Frontend Rules:** Create a new rule file `.cursor/rules/frontend/styling_layout.mdc`. Add basic rules for CSS/JS (e.g., "Use BEM for CSS classes", "Write vanilla JS or specify framework later", "Reference @file:templates/base.html for layout structure").
+- [ ] **2.6 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "feat: Set up frontend structure, static files, base layout, and initial frontend rules"). Await confirmation to commit.
+
+---
+
+**Phase 3: Content Display (Placeholders)**
+
+- [ ] **3.1 Homepage Route & View:** Implement the route (`/`) and view function/handler to render a specific homepage template (e.g., `templates/core/home.html`) which extends `base.html`.
+- [ ] **3.2 Embed Sketchfab:** In `templates/core/home.html`, add placeholder Sketchfab iframe embed code within the main content block.
+- [ ] **3.3 Embed Vimeo:** Add placeholder Vimeo iframe embed code.
+- [ ] **3.4 Image Gallery:** Add 1-2 placeholder images to `static/images/`. Display them on the homepage using `<img>` tags referencing static paths (use framework's static tag like `{% static 'images/...' %}`).
+- [ ] **3.5 Verification:** Run dev server. Access homepage. Verify layout, embeds (iframes load), and images display. Report success or errors.
+- [ ] **3.6 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "feat: Implement homepage view with placeholder embeds and gallery"). Await confirmation to commit.
+
+---
+
+**(Further Phases: Styling with Tailwind/CSS, Authentication, Database Models, Deployment, AI Features will follow)**
+
