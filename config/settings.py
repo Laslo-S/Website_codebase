@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Add your apps here
     "apps.core",
+    "apps.accounts",
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Authentication settings
+# LOGIN_REDIRECT_URL = 'accounts:profile' # No longer needed, handled by CustomLoginView.get_success_url
+LOGOUT_REDIRECT_URL = '/' # Redirect to home page after logout (uses default LogoutView)

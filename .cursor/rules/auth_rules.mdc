@@ -1,0 +1,59 @@
+---
+description: Defines standards and practices for user authentication, authorization, and account management.
+globs: 
+alwaysApply: false
+---
+ ---
+# Rule Description: Defines standards and practices for user authentication, authorization, and account management.
+Description: Authentication & Account Management Rules
+priority: 5 # Higher priority than core protocol for auth-specific tasks.
+---
+
+# Authentication & Account Management
+
+This document outlines the established patterns for handling user accounts, login/logout, profile pages, user-specific pages, and administration within the ArchViz Platform project.
+
+**Core Components:**
+
+1.  **Django Built-in Auth:** We leverage `django.contrib.auth` for core user models, password hashing, session management, and basic permission structures.
+2.  **`accounts` App (`apps.accounts`):** All custom authentication views, user-specific page logic, and account-related URL patterns reside within this app.
+    *   Key File: @file:apps/accounts/views.py
+    *   Key File: @file:apps/accounts/urls.py
+3.  **Superuser & Admin Interface:**
+    *   A superuser (`Admin`) has been created for administrative tasks.
+    *   User management (creation, deletion, password resets, permission assignment) is handled through the Django Admin interface at `/admin/`. Refer to @file:templates/admin/base_site.html for header customizations.
+    *   Access to `/admin/` is restricted to users with `is_staff=True`.
+4.  **Templates:**
+    *   Login/Logout: Standard templates are located in @file:templates/registration/ (`login.html`, `logged_out.html`).
+    *   User Profile (Personal Dashboard): @file:templates/accounts/profile.html, rendered by `UserProfileView`.
+    *   Default User-Specific Page: @file:templates/accounts/user_page.html, the fallback template rendered by `UserPageView`.
+    *   Custom User-Specific Pages: Located in `templates/accounts/user_templates/`. Create `<username>.html` here to override the default page for a specific user.
+
+**Key Workflows & Views:**
+
+1.  **Login:**
+    *   Handled by `CustomLoginView` (@file:apps/accounts/views.py).
+    *   Uses template @file:templates/registration/login.html.
+    *   URL: `/accounts/login/` (name: `accounts:login`).
+    *   **Redirect:** Upon successful login, users are redirected *dynamically* to their user-specific page (`/accounts/user/<username>/`) via the `get_success_url` method in `CustomLoginView`.
+2.  **Logout:**
+    *   Handled by the standard `auth_views.LogoutView`.
+    *   URL: `/accounts/logout/` (name: `accounts:logout`).
+    *   **Redirect:** Upon logout, users are redirected to the homepage (`/`) as defined in @file:apps/accounts/urls.py.
+3.  **User Profile Page:**
+    *   Accessed at `/accounts/profile/` (name: `accounts:profile`).
+    *   Handled by `UserProfileView` (@file:apps/accounts/views.py).
+    *   Requires login (`LoginRequiredMixin`). Displays information relevant to the *currently logged-in* user.
+4.  **User-Specific Pages:**
+    *   Accessed via dynamic URL: `/accounts/user/<username>/` (name: `accounts:user_page`).
+    *   Handled by `UserPageView` (@file:apps/accounts/views.py).
+    *   **Template Selection:** Dynamically selects `templates/accounts/user_templates/<username>.html` if it exists, otherwise falls back to `templates/accounts/user_page.html`.
+    *   **Access Control:** Requires login (`LoginRequiredMixin`). Access is further restricted via the `dispatch` method to only allow the user themselves (`request.user == target_user`) or staff (`request.user.is_staff`) to view the page. Unauthorized access results in a 403 Forbidden response.
+
+**Development Guidelines:**
+
+*   **Creating Users:** Always use the Django Admin interface (`/admin/`) to create new users. Ensure appropriate staff/superuser status is set if needed.
+*   **Customizing User Pages:** To create a unique layout for a user, add a new HTML file named `<username>.html` inside the `templates/accounts/user_templates/` directory. This template will automatically be picked up by `UserPageView`.
+*   **Adding User Data:** To display user-specific data (e.g., projects), modify the `get_context_data` method within `UserPageView` (@file:apps/accounts/views.py) to query and add relevant data to the context. This context data will be available to *both* the default and any custom user templates.
+*   **Permissions:** For features beyond simple page access, utilize Django's permission system (assigning permissions via the Admin interface and checking them in views using decorators or mixins like `PermissionRequiredMixin`).
+*   **Password Management:** Use the built-in password reset flow (requires configuring email settings later) or the Admin interface for password changes. Never store plain-text passwords.

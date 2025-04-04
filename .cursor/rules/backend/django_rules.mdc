@@ -5,8 +5,8 @@ alwaysApply: false
 ---
 ---
 description: Foundational rules and conventions for Django development in this project.
-globs: ["apps/**/*.py", "config/**/*.py"]
-tags: ["backend", "django", "style", "patterns", "security"]
+globs: apps/**/*.py", "config/**/*.py
+tags: backend", "django", "style", "patterns", "security
 ---
 
 # Django Development Rules & Conventions

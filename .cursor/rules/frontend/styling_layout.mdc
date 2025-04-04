@@ -9,6 +9,11 @@ globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
 alwaysApply: false
 ---
 ---
+description: 
+globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
+alwaysApply: false
+---
+---
 description: Rules for frontend layout, styling (CSS), and client-side scripting (JS).
 globs: ["templates/**/*.html", "static/css/**/*.css", "static/js/**/*.js"]
 tags: ["frontend", "css", "javascript", "html", "layout", "style"]

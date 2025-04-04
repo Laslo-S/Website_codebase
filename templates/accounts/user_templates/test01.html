@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Special Page for {{ target_user.username }} | {{ block.super }}{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    {# Custom header for this specific user #}
+    <h1 class="text-4xl font-bold text-center text-purple-700 mb-8">*** Welcome to the Custom {{ target_user.username }} Experience! ***</h1>
+
+    {# Custom content area #}
+    <div class="bg-purple-100 border border-purple-300 shadow-lg rounded p-8 mb-6">
+        <h2 class="text-2xl font-semibold text-purple-800 mb-4">Test01 Specific Content</h2>
+        <p class="text-purple-900">
+            This page uses a <span class="font-bold">completely different template</span> located at
+            <code class="bg-purple-200 px-1 rounded">templates/accounts/user_templates/{{ target_user.username }}.html</code>.
+        </p>
+        <p class="text-purple-900 mt-4">
+            This allows for a unique layout and presentation specifically for user: <span class="font-semibold">{{ target_user.username }}</span>.
+        </p>
+        {# Add different layout elements or components here #}
+        <div class="mt-6 p-4 bg-white rounded shadow">
+            <h3 class="text-lg font-semibold">A Special Section</h3>
+            <p>Only Test01 sees this unique section.</p>
+        </div>
+    </div>
+
+</div>
+{% endblock content %} 

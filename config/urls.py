@@ -23,6 +23,7 @@ from django.conf.urls.static import static # Import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("apps.core.urls", namespace="core")),
+    path("accounts/", include("apps.accounts.urls", namespace="accounts")),
 ]
 
 # Add static file serving helper for development
