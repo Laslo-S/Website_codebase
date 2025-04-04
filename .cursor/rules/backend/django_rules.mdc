@@ -1,9 +1,9 @@
 ---
 description: 
-globs: apps/**/*.py,**/config/**/*.py
+globs: apps/**/*.py,config/**/*.py
 alwaysApply: false
 ---
- ---
+---
 description: Foundational rules and conventions for Django development in this project.
 globs: ["apps/**/*.py", "config/**/*.py"]
 tags: ["backend", "django", "style", "patterns", "security"]
@@ -74,4 +74,4 @@ class HomePageView(TemplateView):
 *   Add new dependencies to `requirements.txt` after installing via `pip`.
 *   Justify adding significant new third-party packages.
 
----
+--- 

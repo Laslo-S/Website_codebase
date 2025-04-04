@@ -1,6 +1,11 @@
 ---
 description: 
-globs: **/static/js/**/*.js,**/templates/**/*.html,**/static/css/**.css
+globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
+alwaysApply: false
+---
+---
+description: 
+globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
 alwaysApply: false
 ---
 ---
