@@ -153,3 +153,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Authentication settings
 # LOGIN_REDIRECT_URL = 'accounts:profile' # No longer needed, handled by CustomLoginView.get_success_url
 LOGOUT_REDIRECT_URL = '/' # Redirect to home page after logout (uses default LogoutView)
+
+# Media files (User-uploaded content)
+# https://docs.djangoproject.com/en/5.2/topics/files/
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media' # Directory where uploaded files will be stored

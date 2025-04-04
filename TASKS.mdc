@@ -168,43 +168,104 @@ alwaysApply: true
 
 **Phase 5: Database Models & Content Management**
 
-*AI Assistant Guidance: This phase defines the core database models for the visualization content and integrates them with the Django admin for easy management.*
+*AI Assistant Guidance: This phase defines the core database models for the visualization content (projects, types) and integrates them with the Django admin for easy management. Ensure models align with project goals and admin interface is user-friendly for content updates.*
 
 - [ ] **5.1 Define Core Models (`apps/core/models.py`):**
-    - [ ] **5.1.1 `VisualizationType` Model:** Create a simple model (e.g., `name = CharField`) for categories like '3D Scan', 'Video Visualization', 'Still Image'.
-    - [ ] **5.1.2 `VisualizationProject` Model:** Create the main model:
-        - `title`: CharField
-        - `description`: TextField
-        - `type`: ForeignKey to `VisualizationType`
-        - `embed_code`: TextField (for Sketchfab/Vimeo iframes)
-        - `image`: ImageField (for still images, requires Pillow - add to requirements)
-        - `slug`: SlugField (unique, for potential future detail URLs)
-        - `created_at`/`updated_at`: DateTimeField (auto_now_add/auto_now)
-        - `owner`: ForeignKey to `User` (link project to a user, **SET NULL** or **CASCADE** on delete? Decide & justify).
-        - `is_public`: BooleanField (default True)
-    - [ ] **5.1.3 Add String Representations:** Implement `__str__` methods for both models.
+    - **5.1.1 `VisualizationType` Model:** Create a simple model in `apps/core/models.py`.
+        - Fields: `name` (CharField, unique=True, help_text="Category name, e.g., '3D Scan', 'Video', 'AI Still Image'").
+        - Add `__str__` method returning `self.name`.
+    - **5.1.2 `VisualizationProject` Model:** Create the main content model in `apps/core/models.py`.
+        - Fields:
+            - `title`: CharField (max_length=200)
+            - `description`: TextField (blank=True)
+            - `visualization_type`: ForeignKey to `VisualizationType`, `on_delete=models.SET_NULL`, `null=True`, `blank=True`. *(Allow type to be optional initially)*
+            - `embed_code`: TextField (blank=True, help_text="Paste Sketchfab/Vimeo iframe code here.")
+            - `image`: ImageField (upload_to='visualizations/', blank=True, help_text="Upload static image if not using embed code.") *(Requires Pillow)*
+            - `slug`: SlugField (max_length=255, unique=True, help_text="Unique URL-friendly identifier, auto-generated from title.")
+            - `owner`: ForeignKey to `User` (`django.contrib.auth.models.User`), `on_delete=models.SET_NULL`, `null=True`, `blank=True`, help_text="Optional: Link to the user who owns/created this." *(Using SET_NULL means if a user is deleted, the project remains but owner is cleared).*
+            - `is_public`: BooleanField (default=True, help_text="Check if visible on the public site.")
+            - `created_at`: DateTimeField (auto_now_add=True)
+            - `updated_at`: DateTimeField (auto_now=True)
+        - Add `__str__` method returning `self.title`.
+        - Add a `save` method override to automatically generate the `slug` from the `title` if it's empty, using `django.utils.text.slugify`.
 - [ ] **5.2 Configure Media File Handling:**
-    - [ ] **5.2.1 Install Pillow:** Add `Pillow` to `requirements.txt` and install it.
-    - [ ] **5.2.2 Configure Settings:** Define `MEDIA_URL = '/media/'` and `MEDIA_ROOT = BASE_DIR / 'media'` in `config/settings.py`.
-    - [ ] **5.2.3 Update Project URLs:** In `config/urls.py`, add the pattern to serve media files during development: `urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)` (inside the `if settings.DEBUG:` block).
+    - **5.2.1 Install Pillow:** Add `Pillow` to `requirements.txt`. Run `pip install Pillow` in the activated `.venv`.
+    - **5.2.2 Configure Settings:** In `config/settings.py`:
+        - Define `MEDIA_URL = '/media/'`.
+        - Define `MEDIA_ROOT = BASE_DIR / 'media'`. Ensure the `media` directory exists at the project root (create if not).
+    - **5.2.3 Update Project URLs:** In `config/urls.py`, add the pattern to serve media files during development (inside the `if settings.DEBUG:` block):
+        ```python
+        from django.conf import settings
+        from django.conf.urls.static import static
+
+        # ... other url patterns ...
+
+        if settings.DEBUG:
+            urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        ```
+        *(Ensure `django.conf` and `django.conf.urls.static` are imported).*
 - [ ] **5.3 Database Migrations:**
-    - [ ] **5.3.1 Make Migrations:** Run `python manage.py makemigrations core`.
-    - [ ] **5.3.2 Migrate:** Run `python manage.py migrate`.
-    - [ ] **5.3.3 Verification:** Check that migration files were created and the command reports success.
-- [ ] **5.4 Register Models with Admin (`apps/core/admin.py`):**
-    - [ ] **5.4.1 Basic Registration:** Register `VisualizationType` and `VisualizationProject` with the admin site (`admin.site.register(...)`).
-    - [ ] **5.4.2 Enhance `VisualizationProjectAdmin`:** Create a `ModelAdmin` class for `VisualizationProject`:
-        - Use `list_display` to show `title`, `type`, `owner`, `is_public`, `created_at`.
-        - Use `list_filter` for `type`, `owner`, `is_public`.
-        - Use `search_fields` for `title`, `description`.
-        - Use `prepopulated_fields` to automatically generate the `slug` from the `title`.
-        - Register the model using this custom admin class.
-- [ ] **5.5 Verification:**
-    - [ ] **5.5.1 Access Admin:** Log in to `/admin/`.
-    - [ ] **5.5.2 Check Models:** Verify 'Visualization types' and 'Visualization projects' sections appear.
-    - [ ] **5.5.3 Add Content:** Add a sample `VisualizationType` and a sample `VisualizationProject` (uploading a test image if possible).
-    - [ ] **5.5.4 Check Admin Display:** Confirm the `list_display`, filters, search, and slug prepopulation work as configured.
-- [ ] **5.6 Version Control Checkpoint:** Stage changes (models, admin, settings, migrations, requirements). Generate commit message (e.g., "feat: Define core models, configure media, and set up admin interface"). Await user confirmation to commit.
+    - **5.3.1 Make Migrations:** Run `python manage.py makemigrations core`. Verify migration file(s) are created in `apps/core/migrations/`.
+    - **5.3.2 Migrate:** Run `python manage.py migrate`. Verify successful application.
+- [ ] **5.4 Register & Enhance Models in Admin (`apps/core/admin.py`):**
+    - **5.4.1 Basic Registration:** Import `VisualizationType`, `VisualizationProject` from `.models`. Register both with `admin.site.register()`.
+    - **5.4.2 Enhance `VisualizationProjectAdmin`:** Create a custom `ModelAdmin` class `VisualizationProjectAdmin(admin.ModelAdmin)`:
+        - Define `list_display = ('title', 'visualization_type', 'owner', 'is_public', 'created_at')`.
+        - Define `list_filter = ('visualization_type', 'is_public', 'owner')`.
+        - Define `search_fields = ('title', 'description')`.
+        - Define `prepopulated_fields = {'slug': ('title',)}`.
+        - Define `date_hierarchy = 'created_at'`.
+    - **5.4.3 Register with Custom Admin:** Unregister the basic `VisualizationProject` registration and re-register it using the custom admin class: `admin.site.register(VisualizationProject, VisualizationProjectAdmin)`. Keep the basic registration for `VisualizationType`.
+- [ ] **5.5 Verification in Admin Interface:**
+    - **5.5.1 Run Server & Access Admin:** Start the dev server. Log in to `/admin/` using your superuser account.
+    - **5.5.2 Check Models:** Verify 'Core' section appears in admin with 'Visualization types' and 'Visualization projects'.
+    - **5.5.3 Add Content:**
+        - Create 1-2 sample `VisualizationType` entries (e.g., '3D Model', 'Video').
+        - Create 1-2 sample `VisualizationProject` entries. Test the admin interface: fill title (slug should auto-populate), add description, select type, optionally assign owner, upload a test image using the `image` field, paste placeholder embed code. Save the entries.
+    - **5.5.4 Check Admin Display:** Go to the 'Visualization projects' list view in the admin. Confirm the `list_display` columns appear, the filters work, the search bar works, and the date hierarchy is present.
+- [ ] **5.6 Version Control Checkpoint:** Stage all changes (models.py, admin.py, settings.py updates, migrations files, requirements.txt update). Generate a Conventional Commit message (e.g., "feat(core): Define Visualization models and configure Django admin interface"). Await user confirmation to commit.
+
+---
+
+**Phase 6: Enhance AI Assistant Capabilities (Memory & Tools)**
+
+*AI Assistant Guidance: This phase focuses on upgrading the AI assistant by implementing a persistent memory system and integrating relevant Model Context Protocol (MCP) servers to improve context retention and provide access to external tools. Follow instructions carefully regarding file creation, configuration, and rule definition.*
+
+- [ ] **6.1 Implement Memory Bank System (Rules-Based Approach):**
+    - **6.1.1 Create Structure:** Create directory `memory-bank/` at root. Create initial Markdown files inside: `project_brief.md`, `active_context.md`, `progress_log.md`. *(Justification: Establishes persistent context store).*
+    - **6.1.2 Populate `project_brief.md`:** Draft content summarizing project goals, audience, core features, tech stack (Django, etc.), constraints. *Request AI assistance if needed.*
+    - **6.1.3 Populate `active_context.md`:** Initialize: "Completed Phase 5 (DB Models/Admin). Starting Phase 6 (Memory/Tools Enhancement). Next: 6.1.4."
+    - **6.1.4 Populate `progress_log.md`:** Initialize: "Phase 1-5 completed: Backend, Frontend structure, Content Placeholders, Initial Styling/Nav/Auth Prep, DB Models & Admin setup done."
+    - **6.1.5 Create Memory Bank Rule:** Create file `.cursor/rules/core/01_memory_bank_protocol.mdc`.
+    - **6.1.6 Populate Memory Rule:** Add rules for using memory bank:
+        - Guideline: "ALWAYS read @file:memory-bank/project_brief.md, @file:memory-bank/active_context.md, @file:memory-bank/progress_log.md at start of complex tasks/sessions."
+        - Guideline: "Update @file:memory-bank/active_context.md with focus/next steps after significant actions."
+        - Guideline: "Log major completions/errors/decisions in @file:memory-bank/progress_log.md."
+        - Guideline: Define basic Plan/Act mode distinction.
+        - Set `ruleType: alwaysApply: true`.
+    - **6.1.7 Update Core Protocol:** Modify @file:.cursor/rules/00_core_assistant_protocol.mdc to add: "Actively use and maintain the memory system defined in @file:.cursor/rules/core/01_memory_bank_protocol.mdc."
+
+- [ ] **6.2 Setup GitHub MCP Server:**
+    - **6.2.1 Create/Update `mcp.json`:** Create `.cursor/mcp.json` if non-existent. Add `mcpServers` structure.
+    - **6.2.2 Configure GitHub MCP:** Add GitHub MCP config block to `mcp.json`. Reference official MCP/GitHub server docs for `command`, `args`, `env` (e.g., need for `GITHUB_TOKEN`).
+    - **6.2.3 Update `.env.example`:** Add `GITHUB_TOKEN=` placeholder. Note requirements in comments.
+    - **6.2.4 Verify Installation:** Run necessary `npx` or install steps for GitHub MCP server. Report status.
+    - **6.2.5 Create GitHub MCP Rule:** Create file `.cursor/rules/tools/github_mcp.mdc`.
+    - **6.2.6 Populate Rule:** Add rules for GitHub MCP usage: "Use for read operations (status, branches) when asked. Use for write operations (commit, push, PR) ONLY when explicitly confirmed by user." Set `ruleType: agent-requested`, `description: Interact with the GitHub repository`.
+
+- [ ] **6.3 Setup Browser Tools MCP Server (`AgentDeskAI/browser-tools-mcp`):**
+    - **6.3.1 Configure Browser Tools MCP:** Add `browser-tools-mcp` config block to `mcp.json`. Reference `@web https://github.com/AgentDeskAI/browser-tools-mcp` for `command` (likely `npx -y @agentdesk/browser-tools-mcp`), `args`, `env`.
+    - **6.3.2 Verify Installation:** Run necessary install steps. Report status.
+    - **6.3.3 Create Browser Tools Rule:** Create file `.cursor/rules/tools/browser_tools_mcp.mdc`.
+    - **6.3.4 Populate Rule:** Add rules for Browser Tools MCP usage: "Use when asked to verify frontend rendering on a specific URL, check console errors, inspect layout, or scrape simple content. State URL and action. Avoid complex interactions without confirmation." Set `ruleType: agent-requested`, `description: Interact with web pages using browser automation`.
+
+- [ ] **6.4 Update Core Protocol (Tools):** Modify @file:.cursor/rules/00_core_assistant_protocol.mdc: "Utilize configured MCP servers (GitHub, Browser Tools) per rules in @file:.cursor/rules/tools/ when relevant or requested."
+
+- [ ] **6.5 Verification & Testing:**
+    - **6.5.1 Memory Test:** Ask AI to recall info from `project_brief.md`. Verify response.
+    - **6.5.2 GitHub MCP Test:** Ask AI: "Using GitHub MCP, what is the current Git branch status?" Verify attempt. *(May require token setup).*
+    - **6.5.3 Browser Tools Test:** Ask AI: "Using Browser Tools MCP, access `http://127.0.0.1:8000` (once running) and list text content inside the `<footer>`." Verify attempt. *(May require server running).*
+- [ ] **6.6 Version Control Checkpoint:** Stage all changes (`memory-bank/`, `mcp.json`, new rule files, `.env.example` updates, protocol update). Generate commit message (e.g., "feat: Implement Memory Bank system & configure GitHub/Browser Tools MCPs"). Await confirmation to commit.
 
 ---
 
