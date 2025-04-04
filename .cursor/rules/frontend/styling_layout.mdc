@@ -31,13 +31,15 @@ These rules govern the structure and presentation of the frontend components. Th
 
 ## 2. CSS Styling
 
-*   **Initial Approach:** Use plain CSS in @file:static/css/style.css.
-*   **Future Framework:** We anticipate potentially using a utility-first framework like **Tailwind CSS** later for more efficient styling. If/when adopted, specific rules for Tailwind will be added here.
-*   **Naming Convention (if not using Tailwind):** If writing custom CSS, strongly consider using the **BEM (Block, Element, Modifier)** naming convention (e.g., `.card__title--highlighted`) for clarity and maintainability until a framework is chosen.
+*   **Framework:** We are using the **Tailwind CSS** utility-first framework for all styling.
+*   **Configuration:** Tailwind is configured via @file:tailwind.config.js and @file:postcss.config.js. Refer to @file:.cursor/rules/frontend/03_tailwind_config.mdc for setup details.
+*   **Build Process:** Styles are compiled from @file:static/css/input.css to @file:static/css/output.css using the `npm run build:css` command (or the watcher).
+*   **Usage:** Apply utility classes directly within HTML templates (@glob:"templates/**/*.html"). Avoid writing extensive custom CSS files unless absolutely necessary for complex components not easily achievable with utilities.
+*   **Consistency:** Adhere to the design system defined in `tailwind.config.js` (colors, spacing, fonts) for consistency.
 
 ## 3. Client-Side Scripting (JavaScript)
 
-*   **Initial Approach:** Write **vanilla JavaScript** in @file:static/js/script.js for any necessary basic interactions.
+*   **Initial Approach:** Write **vanilla JavaScript** in @file:static/js/script.js for any necessary basic interactions (like the mobile menu toggle already implemented in `base.html`).
 *   **Avoid Frameworks Initially:** Do not introduce complex JS frameworks (React, Vue, etc.) or heavy libraries (like jQuery) without explicit discussion and agreement based on feature requirements.
 *   **Minimalism:** Only add JavaScript when essential for user experience; prefer server-side rendering and standard HTML/CSS solutions where possible.
 
