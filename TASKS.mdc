@@ -150,5 +150,58 @@ alwaysApply: true
 
 ---
 
+**Phase 5: Enhance AI Assistant Capabilities (Memory & Core Tools)**
+
+*AI Assistant Guidance: This phase upgrades the AI assistant with a persistent memory system and integrates essential MCP servers (GitHub, Browser Tools) to improve context, code management, and future verification capabilities. Follow instructions carefully regarding file creation, configuration, and rule definition.*
+
+- [ ] **5.1 Implement Memory Bank System (Rules-Based Approach):**
+    - **5.1.1 Create Structure:** Create the directory `memory-bank/` at the project root. Create initial Markdown files inside: `project_brief.md`, `active_context.md`, `progress_log.md`. *(Justification: Provides foundational persistent context as per memoryBank research).*
+    - **5.1.2 Populate `project_brief.md`:** Draft content summarizing project goals, target audience, core features (visualization showcase, embeds), tech stack choices (once made), and key constraints. *Request AI assistance if needed.*
+    - **5.1.3 Populate `active_context.md`:** Initialize with current state: "Completed Phase 4 (Initial Styling/Nav/Auth Prep). Starting Phase 5 (Memory/Tools Enhancement). Next: 5.1.4."
+    - **5.1.4 Populate `progress_log.md`:** Initialize with summary: "Phase 1-4 completed: Backend scaffolded (Django), Frontend structure established, basic layout/content placeholders implemented, initial styling applied, navigation functional, auth structure prepped."
+    - **5.1.5 Create Memory Bank Rule:** Create file `.cursor/rules/core/01_memory_bank_protocol.mdc`.
+    - **5.1.6 Populate Memory Rule:** Add rules instructing AI on using the memory bank:
+        - Guideline: "ALWAYS read @file:memory-bank/project_brief.md, @file:memory-bank/active_context.md, @file:memory-bank/progress_log.md at the start of complex tasks or new sessions."
+        - Guideline: "Update @file:memory-bank/active_context.md with current focus/next steps after significant actions."
+        - Guideline: "Log major completions, errors, or decisions in @file:memory-bank/progress_log.md."
+        - Guideline: Define basic "Plan Mode" vs "Act Mode" distinction (Plan: strategy focus, update active_context; Act: execute task, update progress_log & active_context).
+        - Set `ruleType: alwaysApply: true` for persistence.
+    - **5.1.7 Update Core Protocol:** Modify @file:.cursor/rules/00_core_assistant_protocol.mdc to add: "Actively use and maintain the memory system defined in @file:.cursor/rules/core/01_memory_bank_protocol.mdc."
+
+- [ ] **5.2 Setup GitHub MCP Server:**
+    - **5.2.1 Create/Update `mcp.json`:** Create `.cursor/mcp.json` if it doesn't exist. Add the `mcpServers` structure.
+    - **5.2.2 Configure GitHub MCP:** Add the configuration block for the GitHub MCP server to `mcp.json`. Refer to official MCP documentation or `@web https://github.com/modelcontextprotocol/servers/tree/main/src/github` for the exact `command`, `args`, and potentially needed `env` variables (like `GITHUB_TOKEN`).
+    - **5.2.3 Update `.env.example`:** Add `GITHUB_TOKEN=` placeholder to @file:.env.example. Add a note that a personal access token with appropriate repo permissions is required in the actual `.env`.
+    - **5.2.4 Verify Installation (If needed):** Run any necessary `npx` or install commands for the GitHub MCP server. Report success/failure.
+    - **5.2.5 Create GitHub MCP Rule:** Create file `.cursor/rules/tools/github_mcp.mdc`.
+    - **5.2.6 Populate Rule:** Add rules for GitHub MCP usage:
+        - Guideline: "Use GitHub MCP for read operations (checking status, branches, history) when requested."
+        - Guideline: "Use GitHub MCP for write operations (commit, push, create PR) **ONLY** when explicitly instructed and confirmed by the user."
+        - Set `ruleType: agent-requested` with `description: Interact with the GitHub repository`.
+
+- [ ] **5.3 Setup Browser Tools MCP Server (`AgentDeskAI/browser-tools-mcp`):**
+    - **5.3.1 Configure Browser Tools MCP:** Add the configuration block for `browser-tools-mcp` to `.cursor/mcp.json`. Refer to `@web https://github.com/AgentDeskAI/browser-tools-mcp` for the required `command` (likely `npx -y @agentdesk/browser-tools-mcp`) and `args`. Check if any specific `env` variables are needed.
+    - **5.3.2 Verify Installation (If needed):** Run any necessary installation commands. Report success/failure.
+    - **5.3.3 Create Browser Tools Rule:** Create file `.cursor/rules/tools/browser_tools_mcp.mdc`.
+    - **5.3.4 Populate Rule:** Add rules for Browser Tools MCP usage:
+        - Guideline: "Use Browser Tools MCP when asked to: verify frontend rendering on a specific URL (local dev server or staging), check for JavaScript console errors, inspect basic layout elements, or scrape simple text content from a page."
+        - Guideline: "State the URL you are accessing and the specific action (e.g., 'Checking console errors on localhost:8000')."
+        - Guideline: "Do not attempt complex form submissions or interactions unless specifically instructed and confirmed."
+        - Set `ruleType: agent-requested` with `description: Interact with web pages using browser automation tools`.
+
+- [ ] **5.4 Update Core Protocol (Tools):** Modify @file:.cursor/rules/00_core_assistant_protocol.mdc to acknowledge the *specific* MCP tools available: "Utilize configured MCP servers (GitHub, Browser Tools) for relevant tasks as defined in their specific rules (@file:.cursor/rules/tools/...) when appropriate or requested."
+
+- [ ] **5.5 Verification & Testing:**
+    - **5.5.1 Memory Test:** Ask AI to recall information from `project_brief.md`. Verify correct retrieval.
+    - **5.5.2 GitHub MCP Test:** Ask AI: "Using the GitHub MCP, what is the current Git branch name and its status?" Verify it attempts to use the tool. *(May require GITHUB_TOKEN setup).*
+    - **5.5.3 Browser Tools Test (Deferred):** Plan to test this *after* Phase 3 is complete and the dev server can display the homepage. Task for later: "Using Browser Tools MCP, access `http://127.0.0.1:8000` (once running) and describe the text content inside the `<header>` element."
+
+- [ ] **5.6 Version Control Checkpoint:** Stage all changes (`memory-bank/`, `mcp.json`, new rule files, `.env.example` updates, core protocol update). Generate commit message (e.g., "feat: Implement Memory Bank system & configure GitHub/Browser Tools MCPs"). Await confirmation to commit.
+
+---
+
+
+
+
 **(Further Phases: Styling with Tailwind/CSS, Authentication, Database Models, Deployment, AI Features will follow)**
 

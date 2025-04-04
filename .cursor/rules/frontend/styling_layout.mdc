@@ -1,9 +1,9 @@
 ---
 description: 
-globs: "templates/**/*.html", "static/css/**/*.css", "static/js/**/*.js"
+globs: **/static/js/**/*.js,**/templates/**/*.html,**/static/css/**.css
 alwaysApply: false
 ---
- ---
+---
 description: Rules for frontend layout, styling (CSS), and client-side scripting (JS).
 globs: ["templates/**/*.html", "static/css/**/*.css", "static/js/**/*.js"]
 tags: ["frontend", "css", "javascript", "html", "layout", "style"]
@@ -31,4 +31,4 @@ These rules govern the structure and presentation of the frontend components. Th
 *   **Avoid Frameworks Initially:** Do not introduce complex JS frameworks (React, Vue, etc.) or heavy libraries (like jQuery) without explicit discussion and agreement based on feature requirements.
 *   **Minimalism:** Only add JavaScript when essential for user experience; prefer server-side rendering and standard HTML/CSS solutions where possible.
 
----
+--- 
