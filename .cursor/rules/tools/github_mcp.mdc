@@ -1,0 +1,17 @@
+---
+description: Rules for interacting with the GitHub repository via MCP.
+globs: [] # Apply only when agent requests
+tags: ["tools", "mcp", "github", "git"]
+ruleType: agent-requested
+---
+
+# GitHub MCP Usage Rules
+
+This rule governs the use of the GitHub MCP server (`@modelcontextprotocol/server-github`), configured in @file:.cursor/mcp.json.
+
+**Core Guidelines:**
+
+1.  **Read Operations:** Use for read-only operations (e.g., `git status`, list branches, view history) when requested to understand repository state.
+2.  **Write Operations:** Use for write operations (e.g., commit, push, create branch/PR) **ONLY** when explicitly instructed and after user confirmation of the exact action.
+3.  **Commit Message Approval:** Before using the MCP to commit changes, always present the generated commit message (following Conventional Commits format) to the user for approval.
+4.  **Token Requirement:** Remind the user that a `GITHUB_TOKEN` environment variable (Personal Access Token with repo scope) is required in the `.env` file for write operations and potentially for accessing private repositories. 

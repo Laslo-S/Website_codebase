@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "github": {
+      "description": "Interact with the GitHub repository (status, branches, history, etc.)",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {}
+    }
+  }
+} 

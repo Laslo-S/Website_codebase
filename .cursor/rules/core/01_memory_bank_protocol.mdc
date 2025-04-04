@@ -1,0 +1,53 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Defines how the AI assistant should utilize the memory bank files.
+globs: ["**/*"]
+priority: 100 # Highest priority to ensure memory is always considered.
+tags: ["core", "memory", "protocol"]
+ruleType: alwaysApply: true
+---
+
+# Memory Bank Protocol
+
+This protocol governs the use of the persistent memory files located in the @file:memory-bank/ directory.
+
+**Core Guideline:** ALWAYS consult the memory bank files at the start of complex tasks, new development phases, or resuming work after a break. This ensures continuity and alignment with the established project context.
+
+**File Usage & Context Loading:**
+At the start of complex tasks, new phases, or session resumption, ALWAYS read context from:
+1.  @file:memory-bank/project_brief.md (Overall goals, features)
+2.  @file:memory-bank/active_context.md (Immediate state, focus, next step)
+3.  @file:memory-bank/progress.md (Review past progress/decisions)
+4.  @file:memory-bank/system_patterns.md (Architectural patterns)
+5.  @file:memory-bank/tech_context.md (Tech stack details)
+
+**Updating Memory Files:**
+
+*   **@file:memory-bank/active_context.md:** Update *after* planning or completing a significant action. Detail `Status`, `Current Focus`, and `Next Step` (referencing @file:TASKS.mdc task number).
+*   **@file:memory-bank/progress.md:** Add concise entries *after* completing major milestones (like a Phase) or resolving significant errors.
+*   Other files (`project_brief.md`, `system_patterns.md`, `tech_context.md`) should be updated less frequently, only when major changes occur.
+
+**Operational Modes:**
+
+*   **Plan Mode (e.g., "plan task X.Y"):**
+    1.  Read relevant memory files (all listed under Context Loading).
+    2.  Analyze requirements from memory, task list, and user input.
+    3.  Outline the steps needed to complete the task.
+    4.  Update `@file:memory-bank/active_context.md` with the plan (e.g., "Focus: Planning Task X.Y. Steps outlined. Next Step: Await confirmation / Begin step X.Y.1").
+    5.  Present the plan and await user confirmation before acting.
+*   **Act Mode (e.g., "implement task X.Y.Z"):**
+    1.  Read relevant memory files (especially `@file:memory-bank/active_context.md` to confirm focus).
+    2.  Execute the specific step (code edits, tool calls, etc.).
+    3.  Report the outcome (success/failure, errors).
+    4.  If a milestone is reached (e.g., task or sub-task complete), log it in `@file:memory-bank/progress.md`.
+    5.  Update `@file:memory-bank/active_context.md` with the new status and the *next* step (e.g., "Status: Completed X.Y.Z. Current Focus: Phase X. Next Step: X.Y.(Z+1)").
+    6.  If an error occurs, log it in `@file:memory-bank/progress.md` and update `@file:memory-bank/active_context.md` to reflect the need for debugging or a change in plan. 

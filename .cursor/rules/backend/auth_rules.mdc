@@ -1,9 +1,4 @@
 ---
-description: Defines standards and practices for user authentication, authorization, and account management.
-globs: 
-alwaysApply: false
----
- ---
 # Rule Description: Defines standards and practices for user authentication, authorization, and account management.
 Description: Authentication & Account Management Rules
 priority: 5 # Higher priority than core protocol for auth-specific tasks.
@@ -56,4 +51,4 @@ This document outlines the established patterns for handling user accounts, logi
 *   **Customizing User Pages:** To create a unique layout for a user, add a new HTML file named `<username>.html` inside the `templates/accounts/user_templates/` directory. This template will automatically be picked up by `UserPageView`.
 *   **Adding User Data:** To display user-specific data (e.g., projects), modify the `get_context_data` method within `UserPageView` (@file:apps/accounts/views.py) to query and add relevant data to the context. This context data will be available to *both* the default and any custom user templates.
 *   **Permissions:** For features beyond simple page access, utilize Django's permission system (assigning permissions via the Admin interface and checking them in views using decorators or mixins like `PermissionRequiredMixin`).
-*   **Password Management:** Use the built-in password reset flow (requires configuring email settings later) or the Admin interface for password changes. Never store plain-text passwords.
+*   **Password Management:** Use the built-in password reset flow (requires configuring email settings later) or the Admin interface for password changes. Never store plain-text passwords. 

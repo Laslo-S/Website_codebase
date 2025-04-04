@@ -1,0 +1,32 @@
+---
+description: Rules for interacting with web pages via AgentDesk Browser Tools MCP
+globs: 
+alwaysApply: false
+---
+---
+description: Rules for interacting with web pages via AgentDesk Browser Tools MCP.
+globs: [] # Apply only when agent requests
+tags: ["tools", "mcp", "browser", "frontend"]
+ruleType: agent-requested
+---
+
+# AgentDesk Browser Tools MCP Usage Rules
+
+This rule governs the use of the AgentDesk Browser Tools MCP server (`@agentdeskai/browser-tools-mcp`), configured in @file:.cursor/mcp.json.
+
+**Prerequisites:**
+*   Requires the separate `@agentdeskai/browser-tools-server` process to be running (`npx @agentdeskai/browser-tools-server@latest` in a separate terminal).
+*   Requires the BrowserToolsMCP Chrome Extension to be installed and enabled.
+
+**Core Guidelines:**
+
+1.  **Functionality:** Use when asked to perform actions on a web page, such as:
+    *   Verify rendering of specific elements.
+    *   Check for JavaScript console errors.
+    *   Inspect network requests (XHR).
+    *   Analyze DOM elements.
+    *   Capture screenshots.
+    *   Run audits (Accessibility, Performance, SEO, Best Practices, NextJS).
+2.  **Context:** Always state the target URL and the specific action being performed (e.g., 'Accessing http://127.0.0.1:8000 to check for console errors', 'Running accessibility audit on current page').
+3.  **Debugging/Verification:** Useful for frontend debugging and verification.
+4.  **Confirmation:** Use primarily for read/inspection tasks unless write actions (like form filling) are explicitly confirmed by the user. 
