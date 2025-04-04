@@ -19,10 +19,12 @@
             </div>
             {# Main Navigation Links #}
             <div class="hidden md:flex items-center space-x-6">
-                <a href="{% url 'core:home' %}#scans" class="text-gray-600 hover:text-blue-700">3D Scans</a>
-                <a href="{% url 'core:home' %}#visualizations" class="text-gray-600 hover:text-blue-700">Visualizations</a>
-                <a href="{% url 'core:home' %}#stills" class="text-gray-600 hover:text-blue-700">Still Images</a>
-                <a href="{% url 'core:home' %}#news" class="text-gray-600 hover:text-blue-700">News</a>
+                {# Project Type Pages #}
+                <a href="{% url 'core:scan_list' %}" class="text-gray-600 hover:text-blue-700">3D Scans</a>
+                <a href="{% url 'core:video_list' %}" class="text-gray-600 hover:text-blue-700">Visualizations</a>
+                <a href="{% url 'core:still_list' %}" class="text-gray-600 hover:text-blue-700">Still Images</a>
+                {# Other Static Pages #}
+                {# <a href="{% url 'core:home' %}#news" class="text-gray-600 hover:text-blue-700">News</a> #} {# Keep or remove news link? #}
                 <a href="{% url 'core:about' %}" class="text-gray-600 hover:text-blue-700">About</a>
                 <a href="{% url 'core:contact' %}" class="text-gray-600 hover:text-blue-700">Contact</a>
             </div>
@@ -53,10 +55,12 @@
         </nav>
          {# Mobile menu - hidden by default, needs JS to toggle #}
         <div id="mobile-menu" class="md:hidden hidden bg-white py-2">
-            <a href="{% url 'core:home' %}#scans" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">3D Scans</a>
-            <a href="{% url 'core:home' %}#visualizations" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Visualizations</a>
-            <a href="{% url 'core:home' %}#stills" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Still Images</a>
-            <a href="{% url 'core:home' %}#news" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">News</a>
+            {# Project Type Pages #}
+            <a href="{% url 'core:scan_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">3D Scans</a>
+            <a href="{% url 'core:video_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Visualizations</a>
+            <a href="{% url 'core:still_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Still Images</a>
+            {# Other Static Pages #}
+            {# <a href="{% url 'core:home' %}#news" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">News</a> #}
             <a href="{% url 'core:about' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">About</a>
             <a href="{% url 'core:contact' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Contact</a>
             <hr class="my-2">

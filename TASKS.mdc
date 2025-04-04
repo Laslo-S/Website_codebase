@@ -162,68 +162,44 @@ alwaysApply: true
     - [X] **4.9.4 Update Base Template URLs:** Fix `{% url %}` tags in `base.html` and `login.html` to use `accounts:login`/`accounts:logout`.
 - [X] **4.10 Secure User-Specific Pages:**
     - [X] **4.10.1 Add Access Control:** Add `LoginRequiredMixin` and `dispatch` check to `UserPageView` to restrict access to owner or staff.
-- [ ] **4.11 Version Control Checkpoint:** Stage all changes from Phase 4 (styling, templates, views, urls, settings updates, new rule files). Generate commit message (e.g., "feat: Implement Tailwind styling, navigation, auth structure, user pages, and admin customization"). Await user confirmation to commit.
+- [X] **4.11 Version Control Checkpoint:** Staged and committed Phase 4 changes.
 
 ---
 
-**Phase 5: Database Models & Content Management**
+**Phase 5: Refactor Visualization Types & Display**
 
-*AI Assistant Guidance: This phase defines the core database models for the visualization content (projects, types) and integrates them with the Django admin for easy management. Ensure models align with project goals and admin interface is user-friendly for content updates.*
+*AI Assistant Guidance: This phase refactors the project structure to use hardcoded visualization types with dedicated pages, removing the previous database model approach and updating associated views, templates, and navigation.*
 
-- [ ] **5.1 Define Core Models (`apps/core/models.py`):**
-    - **5.1.1 `VisualizationType` Model:** Create a simple model in `apps/core/models.py`.
-        - Fields: `name` (CharField, unique=True, help_text="Category name, e.g., '3D Scan', 'Video', 'AI Still Image'").
-        - Add `__str__` method returning `self.name`.
-    - **5.1.2 `VisualizationProject` Model:** Create the main content model in `apps/core/models.py`.
-        - Fields:
-            - `title`: CharField (max_length=200)
-            - `description`: TextField (blank=True)
-            - `visualization_type`: ForeignKey to `VisualizationType`, `on_delete=models.SET_NULL`, `null=True`, `blank=True`. *(Allow type to be optional initially)*
-            - `embed_code`: TextField (blank=True, help_text="Paste Sketchfab/Vimeo iframe code here.")
-            - `image`: ImageField (upload_to='visualizations/', blank=True, help_text="Upload static image if not using embed code.") *(Requires Pillow)*
-            - `slug`: SlugField (max_length=255, unique=True, help_text="Unique URL-friendly identifier, auto-generated from title.")
-            - `owner`: ForeignKey to `User` (`django.contrib.auth.models.User`), `on_delete=models.SET_NULL`, `null=True`, `blank=True`, help_text="Optional: Link to the user who owns/created this." *(Using SET_NULL means if a user is deleted, the project remains but owner is cleared).*
-            - `is_public`: BooleanField (default=True, help_text="Check if visible on the public site.")
-            - `created_at`: DateTimeField (auto_now_add=True)
-            - `updated_at`: DateTimeField (auto_now=True)
-        - Add `__str__` method returning `self.title`.
-        - Add a `save` method override to automatically generate the `slug` from the `title` if it's empty, using `django.utils.text.slugify`.
-- [ ] **5.2 Configure Media File Handling:**
-    - **5.2.1 Install Pillow:** Add `Pillow` to `requirements.txt`. Run `pip install Pillow` in the activated `.venv`.
-    - **5.2.2 Configure Settings:** In `config/settings.py`:
-        - Define `MEDIA_URL = '/media/'`.
-        - Define `MEDIA_ROOT = BASE_DIR / 'media'`. Ensure the `media` directory exists at the project root (create if not).
-    - **5.2.3 Update Project URLs:** In `config/urls.py`, add the pattern to serve media files during development (inside the `if settings.DEBUG:` block):
-        ```python
-        from django.conf import settings
-        from django.conf.urls.static import static
-
-        # ... other url patterns ...
-
-        if settings.DEBUG:
-            urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-        ```
-        *(Ensure `django.conf` and `django.conf.urls.static` are imported).*
-- [ ] **5.3 Database Migrations:**
-    - **5.3.1 Make Migrations:** Run `python manage.py makemigrations core`. Verify migration file(s) are created in `apps/core/migrations/`.
-    - **5.3.2 Migrate:** Run `python manage.py migrate`. Verify successful application.
-- [ ] **5.4 Register & Enhance Models in Admin (`apps/core/admin.py`):**
-    - **5.4.1 Basic Registration:** Import `VisualizationType`, `VisualizationProject` from `.models`. Register both with `admin.site.register()`.
-    - **5.4.2 Enhance `VisualizationProjectAdmin`:** Create a custom `ModelAdmin` class `VisualizationProjectAdmin(admin.ModelAdmin)`:
-        - Define `list_display = ('title', 'visualization_type', 'owner', 'is_public', 'created_at')`.
-        - Define `list_filter = ('visualization_type', 'is_public', 'owner')`.
-        - Define `search_fields = ('title', 'description')`.
-        - Define `prepopulated_fields = {'slug': ('title',)}`.
-        - Define `date_hierarchy = 'created_at'`.
-    - **5.4.3 Register with Custom Admin:** Unregister the basic `VisualizationProject` registration and re-register it using the custom admin class: `admin.site.register(VisualizationProject, VisualizationProjectAdmin)`. Keep the basic registration for `VisualizationType`.
-- [ ] **5.5 Verification in Admin Interface:**
-    - **5.5.1 Run Server & Access Admin:** Start the dev server. Log in to `/admin/` using your superuser account.
-    - **5.5.2 Check Models:** Verify 'Core' section appears in admin with 'Visualization types' and 'Visualization projects'.
-    - **5.5.3 Add Content:**
-        - Create 1-2 sample `VisualizationType` entries (e.g., '3D Model', 'Video').
-        - Create 1-2 sample `VisualizationProject` entries. Test the admin interface: fill title (slug should auto-populate), add description, select type, optionally assign owner, upload a test image using the `image` field, paste placeholder embed code. Save the entries.
-    - **5.5.4 Check Admin Display:** Go to the 'Visualization projects' list view in the admin. Confirm the `list_display` columns appear, the filters work, the search bar works, and the date hierarchy is present.
-- [ ] **5.6 Version Control Checkpoint:** Stage all changes (models.py, admin.py, settings.py updates, migrations files, requirements.txt update). Generate a Conventional Commit message (e.g., "feat(core): Define Visualization models and configure Django admin interface"). Await user confirmation to commit.
+- [X] **5.1 Modify Models for Hardcoded Types (`apps/core/models.py`):**
+    - [X] **5.1.1 Remove `VisualizationType` Model:** Delete the `VisualizationType` model.
+    - [X] **5.1.2 Update `VisualizationProject` Model:** Change the `type` field to `project_type` (CharField) with predefined choices (`scan`, `video`, `still`).
+- [X] **5.2 Update Admin (`apps/core/admin.py`):**
+    - [X] **5.2.1 Remove `VisualizationTypeAdmin`:** Delete the admin registration for the old model.
+    - [X] **5.2.2 Update `VisualizationProjectAdmin`:** Modify list display, filters, and fieldsets to use `project_type`.
+- [X] **5.3 Update Core Views (`apps/core/views.py`):**
+    - [X] **5.3.1 Update `HomePageView`:** Remove the project query logic.
+    - [X] **5.3.2 Add `BaseProjectListView`:** Create a base list view for common functionality.
+    - [X] **5.3.3 Add Specific List Views:** Create `ScanListView`, `VideoListView`, `StillListView` inheriting from base and filtering by `project_type`.
+- [X] **5.4 Update Core URLs (`apps/core/urls.py`):**
+    - [X] **5.4.1 Add List View URLs:** Add URL patterns for `/scans/`, `/videos/`, `/images/` pointing to the new list views.
+- [X] **5.5 Create List Page Templates (`templates/core/`):**
+    - [X] **5.5.1 Create Base List Template:** Create `_project_list_base.html` with grid, pagination, and card include.
+    - [X] **5.5.2 Create Card Partial:** Create `_project_card.html` for displaying a single project.
+    - [X] **5.5.3 Create Specific List Templates:** Create `project_list_scans.html`, `project_list_videos.html`, `project_list_stills.html` extending the base.
+- [X] **5.6 Update Base Navigation (`templates/base.html`):**
+    - [X] **5.6.1 Update Links:** Change header/mobile nav links to point to new list view URL names (`core:scan_list`, etc.).
+- [X] **5.7 Update Homepage Template (`templates/core/home.html`):**
+    - [X] **5.7.1 Remove Project Loop:** Delete the old "Featured Work" section.
+    - [X] **5.7.2 Add Static Content:** Add introductory text and links to the new list pages.
+- [X] **5.8 Database Migrations:**
+    - [X] **5.8.1 Delete Old Data:** (User confirmed completed) Ensure old projects/types are deleted via admin before migrating.
+    - [X] **5.8.2 Make Migrations:** Run `makemigrations core`.
+    - [X] **5.8.3 Migrate:** Run `migrate`.
+- [X] **5.9 Verification:**
+    - [X] **5.9.1 Check Pages:** Verify homepage, new list pages load correctly.
+    - [X] **5.9.2 Check Admin:** Verify `project_type` choice field in admin.
+    - [X] **5.9.3 Re-add & Check Content:** Re-add test projects via admin and verify they appear on the correct list pages.
+- [ ] **5.10 Version Control Checkpoint:** Stage all changes from Phase 5. Generate commit message (e.g., "refactor: Implement hardcoded visualization type pages"). Await user confirmation to commit.
 
 ---
 
@@ -232,10 +208,10 @@ alwaysApply: true
 *AI Assistant Guidance: This phase focuses on upgrading the AI assistant by implementing a persistent memory system and integrating relevant Model Context Protocol (MCP) servers to improve context retention and provide access to external tools. Follow instructions carefully regarding file creation, configuration, and rule definition.*
 
 - [ ] **6.1 Implement Memory Bank System (Rules-Based Approach):**
-    - **6.1.1 Create Structure:** Create directory `memory-bank/` at root. Create initial Markdown files inside: `project_brief.md`, `active_context.md`, `progress_log.md`. *(Justification: Establishes persistent context store).*
+    - **6.1.1 Create Structure:** Create directory `memory-bank/` at root. Create initial Markdown files inside: `project_brief.md`, `active_context.md`, `progress_log.md`.
     - **6.1.2 Populate `project_brief.md`:** Draft content summarizing project goals, audience, core features, tech stack (Django, etc.), constraints. *Request AI assistance if needed.*
-    - **6.1.3 Populate `active_context.md`:** Initialize: "Completed Phase 5 (DB Models/Admin). Starting Phase 6 (Memory/Tools Enhancement). Next: 6.1.4."
-    - **6.1.4 Populate `progress_log.md`:** Initialize: "Phase 1-5 completed: Backend, Frontend structure, Content Placeholders, Initial Styling/Nav/Auth Prep, DB Models & Admin setup done."
+    - **6.1.3 Populate `active_context.md`:** Initialize: "Completed Phase 5 (Refactor Viz Types). Starting Phase 6 (Memory/Tools Enhancement). Next: 6.1.4."
+    - **6.1.4 Populate `progress_log.md`:** Initialize: "Phase 1-5 completed: Backend, Frontend structure, Content Placeholders, Initial Styling/Nav/Auth, Viz Type Refactor done."
     - **6.1.5 Create Memory Bank Rule:** Create file `.cursor/rules/core/01_memory_bank_protocol.mdc`.
     - **6.1.6 Populate Memory Rule:** Add rules for using memory bank:
         - Guideline: "ALWAYS read @file:memory-bank/project_brief.md, @file:memory-bank/active_context.md, @file:memory-bank/progress_log.md at start of complex tasks/sessions."
@@ -269,5 +245,5 @@ alwaysApply: true
 
 ---
 
-**(Further Phases: Displaying Content, User-Specific Content Views, Advanced Styling, Deployment)**
+**(Further Phases: User-Specific Content Views, Advanced Styling, Deployment)**
 

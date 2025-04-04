@@ -1,16 +1,56 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView # Import ListView
+from .models import VisualizationProject
 
 # Create your views here.
 
 class HomePageView(TemplateView):
-    template_name = "core/home.html" # Note: Corrected path according to Django convention
+    template_name = "core/home.html"
+
+    def get_context_data(self, **kwargs):
+        # Removed project query - projects are now on dedicated pages
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = "Architectural Visualization Showcase"
+        return context
+
+# --- Views for Dedicated Project Type Pages --- 
+
+class BaseProjectListView(ListView):
+    """ Base view for listing projects of a specific type. """
+    model = VisualizationProject
+    context_object_name = 'projects' # Use 'projects' in the template loop
+    paginate_by = 9 # Show 9 projects per page (adjust as needed)
+
+    def get_queryset(self):
+        # Filter by the project_type defined in subclasses
+        # Only show public projects
+        return super().get_queryset().filter(
+            project_type=self.project_type, 
+            is_public=True
+        ).order_by('-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_title'] = "Architectural Visualization Showcase" # Example context
-        # Add other context data as needed later
+        # Add page-specific title to context
+        context['page_title'] = self.page_title
         return context
+
+class ScanListView(BaseProjectListView):
+    template_name = "core/project_list_scans.html"
+    project_type = VisualizationProject.TYPE_SCAN
+    page_title = "3D Scans"
+
+class VideoListView(BaseProjectListView):
+    template_name = "core/project_list_videos.html"
+    project_type = VisualizationProject.TYPE_VIDEO
+    page_title = "Video Visualizations"
+
+class StillListView(BaseProjectListView):
+    template_name = "core/project_list_stills.html"
+    project_type = VisualizationProject.TYPE_STILL
+    page_title = "Still Images"
+
+# --- Standard Static Pages --- 
 
 class AboutPageView(TemplateView):
     template_name = "core/about.html"

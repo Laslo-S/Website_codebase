@@ -1,0 +1,30 @@
+<div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
+    {# Display Image if available #}
+    {% if project.image %}
+        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-48 object-cover">
+    {% elif project.embed_code %}
+        {# Basic embed for card - consider a placeholder image or different styling #}
+        <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500 text-sm p-2 overflow-hidden">
+             <!-- Embed code might not render well here, showing placeholder -->
+             Embed: {{ project.get_project_type_display }}
+        </div>
+    {% else %}
+        {# Placeholder if no image or embed #}
+        <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+            <span class="text-gray-400">No preview available</span>
+        </div>
+    {% endif %}
+
+    <div class="p-6 flex flex-col flex-grow">
+        <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
+        <p class="text-sm text-gray-500 mb-2">Type: {{ project.get_project_type_display }}</p> {# Use display value #}
+        {% if project.owner %}
+            <p class="text-sm text-gray-500 mb-4">By: {{ project.owner.username }}</p>
+        {% endif %}
+
+        <p class="text-gray-700 mb-4 flex-grow">{{ project.description|linebreaksbr|truncatewords:25 }}</p>
+
+        {# Add link to detail page later if needed #}
+        {# <a href="#" class="text-blue-600 hover:underline mt-auto">View Details</a> #}
+    </div>
+</div> 
