@@ -22,8 +22,11 @@ from django.conf.urls.static import static # Import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("apps.core.urls", namespace="core")),
-    path("accounts/", include("apps.accounts.urls", namespace="accounts")),
+    # path("ckeditor/", include('ckeditor_uploader.urls')), # No longer needed for CKEditor 5
+    path("", include(("apps.core.urls", "core"), namespace="core")),
+    path("accounts/", include(("apps.accounts.urls", "accounts"), namespace="accounts")),
+    path("news/", include(("apps.news.urls", "news"), namespace="news")),
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"), # Add CKEditor 5 URLs
 ]
 
 # Add static file serving helper for development

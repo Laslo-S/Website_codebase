@@ -1,0 +1,19 @@
+/* static/css/admin_overrides.css */
+/* Force dark text color inside CKEditor 5 editable area */
+
+.ck.ck-editor__main > .ck-editor__editable {
+    color: #212529 !important; /* Use a standard dark text color, !important to override theme styles */
+    background-color: #fff !important; /* Ensure background remains white */
+}
+
+/* Also target common text elements inside just in case */
+.ck.ck-editor__main > .ck-editor__editable p,
+.ck.ck-editor__main > .ck-editor__editable li,
+.ck.ck-editor__main > .ck-editor__editable h1,
+.ck.ck-editor__main > .ck-editor__editable h2,
+.ck.ck-editor__main > .ck-editor__editable h3,
+.ck.ck-editor__main > .ck-editor__editable h4,
+.ck.ck-editor__main > .ck-editor__editable h5,
+.ck.ck-editor__main > .ck-editor__editable h6 {
+    color: #212529 !important;
+} 

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | {{ block.super }}{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8 text-center">{{ page_title }}</h1>
+
+    {% if posts %}
+        <div class="space-y-8">
+            {% for post in posts %}
+                {# Include a reusable card template for each post #}
+                {% include "news/_news_card.html" with post=post %}
+            {% endfor %}
+        </div>
+
+        {# Include Pagination Partial #}
+        {% include "partials/_pagination.html" %}
+
+    {% else %}
+        <p class="text-center text-gray-600">No news posts found.</p>
+    {% endif %}
+
+</div>
+{% endblock content %} 

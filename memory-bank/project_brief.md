@@ -22,4 +22,4 @@
 *   Server-Side Rendering (SSR) preferred initially.
 *   Mobile-first design approach.
 *   Low initial traffic expected.
-*   Visualization types (Scan, Video, Still) are hardcoded into the structure. 
+*   Some visualization types (Scan, Video, Still) are hardcoded into the structure. 

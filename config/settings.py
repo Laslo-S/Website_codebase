@@ -53,9 +53,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Add your apps here
+    # Third-party apps
+    # "ckeditor", # Replaced by ckeditor_5
+    # "ckeditor_uploader", # Replaced by ckeditor_5
+    "django_ckeditor_5", # Add the new CKEditor 5 app
+    # Local apps
     "apps.core",
     "apps.accounts",
+    "apps.news",
 ]
 
 MIDDLEWARE = [
@@ -145,6 +150,37 @@ STATICFILES_DIRS = [
 # Optional: Define STATIC_ROOT for production collectstatic
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Media files (User-uploaded content)
+# https://docs.djangoproject.com/en/5.2/topics/files/
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media' # Directory where uploaded files will be stored
+
+# CKEditor Configuration
+# CKEDITOR_UPLOAD_PATH = "uploads/" # Handled by CKEditor 5 package settings now, if needed
+# CKEDITOR_FILENAME_GENERATOR = 'django_ckeditor_5.utils.default_filename_generator' # Check CKEditor 5 docs for equivalent
+CKEDITOR_IMAGE_BACKEND = "pillow" # Still needed for image processing
+
+# Basic CKEditor 5 Toolbar Configuration (Example)
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+            'insertImage', 'mediaEmbed', '|',
+            'undo', 'redo'
+        ],
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'
+            ],
+            'styles': [
+                'alignLeft', 'alignCenter', 'alignRight'
+            ]
+        }
+    },
+    # Add more configurations if needed (e.g., a 'basic' toolbar)
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -153,8 +189,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Authentication settings
 # LOGIN_REDIRECT_URL = '/' # Commented out to test default fallback
 LOGOUT_REDIRECT_URL = '/' # Redirect to home page after logout (uses default LogoutView)
-
-# Media files (User-uploaded content)
-# https://docs.djangoproject.com/en/5.2/topics/files/
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media' # Directory where uploaded files will be stored

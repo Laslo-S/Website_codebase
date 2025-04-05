@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView # Import ListView
 from .models import VisualizationProject
+from apps.news.models import NewsPost # Import NewsPost
 
 # Create your views here.
 
@@ -11,6 +12,13 @@ class HomePageView(TemplateView):
         # Removed project query - projects are now on dedicated pages
         context = super().get_context_data(**kwargs)
         context['page_title'] = "Architectural Visualization Showcase"
+        # Get latest 3 published news posts
+        try:
+            context['latest_posts'] = NewsPost.objects.filter(status='published').order_by('-published_at')[:3]
+        except Exception as e:
+            # Log error maybe, but prevent homepage from crashing if blog fails
+            print(f"Error fetching latest posts: {e}") # Basic print logging
+            context['latest_posts'] = None
         return context
 
 # --- Views for Dedicated Project Type Pages --- 

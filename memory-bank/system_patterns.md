@@ -5,7 +5,7 @@ This document records key architectural decisions and established conventions fo
 ## Core Architecture
 
 *   **Framework:** Django (Python)
-*   **Approach:** Modular Monolith - Functionality is separated into distinct Django Apps within the `apps/` directory (e.g., `core`, `accounts`).
+*   **Approach:** Modular Monolith - Functionality is separated into distinct Django Apps within the `apps/` directory (e.g., `core`, `accounts`, `news`).
 *   **Rendering:** Server-Side Rendering (SSR) using Django Templates.
 *   **Database:** SQLite for development, planned PostgreSQL for production (via environment variable `DATABASE_URL`).
 
@@ -15,7 +15,7 @@ This document records key architectural decisions and established conventions fo
 *   **Applications:** Reusable Django applications are placed within the `apps/` directory.
 *   **Templates:**
     *   Base template (`base.html`) is at the root of the `templates/` directory.
-    *   App-specific templates are organized within `templates/<app_name>/`.
+    *   App-specific templates are organized within `templates/<app_name>/` (e.g., `templates/core/`, `templates/news/`).
     *   Reusable partial templates (e.g., header, footer, cards) are placed in `templates/partials/`.
     *   Standard Django auth templates reside in `templates/registration/`.
     *   Admin overrides are in `templates/admin/`.
@@ -35,15 +35,15 @@ This document records key architectural decisions and established conventions fo
     *   Use namespaces for apps (e.g., `app_name = 'core'`).
     *   Reference URLs using `reverse()` or `reverse_lazy()` in Python code and `{% url 'namespace:name' %}` in templates.
 *   **Models:** Standard Django ORM practices. Foreign keys define relationships.
-*   **Admin:** Customize `admin.py` to provide a user-friendly interface for managing models, using features like `list_display`, `list_filter`, `search_fields`, `fieldsets`, and `inlines`.
+*   **Admin:** Customize `admin.py` to provide a user-friendly interface for managing models, using features like `list_display`, `list_filter`, `search_fields`, `fieldsets`, `inlines`, and rich text editor integration (e.g., CKEditor 5 for `NewsPost.content`).
 
 ## Frontend Conventions
 
 *   **Approach:** Mobile-First Design.
 *   **Styling:** Primarily use Tailwind CSS utility classes. Custom CSS in `style.css` should be minimal.
 *   **Structure:** Use semantic HTML5 elements (`header`, `nav`, `main`, `footer`, `section`, `article`).
-*   **Partials:** Extract reusable HTML components (header, footer, cards, forms) into `templates/partials/` and use `{% include %}`.
-*   **Accessibility:** Provide `alt` text for images, `title` attributes for iframes.
+*   **Partials:** Extract reusable HTML components (header, footer, cards, forms, pagination) into `templates/partials/` and use `{% include %}`.
+*   **Accessibility:** Provide `alt` text for images, `title` attributes for iframes. Ensure sufficient color contrast (e.g., CKEditor admin fix).
 
 ## Version Control
 

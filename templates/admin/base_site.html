@@ -1,19 +1,20 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{# Override the branding block to change the header text and link #}
+{% block title %}{{ title }} | Avem3D Site Administration{% endblock %}
+
 {% block branding %}
-<div id="site-name">
-    <a href="{% url 'core:home' %}">Return to Avem3D</a> {# Link to homepage #}
-</div>
-{% if user.is_anonymous %}
-  {% include "admin/color_theme_toggle.html" %}
-{% endif %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Avem3D Site Administration</a></h1>
 {% endblock %}
 
-{# Override the nav-global block to remove the default "View site" link if desired #}
-{# Or keep it empty if you want the default behavior for the rest of the header #}
 {% block nav-global %}{% endblock %}
 
-{# Optional: Override the main page title if needed #}
-{% block title %}Avem3D Site Administration{% endblock %} 
+{# Add custom CSS for admin overrides #}
+{% block extrahead %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_overrides.css' %}">
+{% endblock %}
+
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %} 

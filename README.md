@@ -41,7 +41,8 @@ The project follows a standard Django structure with specific customizations:
 ├── .cursor/           # Cursor AI configuration (rules, MCP servers)
 ├── apps/              # Core Django application modules
 │   ├── accounts/      # User authentication, profiles, user-specific pages
-│   └── core/          # Main site functionality, project display
+│   ├── core/          # Main site functionality, project display
+│   └── news/          # Blog/News posts functionality
 ├── config/            # Django project configuration (settings, root URLs)
 ├── media/             # User-uploaded media files (e.g., project images)
 ├── memory-bank/       # AI assistant persistent memory files (Markdown)
@@ -68,6 +69,14 @@ The project follows a standard Django structure with specific customizations:
 ├── tailwind.config.js # Tailwind CSS configuration
 └── TASKS.mdc          # Project task tracking
 ```
+
+## Features
+
+*   **Visualization Display:** Separate pages for 3D Scans, Video Visualizations, and Still Images, showcasing projects managed via the Django Admin.
+*   **User Accounts:** Basic user login/logout and profile pages.
+*   **User-Specific Pages:** Dynamically generated pages for logged-in users (e.g., `/accounts/user/<username>/`), potentially showing user-specific content.
+*   **News/Blog:** A simple blog section (`/news/`) for posts managed via the Django Admin, featuring rich text editing and featured images. Latest posts are displayed on the homepage.
+*   **Django Admin:** Customized admin interface for managing users, visualization projects (including owner assignment via inlines), and news posts.
 
 ## Getting Started
 

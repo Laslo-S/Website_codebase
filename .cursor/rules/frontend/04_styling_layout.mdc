@@ -4,6 +4,11 @@ globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
 alwaysApply: false
 ---
 ---
+description: 
+globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
+alwaysApply: false
+---
+---
 description: Governs frontend structure, styling (Tailwind), and basic JS.
 globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
 tags: frontend, html, css, tailwind, javascript, style, layout
