@@ -8,16 +8,7 @@ description:
 globs: 
 alwaysApply: false
 ---
----
-description: 
-globs: 
-alwaysApply: false
----
----
-description: 
-globs: 
-alwaysApply: false
----
+
 
  # TASKS: Architectural Visualization Platform Build
 
@@ -352,91 +343,148 @@ alwaysApply: false
 
 ---
 
-**Phase 9: Implement News/Updates Section**
+**Phase 9: Implement Blog/News Section**
 
-*AI Assistant Guidance: This phase focuses on adding a News/Updates section to the site. Create a dedicated Django app, define the necessary model, set up admin management, implement list and detail views/templates, display the latest items on the homepage, and ensure the structure supports future content generation.*
+*AI Assistant Guidance: This phase focuses on adding a blog/news section to the site. Create a dedicated Django app, define the necessary model, set up admin management, implement list and detail views/templates, and integrate the latest posts onto the homepage. Ensure the structure supports potential future AI content generation.*
 
-- [X] **9.1 Create `news` App:**
-    - **9.1.1 Scaffold App:** Using the terminal, create a new Django app named `news` inside the `apps/` directory (`python manage.py startapp news apps/news`).
-    - **9.1.2 Register App:** Add `'apps.news.apps.NewsConfig'` to the `INSTALLED_APPS` list in `config/settings.py`.
-    - **9.1.3 Basic Files:** Verify the standard app files (`models.py`, `views.py`, `admin.py`, `apps.py`, `tests.py`) and a `migrations/` directory were created inside `apps/news/`.
-- [X] **9.2 Define `NewsArticle` Model (`apps/news/models.py`):**
-    - **9.2.1 Create Model:** Define a `NewsArticle` model with the following fields:
-        - `title`: CharField (max_length=200)
-        - `slug`: SlugField (max_length=255, unique=True, help_text="Unique URL-friendly identifier, auto-generated from title.")
-        - `content`: TextField (help_text="Main content of the news update.")
-        - `category`: CharField (max_length=50, blank=True, help_text="Optional category like 'Project Update', 'Technology', 'Announcement'.") *(Simple CharField instead of ForeignKey for less structure)*
-        - `featured_image`: ImageField (upload_to='news_featured/', null=True, blank=True, help_text="Optional image for the update.")
-        - `status`: CharField (max_length=10, choices=[('draft', 'Draft'), ('published', 'Published')], default='draft')
-        - `published_at`: DateTimeField (null=True, blank=True, auto-set on publish)
-        - `created_at`: DateTimeField (auto_now_add=True)
-        - `updated_at`: DateTimeField (auto_now=True)
-    - **9.2.2 Add Meta Options:** Include `class Meta:` with `ordering = ['-published_at', '-created_at']` and `verbose_name_plural = "News Articles"`.
-    - **9.2.3 String Representation:** Implement `__str__` returning `self.title`.
-    - **9.2.4 Slug & Publish Date Logic:** Override the `save` method:
-        - Automatically generate the `slug` from `title` using `slugify` if `slug` is empty.
-        - If `status` is changed to `'published'` and `published_at` is not set, set `published_at = timezone.now()`. (Requires `from django.utils import timezone`).
+- [X] **9.1 Create `news` App (Renamed from Blog):**
+    - [X] **9.1.1 Scaffold App:** Create `apps/news`.
+    - [X] **9.1.2 Register App:** Add `'apps.news.apps.NewsConfig'` to `INSTALLED_APPS`.
+    - [X] **9.1.3 Basic Files:** Verify standard app files.
+- [X] **9.2 Define `NewsPost` Model (`apps/news/models.py`):**
+    - [X] **9.2.1 Create Model:** Define fields (`title`, `slug`, `content`, `status`, `published_at`, etc.).
+    - [X] **9.2.2 Add Meta Options:** Add ordering.
+    - [X] **9.2.3 String Representation:** Implement `__str__`.
+    - [X] **9.2.4 Slug & Publish Date Logic:** Override `save` method.
+    - [X] **9.2.5 Add Featured Image Field:** Add `ImageField` for featured image.
 - [X] **9.3 Database Migrations for News:**
-    - **9.3.1 Install Pillow (if not done):** Ensure `Pillow` is in `requirements.txt` and installed.
-    - **9.3.2 Make Migrations:** Run `python manage.py makemigrations news`. Verify migration file created.
-    - **9.3.3 Migrate:** Run `python manage.py migrate`. Verify success.
+    - [X] **9.3.1 Make Migrations:** Run `makemigrations news`.
+    - [X] **9.3.2 Migrate:** Run `migrate`.
 - [X] **9.4 Configure News Admin (`apps/news/admin.py`):**
-    - **9.4.1 Import & Register:** Import `NewsArticle` from `.models`.
-    - **9.4.2 Create `NewsArticleAdmin`:** Define `NewsArticleAdmin(admin.ModelAdmin)`:
-        - `list_display = ('title', 'category', 'status', 'published_at', 'created_at')`
-        - `list_filter = ('status', 'category', 'published_at')`
-        - `search_fields = ('title', 'content', 'category')`
-        - `prepopulated_fields = {'slug': ('title',)}`
-        - `date_hierarchy = 'published_at'`
-        - Add `featured_image`, `category` to `fieldsets` or `fields`.
-    - **9.4.3 Register Model:** Register `NewsArticle` using `NewsArticleAdmin`: `admin.site.register(NewsArticle, NewsArticleAdmin)`.
-    - **9.4.4 Verification:** Test admin: create news articles (add category text, upload featured image), check filters/search.
+    - [X] **9.4.1 Import & Register:** Import `NewsPost`.
+    - [X] **9.4.2 Create `NewsPostAdmin`:** Define `ModelAdmin` with display/filter/search/etc.
+    - [X] **9.4.3 Integrate CKEditor 5:** Ensure `content` field uses CKEditor widget.
+    - [X] **9.4.4 Verification:** Verify admin functionality.
 - [X] **9.5 Implement News Views (`apps/news/views.py`):**
-    - **9.5.1 News List View:** Create `NewsListView` inheriting from `ListView`:
-        - `model = NewsArticle`
-        - `template_name = 'news/news_list.html'`
-        - `context_object_name = 'articles'`
-        - `paginate_by = 10`
-        - Override `get_queryset` for `status='published'`, ordered by `-published_at`.
-    - **9.5.2 News Detail View:** Create `NewsDetailView` inheriting from `DetailView`:
-        - `model = NewsArticle`
-        - `template_name = 'news/news_detail.html'`
-        - `context_object_name = 'article'`
-        - `slug_field = 'slug'`, `slug_url_kwarg = 'slug'`
-        - Override `get_queryset` for `status='published'`.
+    - [X] **9.5.1 News List View:** Create `NewsListView` (published posts only, pagination).
+    - [X] **9.5.2 News Detail View:** Create `NewsDetailView` (published posts only, slug lookup).
 - [X] **9.6 Implement News URLs (`apps/news/urls.py` & `config/urls.py`):**
-    - **9.6.1 Create App URLs (`apps/news/urls.py`):** Define patterns for:
-        - News list (`''`, name=`list`).
-        - News detail (`'<slug:slug>/'`, name=`detail`).
-    - **9.6.2 Include App URLs (`config/urls.py`):** Add `path('news/', include(('apps.news.urls', 'news'), namespace='news')),`.
+    - [X] **9.6.1 Create App URLs:** Define `list` and `detail` patterns.
+    - [X] **9.6.2 Include App URLs:** Add `news` app URLs to main `config/urls.py`.
 - [X] **9.7 Create News Templates (`templates/news/`):**
-    - **9.7.1 Create News List Template:** Create `templates/news/news_list.html` extending `base.html`.
-        - Loop through `articles`.
-        - Include a partial `templates/news/_news_item.html` for each article.
-        - Include pagination partial.
-    - **9.7.2 Create News Item Partial:** Create `templates/news/_news_item.html` displaying article title (linked to detail), published date, category (if any), featured image thumbnail, and content snippet.
-    - **9.7.3 Create News Detail Template:** Create `templates/news/news_detail.html` extending `base.html`. Display article title, published date, category, featured image (larger), and full content.
-- [X] **9.8 Integrate Latest News on Homepage:**
-    - **9.8.1 Modify `HomePageView` (`apps/core/views.py`):** Update `get_context_data`:
-        - Query: `latest_news = NewsArticle.objects.filter(status='published').order_by('-published_at')[:3]`
-        - Add `latest_news` to the context.
-    - **9.8.2 Update Homepage Template (`templates/core/home.html`):**
-        - Add section "Latest News & Updates".
-        - Loop through `latest_news`.
-        - Include `templates/news/_news_item.html` partial.
-        - Add link to main news page (`{% url 'news:list' %}`).
+    - [X] **9.7.1 Create News List Template:** Create `news_list.html` (extends base, loops posts, includes card, includes pagination).
+    - [X] **9.7.2 Create News Card Partial:** Create `_news_card.html` (displays title link, date, image, excerpt).
+    - [X] **9.7.3 Create News Detail Template:** Create `news_detail.html` (extends base, displays full content with image).
+- [X] **9.8 Integrate Latest Posts on Homepage:**
+    - [X] **9.8.1 Modify `HomePageView`:** Add query for latest published posts.
+    - [X] **9.8.2 Update Homepage Template:** Add "Latest News" section, loop through posts, include card partial, link to list.
 - [X] **9.9 Create News Rules:**
-    - **9.9.1 Create Rule File:** Create `.cursor/rules/apps/news_rules.mdc`.
-    - **9.9.2 Populate Rules:** Add rules defining news conventions: Model fields, status workflow, slug generation, use of Admin, CBVs, template structure, named URLs. Reference @file:.cursor/rules/backend/django_rules.mdc.
-- [ ] **9.10 Verification:**
-    - **9.10.1 Add Test Articles:** Via admin, create several NewsArticle entries (draft/published, different categories, with/without images).
-    - **9.10.2 Check News List Page:** Access `/news/`. Verify only published articles appear, ordered correctly, pagination works.
-    - **9.10.3 Check News Detail Page:** Click an item link. Verify full article content and details display. Check draft access fails.
-    - **9.10.4 Check Homepage Integration:** Access `/`. Verify "Latest News" shows correct 3 published items. Check link to main news page.
-    - **9.10.5 Report:** Confirm functionality.
-- [ ] **9.11 Documentation & Memory Update:**
-    - **9.11.1 Update `README.md`:** Explain News/Updates feature.
-    - **9.11.2 Update Memory Bank:** Update `system_patterns.md`, `tech_context.md`, `progress.md`, `active_context.md` to reflect the new `news` app and its purpose.
-- [ ] **9.12 Version Control Checkpoint:** Stage changes (new `news` app files, core view/template updates, rule file, docs/memory updates). Generate commit message (e.g., "feat(news): Implement News/Updates section with list/detail views and homepage integration"). Await confirmation to commit.
+    - [X] **9.9.1 Create Rule File:** Create `.cursor/rules/apps/news_rules.mdc`.
+    - [X] **9.9.2 Populate Rules:** Define news app conventions.
+- [X] **9.10 Verification:**
+    - [X] **9.10.1 Add Test Posts:** Create draft/published posts via admin.
+    - [X] **9.10.2 Check News List Page:** Verify filtering, ordering, pagination, links.
+    - [X] **9.10.3 Check News Detail Page:** Verify content display, draft post 404.
+    - [X] **9.10.4 Check Homepage Integration:** Verify latest posts display.
+    - [X] **9.10.5 Report:** Confirm functionality.
+- [X] **9.11 Documentation & Memory Update:**
+    - [X] **9.11.1 Update `README.md`:** Add news feature description.
+    - [X] **9.11.2 Update Memory Bank:** Add news app details to relevant files.
+- [X] **9.12 Version Control Checkpoint:** Stage and commit Phase 9 changes.
+
+---
+
+**Phase 10: Implement API for External AI News Writer**
+
+*AI Assistant Guidance: This phase implements a secure REST API endpoint using Django REST Framework (DRF) to allow an authorized external AI agent to submit news articles as drafts for review. Focus on security, validation, and providing feedback to the agent.*
+
+- [ ] **10.1 Install Dependencies & Configure Settings:**
+    - **10.1.1 Install DRF & Supporting Libraries:** Using the terminal (in `.venv`), install required packages:
+        ```bash
+        pip install djangorestframework djangorestframework-simplejwt django-ratelimit Pillow
+        ```
+        *(Confirm Pillow is installed if not already from previous phases).*
+    - **10.1.2 Update `requirements.txt`:** Run `pip freeze > requirements.txt`.
+    - **10.1.3 Add to `INSTALLED_APPS`:** In `config/settings.py`, add `'rest_framework'`, `'rest_framework_simplejwt'`, and `'ratelimit'` to `INSTALLED_APPS`.
+    - **10.1.4 Configure DRF Settings:** In `config/settings.py`, add a `REST_FRAMEWORK` dictionary:
+        ```python
+        REST_FRAMEWORK = {
+            'DEFAULT_AUTHENTICATION_CLASSES': [
+                'rest_framework_simplejwt.authentication.JWTAuthentication',
+                # Add SessionAuthentication if admin/browser access needed later
+            ],
+            'DEFAULT_PERMISSION_CLASSES': [
+                'rest_framework.permissions.IsAuthenticated', # Base permission
+            ],
+            'DEFAULT_THROTTLE_CLASSES': [
+                'rest_framework.throttling.AnonRateThrottle',
+                'rest_framework.throttling.UserRateThrottle'
+            ],
+            'DEFAULT_THROTTLE_RATES': {
+                'anon': '100/day', # Example rate limit for anonymous users (if applicable)
+                'user': '1000/day' # Example rate limit for authenticated users
+            },
+             'DEFAULT_PARSER_CLASSES': [ # Ensure parsers for different data types
+                'rest_framework.parsers.JSONParser',
+                'rest_framework.parsers.FormParser',
+                'rest_framework.parsers.MultiPartParser' # Needed for file uploads
+            ]
+        }
+        ```
+        *(AI: Adjust throttle rates as appropriate, potentially define custom rates later).*
+    - **10.1.5 Configure JWT Settings:** Add `SIMPLE_JWT` settings (e.g., token lifetimes) if using JWT. Consult DRF Simple JWT docs.
+    - **10.1.6 Configure Rate Limit:** Consult `django-ratelimit` docs for basic setup if needed (often works out-of-the-box with DRF integration).
+    - **10.1.7 Run Migrations:** Run `python manage.py migrate` (for JWT/Token auth tables). Verify success.
+
+- [ ] **10.2 Enhance `NewsArticle` Model (`apps/news/models.py`):**
+    - **10.2.1 Add Status Choices & Field:** Ensure the `status` field exists with choices like `DRAFT`, `PENDING_REVIEW`, `PUBLISHED`, `REJECTED` (defaulting to `DRAFT` or `PENDING_REVIEW` for API submissions).
+    - **10.2.2 Add Metadata/Feedback Fields:** Add optional fields:
+        - `rejection_reason` (TextField, blank=True, null=True)
+        - `ai_metadata` (JSONField, blank=True, null=True, help_text="Store AI agent parameters/info.")
+    - **10.2.3 Run Migrations:** Run `python manage.py makemigrations news` and `python manage.py migrate`. Verify success.
+
+- [ ] **10.3 Set Up AI Agent Authentication & Permissions:**
+    - **10.3.1 Create Agent User:** Via Django Admin (`/admin/auth/user/add/`), create a dedicated user account for the AI agent (e.g., username `ai_news_agent`). Ensure it's active but **NOT** staff/superuser unless absolutely required for other reasons.
+    - **10.3.2 Create Agent Group (Recommended):** Via Admin (`/admin/auth/group/add/`), create a group named `AI Agents`. Assign the `ai_news_agent` user to this group.
+    - **10.3.3 Assign Permissions:** Via Admin (`/admin/auth/group/` -> `AI Agents`), assign the necessary permission for the agent to *add* news articles (`news | news article | Can add news article`). Do *not* grant change or delete permissions via the API initially.
+    - **10.3.4 Generate Agent Token:** Generate an API token (either DRF Simple JWT refresh/access tokens or DRF `Token` if using `TokenAuthentication`) associated with the `ai_news_agent` user. This token must be securely stored and provided to the external AI agent. **Do NOT store this token in Git.** Document the process in @file:memory-bank/tech_context.md.
+    - **10.3.5 Create Custom Permission Class:** Create `apps/news/permissions.py`. Define `IsNewsAgent(permissions.BasePermission)` that checks if `request.user.groups.filter(name='AI Agents').exists()`.
+
+- [ ] **10.4 Implement API Endpoint:**
+    - **10.4.1 Create API URLs:** Create `apps/news/api_urls.py`. Define a URL pattern for `POST` requests to `/posts/` mapping to an API view (e.g., `NewsArticleCreateAPIView`), name=`create_post`.
+    - **10.4.2 Include API URLs:** In `config/urls.py`, include the news API urls under `/api/v1/`: `path('api/v1/news/', include('apps.news.api_urls')),`.
+    - **10.4.3 Create API Serializer (`apps/news/serializers.py`):**
+        - Define `NewsArticleSerializer(serializers.ModelSerializer)`.
+        - `class Meta`: model=`NewsArticle`, fields=`['title', 'content', 'category', 'featured_image', 'ai_metadata']`. *(Explicitly list fields agent can submit. Exclude status, author, published_at, rejection_reason).*
+        - Add validation logic (`validate_title`, `validate_content`) for length or basic checks, returning descriptive `ValidationError` messages upon failure.
+    - **10.4.4 Create API View (`apps/news/api_views.py`):**
+        - Create `NewsArticleCreateAPIView(generics.CreateAPIView)`.
+        - `serializer_class = NewsArticleSerializer`
+        - `authentication_classes = [JWTAuthentication]` (or `TokenAuthentication`)
+        - `permission_classes = [permissions.IsAuthenticated, IsNewsAgent]`
+        - `throttle_classes = [...]` (Reference DRF settings or define specific)
+        - `parser_classes = [MultiPartParser, FormParser, JSONParser]`
+        - Override `perform_create(self, serializer)` to set `author=self.request.user` and `status='DRAFT'` (or `PENDING_REVIEW`).
+
+- [ ] **10.5 Configure Admin for Review Workflow:**
+    - **10.5.1 Update `NewsArticleAdmin` (`apps/news/admin.py`):**
+        - Ensure `status` is in `list_display` and `list_filter`.
+        - Make `status` and `rejection_reason` editable fields (in `fields` or `fieldsets`).
+        - Add custom admin actions: `publish_selected`, `reject_selected` (potentially with input for reason), `mark_pending_review`. Implement the logic for these actions to update the queryset status.
+
+- [ ] **10.6 Verification & API Testing:**
+    - **10.6.1 API Client Setup:** Use a tool like `curl`, Postman, or Python `requests` to simulate the AI agent. Obtain the generated agent token.
+    - **10.6.2 Test Authentication:** Attempt API calls with no token, invalid token, and valid token. Verify `401 Unauthorized`. Attempt call with a token from a non-agent user. Verify `403 Forbidden`.
+    - **10.6.3 Test Validation:** Send requests with invalid data (e.g., missing title, too long content). Verify `400 Bad Request` and check error messages.
+    - **10.6.4 Test Success Case:** Send a valid `POST` request with title, content, and optionally an image using `multipart/form-data`. Verify `201 Created` response and check the response body contains the created article data.
+    - **10.6.5 Verify DB & Admin:** Check the Django Admin to confirm the new article was created with `status='DRAFT'` (or `PENDING_REVIEW`) and assigned to the agent user as the author. Verify the image was uploaded correctly to the `media/` directory.
+    - **10.6.6 Test Admin Workflow:** Use the admin actions (publish, reject) on the newly created post and verify the status changes correctly.
+
+- [ ] **10.7 Documentation & Memory Update:**
+    - **10.7.1 API Documentation:** Create a new file (e.g., `docs/api_integration.md`) detailing how the external AI agent should authenticate and interact with the `/api/v1/news/posts/` endpoint (request format, fields, auth, responses). Reference this doc in the @file:README.md.
+    - **10.7.2 Update Memory Bank:** Update `system_patterns.md` (API structure, DRF usage, auth method), `tech_context.md` (DRF, JWT/Token auth, ratelimit library), `progress.md`, `active_context.md`.
+    - **10.7.3 Update Rules:** Create a rule file `.cursor/rules/api/drf_api_rules.mdc` with guidelines for DRF API development (serializers, views, permissions, authentication). Update `news_rules.mdc` to reference the API endpoint.
+
+- [ ] **10.8 Version Control Checkpoint:** Stage all changes (DRF config, model updates, serializers, views, urls, permissions, admin actions, tests (if written), docs, memory). Generate commit message (e.g., "feat(api): Implement DRF API endpoint for AI news article submission with review workflow"). Await confirmation to commit.
 
 ---
