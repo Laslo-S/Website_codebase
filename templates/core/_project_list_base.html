@@ -7,39 +7,16 @@
     <h1 class="text-3xl font-bold mb-8 text-center">{{ page_title }}</h1>
 
     {% if projects %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {# Restore original grid div #}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for project in projects %}
                 {# Include a reusable card template for each project #}
                 {% include "core/_project_card.html" with project=project %}
             {% endfor %}
         </div>
 
-        {# Pagination #}
-        {% if is_paginated %}
-            <nav aria-label="Page navigation" class="mt-12">
-                <ul class="flex justify-center space-x-2">
-                    {% if page_obj.has_previous %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-blue-500 hover:text-white transition duration-300">&laquo; Previous</a></li>
-                    {% else %}
-                        <li class="disabled"><span class="px-4 py-2 bg-gray-100 text-gray-400 rounded">&laquo; Previous</span></li>
-                    {% endif %}
-
-                    {% for i in paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <li class="active"><span class="px-4 py-2 bg-blue-600 text-white rounded">{{ i }}</span></li>
-                        {% else %}
-                            <li><a href="?page={{ i }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-blue-500 hover:text-white transition duration-300">{{ i }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li><a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-blue-500 hover:text-white transition duration-300">Next &raquo;</a></li>
-                    {% else %}
-                        <li class="disabled"><span class="px-4 py-2 bg-gray-100 text-gray-400 rounded">Next &raquo;</span></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
+        {# Include Pagination Partial #}
+        {% include "partials/_pagination.html" %}
 
     {% else %}
         <p class="text-center text-gray-600">No projects of this type found.</p>
