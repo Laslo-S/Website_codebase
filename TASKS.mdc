@@ -4,6 +4,16 @@ globs:
 alwaysApply: false
 ---
 ---
+description: Tasks list
+globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
 description: 
 globs: 
 alwaysApply: false
@@ -398,7 +408,7 @@ alwaysApply: false
 
 *AI Assistant Guidance: This phase implements a secure REST API endpoint using Django REST Framework (DRF) to allow an authorized external AI agent to submit news articles as drafts for review. Focus on security, validation, and providing feedback to the agent.*
 
-- [ ] **10.1 Install Dependencies & Configure Settings:**
+- [X] **10.1 Install Dependencies & Configure Settings:**
     - **10.1.1 Install DRF & Supporting Libraries:** Using the terminal (in `.venv`), install required packages:
         ```bash
         pip install djangorestframework djangorestframework-simplejwt django-ratelimit Pillow
@@ -436,21 +446,21 @@ alwaysApply: false
     - **10.1.6 Configure Rate Limit:** Consult `django-ratelimit` docs for basic setup if needed (often works out-of-the-box with DRF integration).
     - **10.1.7 Run Migrations:** Run `python manage.py migrate` (for JWT/Token auth tables). Verify success.
 
-- [ ] **10.2 Enhance `NewsArticle` Model (`apps/news/models.py`):**
+- [X] **10.2 Enhance `NewsArticle` Model (`apps/news/models.py`):**
     - **10.2.1 Add Status Choices & Field:** Ensure the `status` field exists with choices like `DRAFT`, `PENDING_REVIEW`, `PUBLISHED`, `REJECTED` (defaulting to `DRAFT` or `PENDING_REVIEW` for API submissions).
-    - **10.2.2 Add Metadata/Feedback Fields:** Add optional fields:
+    - [ ] **10.2.2 Add Metadata/Feedback Fields:** Add optional fields:
         - `rejection_reason` (TextField, blank=True, null=True)
         - `ai_metadata` (JSONField, blank=True, null=True, help_text="Store AI agent parameters/info.")
     - **10.2.3 Run Migrations:** Run `python manage.py makemigrations news` and `python manage.py migrate`. Verify success.
 
-- [ ] **10.3 Set Up AI Agent Authentication & Permissions:**
+- [X] **10.3 Set Up AI Agent Authentication & Permissions:**
     - **10.3.1 Create Agent User:** Via Django Admin (`/admin/auth/user/add/`), create a dedicated user account for the AI agent (e.g., username `ai_news_agent`). Ensure it's active but **NOT** staff/superuser unless absolutely required for other reasons.
     - **10.3.2 Create Agent Group (Recommended):** Via Admin (`/admin/auth/group/add/`), create a group named `AI Agents`. Assign the `ai_news_agent` user to this group.
     - **10.3.3 Assign Permissions:** Via Admin (`/admin/auth/group/` -> `AI Agents`), assign the necessary permission for the agent to *add* news articles (`news | news article | Can add news article`). Do *not* grant change or delete permissions via the API initially.
     - **10.3.4 Generate Agent Token:** Generate an API token (either DRF Simple JWT refresh/access tokens or DRF `Token` if using `TokenAuthentication`) associated with the `ai_news_agent` user. This token must be securely stored and provided to the external AI agent. **Do NOT store this token in Git.** Document the process in @file:memory-bank/tech_context.md.
     - **10.3.5 Create Custom Permission Class:** Create `apps/news/permissions.py`. Define `IsNewsAgent(permissions.BasePermission)` that checks if `request.user.groups.filter(name='AI Agents').exists()`.
 
-- [ ] **10.4 Implement API Endpoint:**
+- [X] **10.4 Implement API Endpoint:**
     - **10.4.1 Create API URLs:** Create `apps/news/api_urls.py`. Define a URL pattern for `POST` requests to `/posts/` mapping to an API view (e.g., `NewsArticleCreateAPIView`), name=`create_post`.
     - **10.4.2 Include API URLs:** In `config/urls.py`, include the news API urls under `/api/v1/`: `path('api/v1/news/', include('apps.news.api_urls')),`.
     - **10.4.3 Create API Serializer (`apps/news/serializers.py`):**
@@ -466,25 +476,93 @@ alwaysApply: false
         - `parser_classes = [MultiPartParser, FormParser, JSONParser]`
         - Override `perform_create(self, serializer)` to set `author=self.request.user` and `status='DRAFT'` (or `PENDING_REVIEW`).
 
-- [ ] **10.5 Configure Admin for Review Workflow:**
+- [X] **10.5 Configure Admin for Review Workflow:**
     - **10.5.1 Update `NewsArticleAdmin` (`apps/news/admin.py`):**
         - Ensure `status` is in `list_display` and `list_filter`.
         - Make `status` and `rejection_reason` editable fields (in `fields` or `fieldsets`).
         - Add custom admin actions: `publish_selected`, `reject_selected` (potentially with input for reason), `mark_pending_review`. Implement the logic for these actions to update the queryset status.
 
-- [ ] **10.6 Verification & API Testing:**
+- [X] **10.6 Verification & API Testing:**
     - **10.6.1 API Client Setup:** Use a tool like `curl`, Postman, or Python `requests` to simulate the AI agent. Obtain the generated agent token.
     - **10.6.2 Test Authentication:** Attempt API calls with no token, invalid token, and valid token. Verify `401 Unauthorized`. Attempt call with a token from a non-agent user. Verify `403 Forbidden`.
     - **10.6.3 Test Validation:** Send requests with invalid data (e.g., missing title, too long content). Verify `400 Bad Request` and check error messages.
     - **10.6.4 Test Success Case:** Send a valid `POST` request with title, content, and optionally an image using `multipart/form-data`. Verify `201 Created` response and check the response body contains the created article data.
-    - **10.6.5 Verify DB & Admin:** Check the Django Admin to confirm the new article was created with `status='DRAFT'` (or `PENDING_REVIEW`) and assigned to the agent user as the author. Verify the image was uploaded correctly to the `media/` directory.
+    - **10.6.5 Verify DB & Admin:** Check the database/admin to confirm the new article was created with `status='DRAFT'` (or `PENDING_REVIEW`) and assigned to the agent user as the author. Verify the image was uploaded correctly to the `media/` directory.
     - **10.6.6 Test Admin Workflow:** Use the admin actions (publish, reject) on the newly created post and verify the status changes correctly.
 
-- [ ] **10.7 Documentation & Memory Update:**
+- [X] **10.7 Documentation & Memory Update:**
     - **10.7.1 API Documentation:** Create a new file (e.g., `docs/api_integration.md`) detailing how the external AI agent should authenticate and interact with the `/api/v1/news/posts/` endpoint (request format, fields, auth, responses). Reference this doc in the @file:README.md.
     - **10.7.2 Update Memory Bank:** Update `system_patterns.md` (API structure, DRF usage, auth method), `tech_context.md` (DRF, JWT/Token auth, ratelimit library), `progress.md`, `active_context.md`.
     - **10.7.3 Update Rules:** Create a rule file `.cursor/rules/api/drf_api_rules.mdc` with guidelines for DRF API development (serializers, views, permissions, authentication). Update `news_rules.mdc` to reference the API endpoint.
 
-- [ ] **10.8 Version Control Checkpoint:** Stage all changes (DRF config, model updates, serializers, views, urls, permissions, admin actions, tests (if written), docs, memory). Generate commit message (e.g., "feat(api): Implement DRF API endpoint for AI news article submission with review workflow"). Await confirmation to commit.
+- [X] **10.8 Version Control Checkpoint:** Stage all changes (DRF config, model updates, serializers, views, urls, permissions, admin actions, tests (if written), docs, memory). Generate commit message (e.g., "feat(api): Implement DRF API endpoint for AI news article submission with review workflow"). Await confirmation to commit.
+
+---
+
+**Phase 11: Operationalize External Article API with JWT Auth & Security**
+
+*AI Assistant Guidance: Finalize the setup for the external AI agent API. This includes creating the agent's user/group, assigning precise permissions, implementing and configuring JWT token endpoints, applying rate limiting, performing comprehensive API tests, and updating all documentation.*
+
+- [ ] **11.1 Create Dedicated AI Agent User & Group:**
+    - **11.1.1 Create Agent User:** Via Admin (`/admin/auth/user/add/`), create user `ai_news_agent`. Ensure it's **active** but **NOT marked as staff or superuser** (principle of least privilege). Set a strong, unique password (even if only used initially for token generation).
+    - **11.1.2 Create Agent Group:** Via Admin (`/admin/auth/group/add/`), create group `AI Agents`.
+    - **11.1.3 Assign User to Group:** Add `ai_news_agent` user to the `AI Agents` group via the user's admin page.
+
+- [ ] **11.2 Assign API Permissions to Agent Group:**
+    - **11.2.1 Assign Permission:** Via Admin (`/admin/auth/group/` -> `AI Agents`), assign *only* the `news | news article | Can add news article` permission. Verify no other unnecessary permissions are granted.
+
+- [ ] **11.3 Implement & Configure JWT Token Authentication:**
+    - **11.3.1 Configure Simple JWT:** In `config/settings.py`:
+        - Ensure `rest_framework_simplejwt.authentication.JWTAuthentication` is listed (ideally as the primary or only method) in `REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES']`.
+        - Add/Configure the `SIMPLE_JWT` dictionary. Define reasonable lifetimes for access and refresh tokens (e.g., access=15 minutes, refresh=1 day). Consider loading lifetimes from environment variables for flexibility. Example:
+          ```python
+          from datetime import timedelta
+          SIMPLE_JWT = {
+              'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+              'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+              # ... other settings as needed
+          }
+          ```
+    - **11.3.2 Create Account API URLs:** Ensure `apps/accounts/api_urls.py` exists and contains URL patterns for `TokenObtainPairView` (`token/`) and `TokenRefreshView` (`token/refresh/`).
+    - **11.3.3 Include Account API URLs:** Ensure `config/urls.py` includes these under `/api/v1/accounts/`.
+    - **11.3.4 Verify Token Endpoints:** Run dev server. Test accessing `/api/v1/accounts/token/` and `/api/v1/accounts/token/refresh/` (they should respond, likely requiring POST).
+
+- [ ] **11.4 Implement and Apply Custom API Permissions & Rate Limiting:**
+    - **11.4.1 Define Permission Class:** Ensure `apps/news/permissions.py` contains `IsNewsAgent` checking group membership.
+    - **11.4.2 Apply Permissions to View:** In `apps/news/api_views.py`, confirm `NewsArticleCreateAPIView` has `permission_classes = [permissions.IsAuthenticated, IsNewsAgent]`. Ensure necessary imports are present.
+    - **11.4.3 Apply Rate Limiting:** Apply `django-ratelimit` specifically to the `NewsArticleCreateAPIView`. This can be done using decorators in `apps/news/api_views.py` or globally via `REST_FRAMEWORK` settings if preferred. Example using decorator:
+        ```python
+        from ratelimit.decorators import ratelimit
+        # ... other imports ...
+
+        class NewsArticleCreateAPIView(generics.CreateAPIView):
+            # ... serializer, auth, permissions ...
+            @method_decorator(ratelimit(key='user', rate='100/h', block=True), name='dispatch') # Example: 100 posts per hour per user
+            def dispatch(self, *args, **kwargs):
+                return super().dispatch(*args, **kwargs)
+            # ... perform_create ...
+        ```
+        *(AI: Adjust the rate limit key and rate (e.g., '100/h') as appropriate for the agent's expected usage).*
+
+- [ ] **11.5 Comprehensive API Testing:**
+    *AI Note: Use an API client (like curl/Postman) and the agent's credentials/token for these tests.*
+    - **11.5.1 Test Token Generation:** `POST` credentials for `ai_news_agent` to `/api/v1/accounts/token/`. Verify success (200 OK) and reception of `access` and `refresh` tokens. Test with incorrect password (expect 401). Securely note the obtained tokens for subsequent tests (do NOT commit them).
+    - **11.5.2 Test Token Refresh:** Use the obtained refresh token to `POST` to `/api/v1/accounts/token/refresh/`. Verify success (200 OK) and reception of a new `access` token.
+    - **11.5.3 Test Endpoint Auth & Permissions:** Attempt `POST` to `/api/v1/news/posts/`:
+        - With no `Authorization` header (expect 401).
+        - With invalid/expired `Authorization: Bearer <token>` (expect 401).
+        - With valid token from a user *not* in `AI Agents` group (expect 403 Forbidden).
+    - **11.5.4 Test Data Validation:** Using the agent's valid token, send `POST` requests with missing `title`, overly long `content`, etc. Verify `400 Bad Request` responses contain clear error messages indicating the specific field issue.
+    - **11.5.5 Test Rate Limiting:** Using the agent's valid token, send rapid, repeated valid `POST` requests. Verify that after exceeding the configured rate limit (e.g., 100/h), subsequent requests receive a `429 Too Many Requests` response.
+    - **11.5.6 Test Success (JSON):** Using agent's valid token (under the rate limit), send `POST` with valid JSON data. Verify `201 Created`, check response body. Verify DB/Admin shows new article with `status='DRAFT'` (or `PENDING_REVIEW`) and `author=ai_news_agent`.
+    - **11.5.7 Test Success (Image Upload):** Using agent's valid token, send `POST` with `multipart/form-data` including an image file. Verify `201 Created`. Verify image uploaded to `media/`.
+
+- [ ] **11.6 Update Documentation & Memory:**
+    - **11.6.1 Update API Docs (`docs/api_integration.md`):** Finalize documentation covering: Authentication (JWT token obtain/refresh endpoints, header format), Permission requirements (user in `AI Agents` group), Endpoint details (`POST /api/v1/news/posts/`), Rate Limits, Data Format (JSON/Multipart), Required/Optional Fields, Success/Error Responses.
+    - **11.6.2 Update Memory Bank:** Update `progress.md` ("Phase 11: Operationalized API..."), `active_context.md` (Ready for next phase), `tech_context.md` (JWT, SimpleJWT, django-ratelimit), `system_patterns.md` (API security patterns).
+
+- [ ] **11.7 Version Control Checkpoint:** Stage all changes. Generate commit message (e.g., "feat(api): Operationalize news API with JWT auth, permissions, rate limiting, and tests"). Await confirmation to commit.
+
+---
 
 ---

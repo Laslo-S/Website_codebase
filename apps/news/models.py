@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field # Restore import
+from django.contrib.auth.models import User
 
 # User = get_user_model() # No longer needed
 
@@ -56,3 +57,28 @@ class NewsPost(models.Model):
                 self.published_at = timezone.now()
 
         super().save(*args, **kwargs)
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=250, unique_for_date='publish_date')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='news_articles')
+    # Use CKEditor 5 Field for rich text content
+    content = CKEditor5Field('Content', config_name='default')
+    publish_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('-publish_date',)
+        indexes = [
+            models.Index(fields=['-publish_date']),
+        ]
+
+    def __str__(self):
+        return self.title
+
+    # Consider adding get_absolute_url if you plan to have detail views for articles
+    # def get_absolute_url(self):
+    #     from django.urls import reverse
+    #     return reverse('news:article_detail', args=[self.slug])

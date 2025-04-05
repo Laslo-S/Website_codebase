@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, ListView # Import ListView
+from django.views.generic import TemplateView, ListView, DetailView # Add DetailView
 from .models import VisualizationProject
 from apps.news.models import NewsPost # Import NewsPost
 
@@ -57,6 +57,27 @@ class StillListView(BaseProjectListView):
     template_name = "core/project_list_stills.html"
     project_type = VisualizationProject.TYPE_STILL
     page_title = "Still Images"
+
+# --- View for Project Detail Page --- 
+
+class ProjectDetailView(DetailView):
+    """ Displays a single visualization project. """
+    model = VisualizationProject
+    template_name = 'core/project_detail.html'
+    context_object_name = 'project'
+    slug_field = 'slug' # Field in the model to match against the slug URL kwarg
+    slug_url_kwarg = 'slug' # Name of the slug argument in the URL pattern
+
+    def get_queryset(self):
+        # Allow viewing only public projects via the detail URL
+        return super().get_queryset().filter(is_public=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Set the page title dynamically based on the project title
+        context['page_title'] = self.object.title
+        # Optional: Add related projects or other context later
+        return context
 
 # --- Standard Static Pages --- 
 

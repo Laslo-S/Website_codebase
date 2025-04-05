@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | {{ block.super }}{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12 max-w-4xl">
+    <article>
+        <header class="mb-8 border-b pb-4">
+            <h1 class="text-4xl font-bold mb-2">{{ project.title }}</h1>
+            <p class="text-sm text-gray-500">
+                Type: {{ project.get_project_type_display }}
+                | Added on: {{ project.created_at|date:"F j, Y" }}
+            </p>
+        </header>
+
+        {# Display Embed or Image #}
+        <div class="mb-8">
+            {% if project.embed_code %}
+                {# Use aspect ratio container for embeds #}
+                <div class="aspect-w-16 aspect-h-9 bg-gray-200 rounded shadow-md">
+                     {{ project.embed_code|safe }}
+                </div>
+            {% elif project.image %}
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-auto rounded-lg shadow-md">
+            {% else %}
+                <p class="text-gray-500 italic">No preview available for this project.</p>
+            {% endif %}
+        </div>
+
+        {# Display Description #}
+        {% if project.description %}
+            <div class="prose prose-lg max-w-none">
+                {{ project.description|linebreaks|safe }} {# Use linebreaks and safe for potential simple HTML #}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">No description provided for this project.</p>
+        {% endif %}
+
+    </article>
+
+    {# Optional: Add navigation back to list or related projects later #}
+    {# Example back link based on type #}
+    <div class="mt-12 border-t pt-6">
+        {% if project.project_type == project.TYPE_SCAN %}
+            <a href="{% url 'core:scan_list' %}" class="text-blue-600 hover:underline">&laquo; Back to 3D Scans</a>
+        {% elif project.project_type == project.TYPE_VIDEO %}
+            <a href="{% url 'core:video_list' %}" class="text-blue-600 hover:underline">&laquo; Back to Video Visualizations</a>
+        {% elif project.project_type == project.TYPE_STILL %}
+            <a href="{% url 'core:still_list' %}" class="text-blue-600 hover:underline">&laquo; Back to Still Images</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %} 

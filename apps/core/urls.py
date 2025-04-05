@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     HomePageView, AboutPageView, ContactPageView,
-    ScanListView, VideoListView, StillListView # Import new ListViews
+    ScanListView, VideoListView, StillListView,
+    ProjectDetailView # Import the new view
 )
 
 app_name = 'core' # Define an app namespace
@@ -15,4 +16,7 @@ urlpatterns = [
     path('scans/', ScanListView.as_view(), name='scan_list'),
     path('videos/', VideoListView.as_view(), name='video_list'),
     path('images/', StillListView.as_view(), name='still_list'),
+
+    # Project Detail View
+    path('projects/<slug:slug>/', ProjectDetailView.as_view(), name='project_detail'),
 ] 

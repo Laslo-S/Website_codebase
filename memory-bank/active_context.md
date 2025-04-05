@@ -1,5 +1,5 @@
 # Active Context
 
-*   **Status:** Completed Phase 9 (News/Blog Implementation).
-*   **Current Focus:** Planning next steps.
-*   **Next Step:** Awaiting user direction for the next development phase. 
+*   **Status:** Completed Phase 10 (External Article Submission API).
+*   **Current Focus:** Awaiting next instructions/phase.
+*   **Next Step:** Proceed to next phase/task as defined in @file:TASKS.mdc or user instruction. 
