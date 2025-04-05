@@ -1,0 +1,37 @@
+---
+description: 
+globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
+alwaysApply: false
+---
+---
+description: Governs frontend structure, styling (Tailwind), and basic JS.
+globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
+tags: frontend, html, css, tailwind, javascript, style, layout
+---
+
+# Frontend Styling & Layout Rules
+
+These rules govern the structure and presentation of the frontend components. They complement the Django-specific rules (@file:.cursor/rules/backend/django_rules.mdc) and the core protocol (@file:.cursor/rules/00_core_assistant_protocol.mdc).
+
+## 1. HTML Structure & Layout
+
+*   **Base Layout:** All pages MUST extend the base template: @file:templates/base.html.
+*   **Semantic HTML:** Use appropriate HTML5 semantic tags (`<header>`, `<nav>`, `<main>`, `<article>`, `<aside>`, `<footer>`, etc.) to structure content logically.
+*   **Partials:** Extract reusable HTML components (e.g., header, footer, cards, forms) into the `templates/partials/` directory and include them using `{% include 'partials/your_partial.html' %}`.
+*   **Accessibility:** Keep accessibility (ARIA attributes, semantic structure) in mind, although detailed rules may be added later.
+
+## 2. CSS Styling (Tailwind CSS)
+
+*   **Framework:** Use **Tailwind CSS** for all styling. Apply utility classes directly in the HTML templates.
+*   **Configuration:** Configure Tailwind via @file:tailwind.config.js and process using @file:postcss.config.js. The main input file is @file:static/css/input.css and the compiled output is @file:static/css/output.css.
+*   **Custom CSS:** Avoid writing custom CSS in `output.css`. If absolutely necessary, define custom components or utilities within `input.css` using Tailwind's `@apply` or plugin system, or configure them in `tailwind.config.js`.
+*   **Consistency:** Strive for consistency in spacing, colors, and typography by leveraging the theme defined in `tailwind.config.js`.
+*   **Reference:** Consult @file:.cursor/rules/frontend/03_tailwind_config.mdc for specific Tailwind configuration details and conventions used in this project.
+
+## 3. Client-Side Scripting (JavaScript)
+
+*   **Approach:** Write **vanilla JavaScript** in @file:static/js/script.js for any necessary basic interactions (e.g., mobile menu toggles).
+*   **Avoid Frameworks:** Do not introduce complex JS frameworks (React, Vue, etc.) or heavy libraries (like jQuery) without explicit discussion and agreement based on feature requirements.
+*   **Minimalism:** Only add JavaScript when essential for user experience; prefer server-side rendering and standard HTML/CSS solutions where possible.
+
+--- 

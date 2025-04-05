@@ -1,4 +1,9 @@
 ---
+description: Authentication & Account Management Rules
+globs: 
+alwaysApply: false
+---
+---
 # Rule Description: Defines standards and practices for user authentication, authorization, and account management.
 Description: Authentication & Account Management Rules
 priority: 5 # Higher priority than core protocol for auth-specific tasks.

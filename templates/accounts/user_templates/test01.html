@@ -5,23 +5,26 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     {# Custom header for this specific user #}
-    <h1 class="text-4xl font-bold text-center text-purple-700 mb-8">*** Welcome to the Custom {{ target_user.username }} Experience! ***</h1>
+    <h1 class="text-4xl font-bold text-center text-purple-700 mb-8">*** Projects for {{ target_user.username }} ***</h1>
 
-    {# Custom content area #}
-    <div class="bg-purple-100 border border-purple-300 shadow-lg rounded p-8 mb-6">
-        <h2 class="text-2xl font-semibold text-purple-800 mb-4">Test01 Specific Content</h2>
+    {# Custom content area - maybe some intro text #}
+    <div class="bg-purple-100 border border-purple-300 shadow-lg rounded p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-purple-800 mb-4">Test01 Specific Intro</h2>
         <p class="text-purple-900">
-            This page uses a <span class="font-bold">completely different template</span> located at
-            <code class="bg-purple-200 px-1 rounded">templates/accounts/user_templates/{{ target_user.username }}.html</code>.
+            This is the custom project showcase for <span class="font-semibold">{{ target_user.username }}</span>!
         </p>
-        <p class="text-purple-900 mt-4">
-            This allows for a unique layout and presentation specifically for user: <span class="font-semibold">{{ target_user.username }}</span>.
-        </p>
-        {# Add different layout elements or components here #}
-        <div class="mt-6 p-4 bg-white rounded shadow">
-            <h3 class="text-lg font-semibold">A Special Section</h3>
-            <p>Only Test01 sees this unique section.</p>
-        </div>
+    </div>
+
+    {# Restore original grid structure #}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for project in user_projects %}
+            {% include "core/_project_card.html" with project=project %}
+        {% empty %}
+            <div class="col-span-full text-center text-purple-600 py-8">
+                {# Use col-span-full for empty message #}
+                <p>Looks like {{ target_user.username }} hasn't added any projects yet!</p>
+            </div>
+        {% endfor %}
     </div>
 
 </div>

@@ -1,4 +1,9 @@
 ---
+description:  Rules for interacting with the GitHub repository via MCP
+globs: 
+alwaysApply: false
+---
+---
 description: Rules for interacting with the GitHub repository via MCP.
 globs: [] # Apply only when agent requests
 tags: ["tools", "mcp", "github", "git"]

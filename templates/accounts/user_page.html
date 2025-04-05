@@ -4,23 +4,26 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    {# Basic header showing the user's name #}
-    <h1 class="text-3xl font-bold mb-6">Welcome to {{ target_user.username }}'s Page</h1>
+    {# Updated header #}
+    <h1 class="text-3xl font-bold mb-8 text-center">Projects for {{ target_user.username }}</h1>
 
-    {# Placeholder for user-specific content #}
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 class="text-xl font-semibold mb-4">User Content Area</h2>
-        <p class="text-gray-700">
-            This is the base page for user: <span class="font-semibold">{{ target_user.username }}</span>.
-        </p>
-        <p class="text-gray-700 mt-4">
-            Custom content, projects, or visualizations for this user will be displayed here.
-            {# Example: You could loop through user_projects passed from the view #}
-            {# {% for project in user_projects %} ... {% endfor %} #}
-        </p>
-    </div>
+    {# Include the grid partial #}
+    {% include "partials/_base_grid.html" %}
 
-    {# Add other sections as needed #}
+    {# Loop through projects inside the grid block #}
+    {% block grid_items %}
+        {% for project in user_projects %}
+            {% include "core/_project_card.html" with project=project %}
+        {% empty %}
+            <div class="col-span-full text-center text-gray-600 py-8">
+                {# Use col-span-full to make this message span the entire grid width #}
+                <p>No projects found for this user.</p>
+            </div>
+        {% endfor %}
+    {% endblock grid_items %}
+    {# End content for _base_grid.html #}
+
+    {# Optional: Add other user-specific info sections here if needed #}
 
 </div>
 {% endblock content %} 
