@@ -151,7 +151,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication settings
-# LOGIN_REDIRECT_URL = 'accounts:profile' # No longer needed, handled by CustomLoginView.get_success_url
+# LOGIN_REDIRECT_URL = '/' # Commented out to test default fallback
 LOGOUT_REDIRECT_URL = '/' # Redirect to home page after logout (uses default LogoutView)
 
 # Media files (User-uploaded content)

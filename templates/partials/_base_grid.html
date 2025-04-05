@@ -1,0 +1,9 @@
+{# templates/partials/_base_grid.html #}
+{# This partial provides the basic grid structure. #}
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {# The content (individual grid items like project cards) will be rendered here #}
+    {% block grid_items %}
+        {# Fallback content removed - handled by including template's loop #}
+    {% endblock grid_items %}
+</div> 

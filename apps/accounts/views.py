@@ -3,10 +3,14 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model # Import get_user_model
 from django.contrib.auth.views import LoginView # Import LoginView
-from django.urls import reverse_lazy # Import reverse_lazy
+from django.urls import reverse_lazy, reverse, NoReverseMatch # Import reverse and NoReverseMatch
 from django.template.loader import select_template # Import select_template
 from django.template import TemplateDoesNotExist # Import TemplateDoesNotExist
 from django.http import HttpResponseForbidden # Import HttpResponseForbidden
+import logging # Import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -20,9 +24,31 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         """Redirect to the user-specific page after successful login."""
-        # Use reverse_lazy to get the URL for the 'user_page' view,
-        # passing the logged-in user's username as an argument.
-        return reverse_lazy('accounts:user_page', kwargs={'username': self.request.user.username})
+        logger.info("Attempting get_success_url...")
+        url = None
+        try:
+            username = self.request.user.username
+            logger.info(f"Username for redirect: {username}")
+            if username:
+                url = reverse('accounts:user_page', kwargs={'username': username})
+                logger.info(f"Successfully reversed URL: {url}")
+            else:
+                logger.warning("Username is empty, cannot reverse URL.")
+        except NoReverseMatch as e:
+            logger.error(f"NoReverseMatch error in get_success_url: {e}")
+        except Exception as e:
+            logger.error(f"Unexpected error in get_success_url: {e}")
+
+        # Fallback to default if URL resolution failed
+        if url:
+            return url
+        else:
+            logger.warning("get_success_url failed, falling back...")
+            # Explicitly return the default profile URL as a fallback for clarity
+            # This mimics the behavior we're seeing (fallback to /accounts/profile/)
+            # when LOGIN_REDIRECT_URL is commented out.
+            # In a real scenario, you might raise an error or redirect elsewhere.
+            return reverse_lazy('accounts:profile')
 
 class UserProfileView(LoginRequiredMixin, TemplateView):
     """
