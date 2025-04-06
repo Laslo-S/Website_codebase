@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import NewsPost
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 @admin.register(NewsPost)
 class NewsPostAdmin(admin.ModelAdmin):

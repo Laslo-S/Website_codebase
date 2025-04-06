@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import NewsListView, NewsDetailView, ArticleCreateAPIView
+from .views import NewsListView, NewsDetailView, NewsPostCreateAPIView
 
 app_name = 'news'
 
@@ -7,5 +7,5 @@ urlpatterns = [
     path('', NewsListView.as_view(), name='news_list'),
     path('<slug:slug>/', NewsDetailView.as_view(), name='news_detail'),
     # API URLs
-    path('api/articles/create/', ArticleCreateAPIView.as_view(), name='api_article_create'),
+    path('api/news-posts/create/', NewsPostCreateAPIView.as_view(), name='api_newspost_create'),
 ] 

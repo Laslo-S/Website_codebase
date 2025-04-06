@@ -4,24 +4,24 @@ This document outlines the specific technologies, versions, and setup details fo
 
 ## Backend
 
-*   **Framework:** Django (Version 5.2)
-*   **Language:** Python (Version ~3.12)
-*   **Database:**
-    *   Development: SQLite (via `db.sqlite3` file)
-    *   Production: PostgreSQL (intended, configured via `DATABASE_URL`)
-*   **Environment Variables:** Managed via `django-environ`, loaded from `.env` file.
-*   **Key Libraries:**
-    *   `psycopg[binary, pool]`: PostgreSQL adapter.
-    *   `Pillow`: Image processing (used for ImageFields).
-    *   `django-ckeditor-5`: Rich Text Editor integration for admin fields (e.g., `NewsPost.content`).
+*   **Framework:** Django 5.2
+*   **Language:** Python 3.12
+*   **Database (Dev):** SQLite (via `DATABASE_URL` in `.env`)
+*   **Database (Prod):** PostgreSQL (Planned, via `DATABASE_URL`)
+*   **Environment Vars:** `django-environ`
+*   **Core Libraries:**
+    *   `django-ckeditor-5`: Rich text editing.
+    *   `djangorestframework` (DRF): For building REST APIs.
+    *   `djangorestframework-simplejwt`: For JWT authentication (used for API agent).
+    *   `Pillow`: Image processing (dependency for ImageField).
 
 ## Frontend
 
 *   **Approach:** Server-Side Rendering (SSR) via Django Templates.
-*   **Styling:** Tailwind CSS (v3.x likely, check `package.json`).
-    *   Build Process: Uses Node.js, `npm`, `postcss-cli`, `tailwindcss`, `autoprefixer`. Compiled via `npm run build:css` script.
-    *   Configuration: `tailwind.config.js`, `postcss.config.js`, `static/css/input.css` -> `static/css/output.css`.
-    *   Plugins: `@tailwindcss/aspect-ratio` (used for embeds), `@tailwindcss/typography` (used for blog content styling).
+*   **Styling:** Tailwind CSS v3 (via PostCSS/npm build process).
+    *   Config: `tailwind.config.js`, `postcss.config.js`
+    *   Input: `static/css/input.css`
+    *   Output: `static/css/output.css`
 *   **JavaScript:** Vanilla JavaScript for minimal interactions (e.g., mobile menu toggle).
 
 ## AI Assistant Integration
@@ -34,5 +34,18 @@ This document outlines the specific technologies, versions, and setup details fo
 
 ## Development Environment
 
-*   **Virtual Env:** Python dependencies managed via `.venv` created with `venv`.
-*   **Node Env:** Frontend build dependencies managed via `node_modules` installed with `npm`. 
+*   **Virtual Env:** Uses `.venv` managed by `pip`.
+*   **Requirements:** `requirements.txt`.
+
+## Deployment (Planned)
+*   TBD (Likely standard Django deployment with Gunicorn/Nginx or similar).
+
+## Key Libraries
+
+*   `psycopg[binary, pool]`: PostgreSQL adapter.
+*   `@tailwindcss/aspect-ratio`: Used for embeds.
+*   `@tailwindcss/typography`: Used for blog content styling.
+*   `node_modules`: Frontend build dependencies.
+*   `npm`: Node.js package manager.
+*   `postcss-cli`: PostCSS command line interface.
+*   `venv`: Python virtual environment. 

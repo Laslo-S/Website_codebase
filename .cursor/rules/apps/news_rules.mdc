@@ -11,89 +11,86 @@ tags: app, news, blog, api, backend, frontend
 
 # News App Conventions
 
-These rules apply specifically to the `apps.news` Django application, covering both the internal **News/Blog** functionality (`NewsPost` model) and the **External Article Submission API** (`Article` model). Complementary to general Django and frontend rules.
+These rules apply specifically to the `apps.news` Django application, covering both the internal **News/Blog** functionality (`NewsPost` model) and the **External NewsPost Submission API**. Complementary to general Django and frontend rules.
 
 ---
 
-## Part 1: Internal News/Blog (`NewsPost` Model)
+## Part 1: Internal News/Blog (`NewsPost` Model) - Web Interface
 
 This section covers the models, views, and templates used for displaying news/blog posts managed via the Django admin.
 
 ### Model (`NewsPost`)
 
-*   **Purpose:** Represents internal news/blog posts created and managed by site administrators.
-*   **Fields:** Adhere to the established fields (`title`, `slug`, `featured_image`, `content`, `status`, `published_at`, `created_at`, `updated_at`). Note the absence of an explicit `author` field in recent versions.
-*   **Slug Generation:** Slugs MUST be unique and are auto-generated from the `title` via the overridden `save()` method if left blank.
-*   **Status Workflow:** Posts start as `'draft'`. Changing `status` to `'published'` automatically sets the `published_at` timestamp via the `save()` method.
+*   **Purpose:** Represents internal news/blog posts created and managed by site administrators, OR submitted via API.
+*   **Fields:** `title`, `slug`, `featured_image`, `content`, `status` (Draft/Published), `published_at`, `created_at`, `updated_at`. No explicit `author`.
+*   **Slug Generation:** Auto-generated from `title` via `save()`, ensures uniqueness.
+*   **Status Workflow:** Posts usually start as `'draft'`. API submissions default to `'draft'`. Changing status to `'published'` in Admin automatically sets `published_at`.
 *   **Ordering:** Default ordering is by `-published_at`, then `-created_at`.
 
 ### Admin (`NewsPostAdmin`)
 
-*   Use the configured `list_display`, `list_filter`, `search_fields`, `prepopulated_fields`, `date_hierarchy`, and `readonly_fields` for effective management.
-*   `list_editable = ('status',)` allows quick status changes.
+*   Standard admin configuration (`list_display`, `list_filter`, etc.).
+*   Allows direct creation/editing/publishing of `NewsPost` items.
 
 ### Views (Standard Web Views)
 
-*   **CBVs Preferred:** Use `NewsPostListView` and `NewsPostDetailView` (inheriting from generic Django CBVs) as the standard.
-*   **Filtering:** Public-facing views (`NewsPostListView`, `NewsPostDetailView`) MUST filter querysets to only include posts with `status='published'`.
+*   **CBVs Preferred:** Use `NewsPostListView` and `NewsPostDetailView`.
+*   **Filtering:** Public views MUST filter querysets to only include `status='published'`.
 
 ### URLs (Standard Web URLs)
 
-*   Use the `news` namespace.
-*   Use `name='news_list'` for the list view URL (`/news/`).
-*   Use `name='news_detail'` for the detail view URL (`/news/<slug>/`), accepting a `slug` parameter.
+*   Use `news` namespace.
+*   `name='news_list'` (`/news/`).
+*   `name='news_detail'` (`/news/<slug>/`).
 
 ### Templates
 
-*   App templates reside in `templates/news/`.
-*   Use `_news_card.html` partial for displaying post summaries consistently (in list view and potentially other areas).
-*   Use `partials/_pagination.html` for list view pagination.
-*   Detail view (`news_detail.html`) should use Tailwind `prose` classes for content readability.
-*   Use `{% url 'news:...' %}` for linking.
+*   Located in `templates/news/`.
+*   Use `_news_card.html` partial.
+*   Use `partials/_pagination.html`.
+*   Detail view (`news_detail.html`) uses Tailwind `prose`.
 
 ### Content
 
-*   The `content` field uses `CKEditor5Field`.
-*   Use the `|safe` filter judiciously when rendering `content`.
+*   `content` field uses `CKEditor5Field`.
 
 ### Integration
 
-*   The `HomePageView` (in `core` app) queries and displays the latest 3 published `NewsPost` items.
+*   `HomePageView` displays latest published posts.
 
 ---
 
-## Part 2: External Article Submission API (`Article` Model)
+## Part 2: External NewsPost Submission API
 
-This section covers the components specifically designed for receiving news articles from an external, authenticated AI agent via a REST API.
+This section covers the components specifically designed for receiving `NewsPost` items from an external, authenticated AI agent via a REST API.
 
-### Model (`Article`)
+### Model (`NewsPost`)
 
-*   **Purpose:** Represents news articles submitted via the API by an external agent. Distinct from `NewsPost`.
-*   **Fields:** Adhere to established fields (`title`, `slug`, `author`, `content`, `publish_date`, `created_date`, `updated_date`, `is_published`).
-*   **Author:** The `author` field is a **required** `ForeignKey` to the `User` model, representing the authenticated agent submitting the article. Set automatically by the API view/serializer.
-*   **Slug Generation:** The `slug` is `unique_for_date='publish_date'`. It's currently marked `read_only` in the serializer, implying server-side generation might be needed if not provided in the API request (or allow the client to suggest one, requiring uniqueness checks).
-*   **Status:** Uses `is_published` boolean (default `False`). Articles likely require manual review/publishing via the admin after submission.
-*   **Content:** Uses `CKEditor5Field`. Ensure API clients send appropriate HTML.
+*   Uses the same `NewsPost` model as Part 1.
+*   API submissions default to `status='draft'`.
+*   No author association needed.
+*   Slug generated automatically.
 
-### Serializer (`ArticleSerializer`)
+### Serializer (`NewsPostCreateSerializer`)
 
-*   **Purpose:** Handles serialization/deserialization of `Article` data for the API.
-*   **Fields:** Includes most `Article` fields. Provides `author_username` as a read-only field for convenience.
-*   **Author Handling:** The `create` method **MUST** set the `author` field based on `self.context['request'].user`. The `author` field in the input payload is ignored/overridden.
-*   **Read-Only Fields:** `slug`, `author_username`, `created_date`, `updated_date` are typically read-only. `author` (ID) is writeable in the validated data but set by the context.
+*   **Purpose:** Handles serialization/deserialization of `NewsPost` data for API creation.
+*   **Model:** Based on `NewsPost`.
+*   **Fields:** Expects only `title`, `content`, and optionally `featured_image`.
+*   **Slug/Status/Author:** Does not expect/require `slug`, `status`, or `author` in input. Handled by model defaults/`save()` method.
 
-### API Views (`ArticleCreateAPIView`)
+### API Views (`NewsPostCreateAPIView`)
 
-*   **Purpose:** Endpoint for external agents to `POST` new articles.
-*   **Base Class:** Use `generics.CreateAPIView`.
+*   **Purpose:** Endpoint for external agents to `POST` new `NewsPost` items (as drafts).
+*   **Base Class:** `generics.CreateAPIView`.
 *   **Authentication:** **MUST** use `JWTAuthentication`.
-*   **Permissions:** **MUST** use `permissions.IsAuthenticated`. Only logged-in users (representing the agent) can submit.
-*   **Rate Limiting:** Leverages default DRF throttle settings (`DEFAULT_THROTTLE_CLASSES`, `DEFAULT_THROTTLE_RATES` in `settings.py`). Custom throttling can be added per-view if needed.
+*   **Permissions:** **MUST** use `permissions.IsAuthenticated` AND `IsNewsAgent` (checks for group membership).
+*   **Rate Limiting:** Uses default DRF throttle settings.
+*   **Serializer:** Uses `NewsPostCreateSerializer`.
 
 ### API URLs
 
-*   Located within `apps/news/urls.py` but typically accessed via a prefixed path in `config/urls.py`.
-*   Use the pattern `/api/articles/create/` relative to the `news` app's included path (e.g., `/news/api/articles/create/`).
-*   Use `name='api_article_create'` for the creation endpoint URL.
+*   Located within `apps/news/urls.py`.
+*   Uses the pattern `/api/news-posts/create/` relative to the `news` app's included path (e.g., `/news/api/news-posts/create/`).
+*   Uses `name='api_newspost_create'`.
 
 --- 

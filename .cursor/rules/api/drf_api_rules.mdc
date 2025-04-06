@@ -1,0 +1,89 @@
+---
+description: 
+globs: apps/**/api*.py,apps/**/serializers.py,apps/**/permissions.py
+alwaysApply: false
+---
+---
+description: 
+globs: apps/**/api*.py,apps/**/serializers.py,apps/**/permissions.py
+alwaysApply: false
+---
+---
+description: Rules and conventions for building APIs using Django REST Framework (DRF).
+globs: apps/**/api*.py,apps/**/serializers.py,apps/**/permissions.py
+tags: api, backend, drf, django
+ruleType: ai-suggestion
+---
+
+# Django REST Framework (DRF) API Conventions
+
+These rules guide the development of REST APIs using DRF within this project.
+
+## 1. Structure & Naming
+
+*   **API Views:** Place API-specific views in separate files within the relevant app, typically named `api_views.py` (or similar).
+*   **Serializers:** Place serializers in `serializers.py` within the app.
+*   **Permissions:** Place custom permission classes in `permissions.py` within the app.
+*   **URLs:** Place API URL patterns in `api_urls.py` (or similar) within the app and include them under a versioned path (e.g., `/api/v1/`) in the main `config/urls.py`.
+*   **Naming:** Use descriptive names for views (`...ListAPIView`, `...CreateAPIView`, `...RetrieveUpdateDestroyAPIView`), serializers (`...Serializer`), and permissions (`Is...`, `Can...`).
+
+## 2. Views (`api_views.py`)
+
+*   **Generic Views:** Prefer Django's generic class-based views (`generics.ListAPIView`, `generics.CreateAPIView`, `generics.RetrieveUpdateDestroyAPIView`, etc.) for common CRUD operations.
+*   **Authentication:** Explicitly set `authentication_classes`. Default to `[JWTAuthentication]` for most API endpoints intended for external agents or SPAs.
+*   **Permissions:** Explicitly set `permission_classes`. Start with `[permissions.IsAuthenticated]` and add more restrictive custom permissions (like `IsNewsAgent`) as needed. Follow the Principle of Least Privilege.
+*   **Querysets:** Define `queryset` explicitly.
+*   **Serializer Class:** Define `serializer_class` explicitly.
+*   **`perform_create`/`perform_update`:** Override these methods to set fields based on the request user (`request.user`) or other request data *instead* of relying on the serializer to do it, promoting separation of concerns (e.g., `serializer.save(author=self.request.user)`).
+
+## 3. Serializers (`serializers.py`)
+
+*   **`ModelSerializer`:** Use `ModelSerializer` as the base for serializers tied to Django models.
+*   **`Meta.fields`:** Explicitly list fields using `fields = [...]`. Avoid `fields = '__all__'` for security and clarity.
+*   **`Meta.read_only_fields`:** Use for fields that should not be writeable via the API (e.g., `id`, `created_at`, `updated_at`, auto-generated slugs, fields set automatically in the view).
+*   **Input vs. Output:** If input and output representations differ significantly, consider creating separate serializers (e.g., `NewsPostCreateSerializer` vs. `NewsPostDetailSerializer`).
+*   **Validation:** Add custom `validate_<field>` methods or a `validate` method for complex cross-field validation. Raise `serializers.ValidationError` with clear error messages.
+*   **Nested Relationships:** Use nested serializers or `PrimaryKeyRelatedField`/`SlugRelatedField` as appropriate for representing relationships. Control nesting depth (`depth = ...`) carefully to avoid excessive data/queries.
+
+## 4. Permissions (`permissions.py`)
+
+*   **Custom Permissions:** Create custom permission classes inheriting from `permissions.BasePermission`.
+*   **`has_permission`:** Use for view-level checks (e.g., is user in a specific group?).
+*   **`has_object_permission`:** Use for object-level checks (e.g., is user the owner of the object?).
+*   **Clarity:** Ensure permission checks are clear and easily understandable.
+
+## 5. Authentication
+
+*   **JWT Preferred:** Use `rest_framework_simplejwt` for token-based authentication for external clients/SPAs.
+*   **Session Auth:** `SessionAuthentication` can be included if the API needs to be accessed by logged-in users via the standard web interface/browser.
+
+## 6. URLs (`api_urls.py`)
+
+*   **Versioning:** Include API URLs under a versioned path (e.g., `/api/v1/`).
+*   **Naming:** Use descriptive `name` arguments for URL patterns.
+
+## Example (Illustrative)
+
+```python
+# apps/myapp/api_views.py
+from rest_framework import generics, permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .models import MyModel
+from .serializers import MyModelSerializer
+from .permissions import IsOwnerOrReadOnly # Example object permission
+
+class MyModelListCreateAPIView(generics.ListCreateAPIView):
+    queryset = MyModel.objects.all()
+    serializer_class = MyModelSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated] # Only logged-in users can list/create
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user) # Set owner on create
+
+class MyModelDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MyModel.objects.all()
+    serializer_class = MyModelSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly] # Need to be owner to edit/delete
+``` 

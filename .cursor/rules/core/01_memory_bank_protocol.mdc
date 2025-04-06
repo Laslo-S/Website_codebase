@@ -4,11 +4,6 @@ globs:
 alwaysApply: true
 ---
 ---
-description: 
-globs: 
-alwaysApply: true
----
----
 description: Defines how the AI assistant should utilize the memory bank files.
 globs: ["**/*"]
 priority: 100 # Highest priority to ensure memory is always considered.

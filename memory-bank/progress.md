@@ -10,14 +10,20 @@
 *   **Phase 8:** Dynamic Content & Styling (Connected DB models to public list views. Implemented pagination. Refined Tailwind styling on base layout, cards, header/footer. Created pagination and Tailwind config partials/rules.)
 *   **Phase 9:** News/Blog Implementation (Created `news` app, `NewsPost` model with status/slug logic. Configured admin with CKEditor 5. Implemented list/detail views and templates. Added latest news to homepage and header link. Removed author field. Added featured image support.)
 
-### Phase 10: Implement API for External AI News Writer (COMPLETE)
-- **Status:** All tasks (10.1-10.7) completed.
-- **Outcome:** Basic API infrastructure created for article submission via JWT authentication.
-    - Dependencies installed & configured (DRF, SimpleJWT).
-    - `Article` model defined and migrated.
-    - `ArticleSerializer` created (sets author automatically).
-    - `ArticleCreateAPIView` implemented (requires JWT auth).
-    - API URL `/news/api/articles/create/` defined and included.
-- **Notes:** Addressed `django-ratelimit` import error by removing it, relying on DRF's built-in throttling.
+### Phase 10: Implement Foundational API for External AI News Writer (Refactored in Phase 11)
+- **Status:** Base models/serializers/views created, but model/API refactored in Phase 11.
+- **Outcome:** Initial setup of DRF, SimpleJWT. Original `Article` model created (later deleted).
+
+### Phase 11: Operationalize External NewsPost API (COMPLETE)
+- **Status:** All tasks completed after refactoring to use `NewsPost`.
+- **Outcome:**
+    - API now uses `NewsPost` model instead of separate `Article` model.
+    - `Article` model, serializer, admin removed. Stale permissions cleaned.
+    - `ai_news_agent` user and `AI-Agents` group created.
+    - Group permission `news | news post | Can add news post` assigned.
+    - Custom `IsNewsAgent` permission implemented and applied.
+    - JWT token endpoints (`/api/v1/accounts/token/` and `/refresh/`) added.
+    - API endpoint `/news/api/news-posts/create/` tested successfully for creating `NewsPost` items (including image upload) using JWT auth and group permissions.
+- **Notes:** Addressed various serializer validation issues (`author`, `slug`). Corrected group name (`AI-Agents`).
 
 --- 

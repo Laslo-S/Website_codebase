@@ -55,4 +55,24 @@ This document records key architectural decisions and established conventions fo
 *   **User Pages:**
     *   Dedicated profile page (`/accounts/profile/`) for logged-in user dashboard.
     *   User-specific public-facing pages (`/accounts/user/<username>/`) with dynamic template loading (`templates/accounts/user_templates/<username>.html` overrides `templates/accounts/user_page.html`). Access restricted to owner or staff.
-*   **Visualization Content:** Handled via `VisualizationProject` model. Types (`scan`, `video`, `still`) are hardcoded choices, displayed on dedicated list pages (`/scans/`, `/videos/`, `/images/`). 
+*   **Visualization Content:** Handled via `VisualizationProject` model. Types (`scan`, `video`, `still`) are hardcoded choices, displayed on dedicated list pages (`/scans/`, `/videos/`, `/images/`).
+
+## Additional Features
+
+*   **Authentication (Web):** Standard Django authentication system (`django.contrib.auth`) with custom templates and dynamic redirect logic.
+*   **Authentication (API):** JWT (JSON Web Tokens) via `djangorestframework-simplejwt` for external clients (e.g., AI Agent).
+    *   Agent obtains tokens via `/api/v1/accounts/token/` using dedicated user credentials.
+    *   Tokens are refreshed via `/api/v1/accounts/token/refresh/`.
+*   **Authorization (API):** Primarily role-based using Django Groups (e.g., `AI-Agents`) and custom DRF permission classes (`IsNewsAgent`).
+*   **User-Specific Content:**
+    *   Models use `owner` ForeignKey to `User` (e.g., `VisualizationProject`).
+    *   Views filter content based on owner for user-specific pages.
+    *   Admin uses inline models (`VisualizationProjectInline` on `CustomUserAdmin`) for management.
+*   **Content Types (Visualizations):** Handled via `project_type` CharField with choices on `VisualizationProject` model, displayed via dedicated list views.
+*   **Content Types (News):** Single `NewsPost` model used for both internal admin-created posts and external API-submitted posts (defaults to 'draft' status).
+*   **Admin Customization:** Uses `CustomUserAdmin` (simplified), `NewsPostAdmin`.
+*   **Template Structure:** Uses base template (`base.html`), includes partials (`_header.html`, `_footer.html`, `_pagination.html`), and reusable component partials (`_project_card.html`, `_news_card.html`).
+*   **Static Files:** Standard Django static file handling (`STATIC_URL`, `STATICFILES_DIRS`).
+*   **Media Files:** Standard Django media file handling (`MEDIA_URL`, `MEDIA_ROOT`) for user uploads (e.g., `NewsPost.featured_image`).
+*   **Configuration:** Uses environment variables via `django-environ` (`.env` file).
+*   **API Design:** RESTful principles using Django REST Framework (DRF) generic views and ModelSerializers. 
