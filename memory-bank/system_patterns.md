@@ -34,8 +34,19 @@ This document records key architectural decisions and established conventions fo
     *   Always use named URL patterns within `urls.py` files (e.g., `path(..., name='my_view')`).
     *   Use namespaces for apps (e.g., `app_name = 'core'`).
     *   Reference URLs using `reverse()` or `reverse_lazy()` in Python code and `{% url 'namespace:name' %}` in templates.
-*   **Models:** Standard Django ORM practices. Foreign keys define relationships.
-*   **Admin:** Customize `admin.py` to provide a user-friendly interface for managing models, using features like `list_display`, `list_filter`, `search_fields`, `fieldsets`, `inlines`, and rich text editor integration (e.g., CKEditor 5 for `NewsPost.content`).
+*   **Models:** Use `PublicPortfolioItem` (base), `ClientDeliverable` (defined in `apps.core`).
+*   **Proxy Models:**
+    *   Use `PublicScanItem`, etc. (in `apps.core`) inheriting from `PublicPortfolioItem` for type-specific public admin views.
+    *   Use `ClientDeliverableAdminView` (in `apps.accounts`) inheriting from `ClientDeliverable` (from `apps.core`) solely to place the admin interface under the "Client Management & Auth" section.
+*   **Managers:** Attach custom managers to Public Portfolio Proxy Models.
+*   **Admin:**
+    *   Register Public Proxy Models (`PublicScanItem`, etc.) in `apps.core.admin`.
+    *   Define `ClientDeliverableAdmin` logic in `apps.core.admin` but **do not register it there**.
+    *   Register the `ClientDeliverableAdminView` proxy model (from `apps.accounts`) using the `ClientDeliverableAdmin` logic (from `apps.core`) within `apps.accounts.admin`.
+    *   Use custom `SimpleListFilter` (`ClientFilter`) on `ClientDeliverableAdmin` logic.
+    *   Use `AppConfig.verbose_name` to customize sidebar app labels (e.g., "Public Portfolio & Site Core", "Client Management & Auth").
+    *   Hide fields on add forms using `get_fieldsets` override in proxy admins.
+*   **Client Designation:** Via 'Active Clients' Group membership.
 
 ## Frontend Conventions
 
@@ -56,6 +67,13 @@ This document records key architectural decisions and established conventions fo
     *   Dedicated profile page (`/accounts/profile/`) for logged-in user dashboard.
     *   User-specific public-facing pages (`/accounts/user/<username>/`) with dynamic template loading (`templates/accounts/user_templates/<username>.html` overrides `templates/accounts/user_page.html`). Access restricted to owner or staff.
 *   **Visualization Content:** Handled via `VisualizationProject` model. Types (`scan`, `video`, `still`) are hardcoded choices, displayed on dedicated list pages (`/scans/`, `/videos/`, `/images/`).
+
+## Content Management Workflows (Admin)
+
+*   **Public Portfolio:** Manage items via type-specific sections (e.g., "Public 3D Scans") under the "Public Portfolio & Site Core" app section.
+*   **Client Deliverables:** Manage items via the "Client Deliverables" link under the "Client Management & Auth" app section. Use the "Client" filter.
+*   **Users/Groups:** Manage via the "Client Management & Auth" app section. Add users to the 'Active Clients' group here.
+*   **News Posts:** Manage via the "News" app section.
 
 ## Additional Features
 

@@ -1,29 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}{{ page_title }} | {{ block.super }}{% endblock title %}
+{% block title %}{{ page_title|default:target_user.username }} | {{ block.super }}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    {# Updated header #}
-    <h1 class="text-3xl font-bold mb-8 text-center">Projects for {{ target_user.username }}</h1>
+    <h1 class="text-2xl font-semibold mb-4">Deliverables for {{ target_user.username }}</h1>
 
-    {# Include the grid partial #}
-    {% include "partials/_base_grid.html" %}
-
-    {# Loop through projects inside the grid block #}
-    {% block grid_items %}
-        {% for project in user_projects %}
-            {% include "core/_project_card.html" with project=project %}
-        {% empty %}
-            <div class="col-span-full text-center text-gray-600 py-8">
-                {# Use col-span-full to make this message span the entire grid width #}
-                <p>No projects found for this user.</p>
-            </div>
-        {% endfor %}
-    {% endblock grid_items %}
-    {# End content for _base_grid.html #}
+    {# Correctly loop through client_deliverables and include the deliverable card #}
+    {% if client_deliverables %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for deliverable in client_deliverables %}
+                {% include "accounts/partials/_deliverable_card.html" with deliverable=deliverable %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-600">No deliverables found for this user.</p>
+    {% endif %}
 
     {# Optional: Add other user-specific info sections here if needed #}
 
 </div>
-{% endblock content %} 
+{% endblock %} 

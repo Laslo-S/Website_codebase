@@ -6,22 +6,24 @@ Website project showcasing architectural visualizations (3D embeds, videos, imag
 
 To build an efficient and maintainable web platform for displaying various architectural visualization project types, including 3D scans, video renderings, and still images. The site includes user authentication for potential future client-specific features and utilizes a Django backend with Tailwind CSS for styling.
 
-## Current Features (As of Phase 6 Completion)
+## Current Features
 
-*   **Homepage:** Basic landing page introducing the platform.
-*   **Visualization Showcase:** Separate pages listing projects by type (`/scans/`, `/videos/`, `/images/`).
-*   **Core Navigation:** Header and footer with links to main sections (Showcase pages, About, Contact).
-*   **User Authentication:**
-    *   Login/Logout functionality using Django's auth system.
-    *   User registration (via Django Admin initially).
-    *   Custom login view redirecting users to their specific page upon login.
-*   **User-Specific Pages:**
-    *   Basic user profile page (`/accounts/profile/`).
-    *   Dynamically generated user pages (`/user/<username>/`) with basic access control (owner or staff).
+*   **Public Portfolio:**
+    *   Separate admin sections for managing public items by type (`AA Public 3D Scans`, `AB Public Videos`, `AC Public Stills`) using Proxy Models.
+    *   Public-facing list pages (`/scans/`, `/videos/`, `/images/`) display these items.
+*   **Client Deliverables:**
+    *   Dedicated admin section (`Client Deliverables`) for managing private client content, filterable by client (from 'Active Clients' group).
+    *   User-specific pages (`/accounts/user/<username>/`) display assigned deliverables (access restricted).
+*   **News/Blog:**
+    *   Admin section for `News Posts`.
+    *   List/detail views and API endpoint remain the same.
+*   **User Authentication & Management:**
+    *   Standard login/logout/profile.
+    *   Admin section for managing `Users` and `Groups` (including the 'Active Clients' group).
 *   **Admin Interface:**
-    *   Standard Django admin for managing users and `VisualizationProject` models.
-    *   Customized admin header.
-*   **Styling:** Basic layout and styling implemented using Tailwind CSS.
+    *   Restructured sidebar with clearer sections: `Authentication and Authorization`, `Public Portfolio & Site Core`, `Client Accounts & Auth`, `News`.
+    *   Custom filters and proxy models provide content-centric workflows.
+*   **Styling:** Tailwind CSS.
 
 ## Technology Stack
 
@@ -135,6 +137,13 @@ To run the development server, you need **three separate terminals**:
     ```
     (Allows the AI assistant to interact with your browser via MCP)
 
+## Admin Workflow
+
+*   **Adding Public Items:** Go to the specific type under "Public Portfolio & Site Core" (e.g., "AA Public 3D Scans") and click "Add".
+*   **Managing Client Deliverables:** Go to "Public Portfolio & Site Core" -> "Client Deliverables". Use the "Client" filter on the right to select a user (only users in the 'Active Clients' group are shown). Then Add/Edit deliverables for that client. The `Client` field on the Add/Edit form must still be manually selected.
+*   **Managing Users/Groups:** Use the "Client Accounts & Auth" section.
+*   **Designating Clients:** Add users to the 'Active Clients' group under "Client Accounts & Auth" -> "Groups".
+
 ## Conventions
 
 *   **Version Control:** Commits follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
@@ -146,3 +155,9 @@ To run the development server, you need **three separate terminals**:
     *   Mobile-first design principles are applied.
     *   Styling is primarily handled by Tailwind CSS utility classes.
     *   Reusable template sections (header, footer, cards) are extracted into the `templates/partials/` directory.
+
+## Potential Future Enhancements
+
+*   **Client-Specific Features:** Implement client-specific features such as client-specific dashboards or client-specific project management tools.
+*   **Advanced Search Capabilities:** Add advanced search capabilities to help users find specific projects or information quickly.
+*   **AI Integration:** Integrate AI assistants for more personalized and efficient project management and visualization.

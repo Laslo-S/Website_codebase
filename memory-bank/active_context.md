@@ -1,5 +1,5 @@
 # Active Context
 
-*   **Status:** Completed Phase 11 (Operationalize External API - Refactored to use NewsPost).
-*   **Current Focus:** Awaiting next instructions/phase.
-*   **Next Step:** Proceed to next phase/task as defined in @file:TASKS.mdc or user instruction. 
+*   **Status:** Completed **Revised Phase 12** (Content Separation & Admin Refactor).
+*   **Current Focus:** Ready to begin Phase 13.
+*   **Next Step:** Proceed to Phase 13: Implement Comprehensive Content Preview System. 

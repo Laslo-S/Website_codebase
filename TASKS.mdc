@@ -4,6 +4,11 @@ globs:
 alwaysApply: false
 ---
 ---
+description: 
+globs: 
+alwaysApply: false
+---
+---
 description: Tasks list
 globs: 
 alwaysApply: false
@@ -503,15 +508,15 @@ alwaysApply: false
 
 *AI Assistant Guidance: Finalize the setup for the external AI agent API. This includes creating the agent's user/group, assigning precise permissions, implementing and configuring JWT token endpoints, applying rate limiting, performing comprehensive API tests, and updating all documentation.*
 
-- [ ] **11.1 Create Dedicated AI Agent User & Group:**
+- [X] **11.1 Create Dedicated AI Agent User & Group:**
     - **11.1.1 Create Agent User:** Via Admin (`/admin/auth/user/add/`), create user `ai_news_agent`. Ensure it's **active** but **NOT marked as staff or superuser** (principle of least privilege). Set a strong, unique password (even if only used initially for token generation).
     - **11.1.2 Create Agent Group:** Via Admin (`/admin/auth/group/add/`), create group `AI Agents`.
     - **11.1.3 Assign User to Group:** Add `ai_news_agent` user to the `AI Agents` group via the user's admin page.
 
-- [ ] **11.2 Assign API Permissions to Agent Group:**
+- [X] **11.2 Assign API Permissions to Agent Group:**
     - **11.2.1 Assign Permission:** Via Admin (`/admin/auth/group/` -> `AI Agents`), assign *only* the `news | news article | Can add news article` permission. Verify no other unnecessary permissions are granted.
 
-- [ ] **11.3 Implement & Configure JWT Token Authentication:**
+- [X] **11.3 Implement & Configure JWT Token Authentication:**
     - **11.3.1 Configure Simple JWT:** In `config/settings.py`:
         - Ensure `rest_framework_simplejwt.authentication.JWTAuthentication` is listed (ideally as the primary or only method) in `REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES']`.
         - Add/Configure the `SIMPLE_JWT` dictionary. Define reasonable lifetimes for access and refresh tokens (e.g., access=15 minutes, refresh=1 day). Consider loading lifetimes from environment variables for flexibility. Example:
@@ -527,7 +532,7 @@ alwaysApply: false
     - **11.3.3 Include Account API URLs:** Ensure `config/urls.py` includes these under `/api/v1/accounts/`.
     - **11.3.4 Verify Token Endpoints:** Run dev server. Test accessing `/api/v1/accounts/token/` and `/api/v1/accounts/token/refresh/` (they should respond, likely requiring POST).
 
-- [ ] **11.4 Implement and Apply Custom API Permissions & Rate Limiting:**
+- [X] **11.4 Implement and Apply Custom API Permissions & Rate Limiting:**
     - **11.4.1 Define Permission Class:** Ensure `apps/news/permissions.py` contains `IsNewsAgent` checking group membership.
     - **11.4.2 Apply Permissions to View:** In `apps/news/api_views.py`, confirm `NewsArticleCreateAPIView` has `permission_classes = [permissions.IsAuthenticated, IsNewsAgent]`. Ensure necessary imports are present.
     - **11.4.3 Apply Rate Limiting:** Apply `django-ratelimit` specifically to the `NewsArticleCreateAPIView`. This can be done using decorators in `apps/news/api_views.py` or globally via `REST_FRAMEWORK` settings if preferred. Example using decorator:
@@ -544,7 +549,7 @@ alwaysApply: false
         ```
         *(AI: Adjust the rate limit key and rate (e.g., '100/h') as appropriate for the agent's expected usage).*
 
-- [ ] **11.5 Comprehensive API Testing:**
+- [X] **11.5 Comprehensive API Testing:**
     *AI Note: Use an API client (like curl/Postman) and the agent's credentials/token for these tests.*
     - **11.5.1 Test Token Generation:** `POST` credentials for `ai_news_agent` to `/api/v1/accounts/token/`. Verify success (200 OK) and reception of `access` and `refresh` tokens. Test with incorrect password (expect 401). Securely note the obtained tokens for subsequent tests (do NOT commit them).
     - **11.5.2 Test Token Refresh:** Use the obtained refresh token to `POST` to `/api/v1/accounts/token/refresh/`. Verify success (200 OK) and reception of a new `access` token.
@@ -557,12 +562,165 @@ alwaysApply: false
     - **11.5.6 Test Success (JSON):** Using agent's valid token (under the rate limit), send `POST` with valid JSON data. Verify `201 Created`, check response body. Verify DB/Admin shows new article with `status='DRAFT'` (or `PENDING_REVIEW`) and `author=ai_news_agent`.
     - **11.5.7 Test Success (Image Upload):** Using agent's valid token, send `POST` with `multipart/form-data` including an image file. Verify `201 Created`. Verify image uploaded to `media/`.
 
-- [ ] **11.6 Update Documentation & Memory:**
+- [X] **11.6 Update Documentation & Memory:**
     - **11.6.1 Update API Docs (`docs/api_integration.md`):** Finalize documentation covering: Authentication (JWT token obtain/refresh endpoints, header format), Permission requirements (user in `AI Agents` group), Endpoint details (`POST /api/v1/news/posts/`), Rate Limits, Data Format (JSON/Multipart), Required/Optional Fields, Success/Error Responses.
     - **11.6.2 Update Memory Bank:** Update `progress.md` ("Phase 11: Operationalized API..."), `active_context.md` (Ready for next phase), `tech_context.md` (JWT, SimpleJWT, django-ratelimit), `system_patterns.md` (API security patterns).
 
-- [ ] **11.7 Version Control Checkpoint:** Stage all changes. Generate commit message (e.g., "feat(api): Operationalize news API with JWT auth, permissions, rate limiting, and tests"). Await confirmation to commit.
+- [X] **11.7 Version Control Checkpoint:** Stage all changes. Generate commit message (e.g., "feat(api): Operationalize news API with JWT auth, permissions, rate limiting, and tests"). Await confirmation to commit.
 
 ---
 
+**Phase 12: Implement Content-Centric Admin Interface with Filters**
+
+*AI Assistant Guidance: Restructure the Admin for intuitive content management. Separate Public Portfolio items by type using Proxy Models & custom managers. Implement a standard admin view for Client Deliverables enhanced with custom filters for easy client-based viewing. Use Group membership to designate clients.*
+
+- [ ] **12.1 Define/Confirm Content Models (`apps/core/models.py`):**
+    *   **12.1.1 Confirm `PublicPortfolioItem`:** Ensure fields are correct (`title`, `description`, `project_type` [choices], `embed_code`, `image`, `slug`, timestamps). Add `db_index=True` to `project_type`.
+    *   **12.1.2 Confirm `ClientDeliverable`:** Ensure fields are correct (`client` [ForeignKey to User, `related_name='deliverables'`, `db_index=True`], `title`, `description`, `project_type` [choices], `embed_code`, `image`, timestamps).
+    *   *(No model changes likely needed if previous version was used, just confirmation).*
+
+- [ ] **12.2 Create Proxy Models & Managers for Public Portfolio (`apps/core/models.py`):**
+    *   **12.2.1 Define Custom Managers:** Create managers filtering by type:
+        ```python
+        class PublicScanManager(models.Manager):
+            def get_queryset(self):
+                return super().get_queryset().filter(project_type='scan')
+        # ... similar managers for Video and Still ...
+        ```
+    *   **12.2.2 Define Proxy Models:** Create `PublicScanItem`, `PublicVideoItem`, `PublicStillItem` inheriting `PublicPortfolioItem`, set `Meta.proxy = True`, assign respective custom manager (`objects = PublicScanManager()`), set appropriate `verbose_name_plural` (e.g., "AA Public 3D Scans" - use prefix for ordering).
+    *   **12.2.3 Run Migrations (If needed):** `makemigrations` / `migrate` (likely no DB changes needed for proxies/managers).
+
+- [ ] **12.3 Configure Admin for Public Portfolio (Proxy Models) (`apps/core/admin.py`):**
+    *   **12.3.1 Create Base Admin:** `PublicPortfolioItemAdmin(admin.ModelAdmin)` with common settings (list_display, search, slug prepop). **Do NOT register `PublicPortfolioItem` itself.**
+    *   **12.3.2 Register Proxy Model Admins:** Create and register admin classes for `PublicScanItem`, `PublicVideoItem`, `PublicStillItem`, inheriting from `PublicPortfolioItemAdmin`. They will automatically use the filtered querysets from their managers. Customize `add_form` or initial data if desired to pre-fill type.
+    *   **12.3.3 Verification:** Check admin sidebar for separate entries ("AA Public 3D Scans", etc.). Verify lists are correctly filtered by type.
+
+- [ ] **12.4 Configure Client Designation via Group:**
+    *   **12.4.1 Create Group:** Via Admin (`/admin/auth/group/add/`), create group named `Active Clients`.
+    *   **12.4.2 Assign Test Users:** Add users `test01`, `test02` (or other client users) to the `Active Clients` group.
+    *   **12.4.3 Document:** Note this group usage in `README.md` and `memory-bank/system_patterns.md`.
+
+- [ ] **12.5 Implement Enhanced Admin for Client Deliverables (`apps/core/admin.py`):**
+    *   **12.5.1 Create Custom Filter:** Create a custom `SimpleListFilter` named `ClientFilter`:
+        - `title = 'Client'`
+        - `parameter_name = 'client_id'`
+        - `lookups(self, request, model_admin)`: Returns tuples `(user.id, user.username)` for users in the 'Active Clients' group.
+        - `queryset(self, request, queryset)`: Filters the main queryset by `client_id=self.value()` if a value is selected.
+        *(AI: Implement this custom filter logic).*
+    *   **12.5.2 Create `ClientDeliverableAdmin`:** Define `ClientDeliverableAdmin(admin.ModelAdmin)`:
+        - `list_display = ('title', 'client', 'project_type', 'created_at')`
+        - `list_filter = (ClientFilter, 'project_type')` *(Use the custom filter)*
+        - `search_fields = ('title', 'description', 'client__username')` *(Allow searching by client username)*
+        - Configure `fields` or `fieldsets` appropriately. **Ensure `client` field is present and editable on the form.**
+    *   **12.5.3 Register Model:** Register `ClientDeliverable` with `ClientDeliverableAdmin`.
+    *   **12.5.4 Refine AppConfig Names (`apps/core/apps.py`, `apps/accounts/apps.py` etc.):** Set user-friendly `verbose_name` in each app's `AppConfig` class (e.g., `verbose_name = "Client Accounts"`).
+
+- [ ] **12.6 Remove Inline Admin from User Page (`apps/accounts/admin.py`):**
+    *   **12.6.1 Remove Inline:** Edit `CustomUserAdmin` and remove `ClientDeliverableInline` (or the old `VisualizationProjectInline`) from the `inlines` list. Delete the inline class definition if no longer needed elsewhere.
+    *   **12.6.2 Verification:** Check the User admin page; verify the inline section for deliverables is gone.
+
+- [ ] **12.7 Update Rules & Documentation:**
+    *   **12.7.1 Update Rules:** Update `django_rules.mdc`, `core_rules.mdc`, etc., reflecting Proxy Models, custom Admin Filters, Client Group usage, removal of admin inlines.
+    *   **12.7.2 Update `README.md`:** Explain the new admin workflow: Public items via type sections, Client designation via 'Active Clients' group, managing deliverables via the dedicated "Client Deliverables" section using the Client filter.
+    *   **12.7.3 Update Memory Bank:** Update `system_patterns.md`, `tech_context.md`, `progress.md`, `active_context.md`.
+
+- [ ] **12.8 Verification (Comprehensive):**
+    *   **12.8.1 Public Admin:** Verify type-specific sections work. Add items.
+    *   **12.8.2 Client Deliverable Admin:** Go to `/admin/core/clientdeliverable/`.
+        - Verify the "Client" filter appears on the right and lists only users in the 'Active Clients' group.
+        - Filter by `test01`. Verify only their (currently none) deliverables show.
+        - Click "Add Client Deliverable +". **Manually select `test01` in the `Client` dropdown.** Add an item. Save.
+        - Filter by `test01` again, verify the item appears.
+        - Filter by `test02`, verify `test01`'s item is not shown. Add an item for `test02`.
+    *   **12.8.3 Frontend Checks:** Verify public pages show correct `PublicPortfolioItem`s. Log in as `test01`, check their user page shows *only* their assigned `ClientDeliverable` items. Test access controls.
+
+- [ ] **12.9 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "refactor: Implement content-centric admin using proxy models and custom client filters"). Await confirmation to commit.
+
+---
+
+**Phase 13: Implement Comprehensive Content Preview System**
+
+*AI Assistant Guidance: Implement a session-based preview system allowing administrators/staff to view draft/unpublished content across the entire site (public portfolio, news, client pages) as it would appear live. Enhance content models with status fields and create admin controls for managing preview mode.*
+
+- [ ] **13.1 Enhance Models with Status Fields:**
+    *   **13.1.1 `PublicPortfolioItem` (`apps/core/models.py`):** Add `status` field: `models.CharField(max_length=10, choices=[('draft', 'Draft'), ('published', 'Published')], default='draft', db_index=True)`.
+    *   **13.1.2 `ClientDeliverable` (`apps/core/models.py`):** Add `status` field: `models.CharField(max_length=20, choices=[('draft', 'Draft'), ('client_review', 'Pending Client Review'), ('approved', 'Approved')], default='draft', db_index=True)`. *(Refined choices for client workflow)*.
+    *   **13.1.3 `NewsArticle` (`apps/news/models.py`):** Ensure `status` field exists with choices `draft`, `published` (and potentially `pending_review`, `rejected` as defined in Phase 10). Ensure `db_index=True`.
+    *   **13.1.4 Run Migrations:** `python manage.py makemigrations core news` and `python manage.py migrate`. Verify success.
+
+- [ ] **13.2 Implement Preview Middleware (`apps/core/middleware.py`):**
+    *   **13.2.1 Create/Update Middleware:** Ensure `PreviewModeMiddleware` exists. Logic:
+        - Get `preview_mode_active = request.session.get('preview_mode_active', False)`
+        - Get `preview_target_user_id = request.session.get('preview_target_user_id', None)`
+        - Set `request.is_preview = False` and `request.preview_user = None` initially.
+        - If `request.user.is_authenticated` and `request.user.is_staff` and `preview_mode_active`:
+            - Set `request.is_preview = True`.
+            - If `preview_target_user_id`: try to fetch the target `User` object and set `request.preview_user = target_user`. Handle potential `User.DoesNotExist`.
+    *   **13.2.2 Register Middleware:** Ensure it's correctly placed in `settings.py` `MIDDLEWARE` list (after auth/session).
+
+- [ ] **13.3 Update Admin Interface:**
+    *   **13.3.1 Add Status to Admins:** Update `PublicPortfolioItemAdmin`, `ClientDeliverableInline`, and `NewsArticleAdmin` to include the `status` field in `list_display`, `list_filter`, and make it editable in `fieldsets`/`fields`.
+    *   **13.3.2 Add Item Preview Links:** Ensure admin classes for `PublicPortfolioItem`, `ClientDeliverable` (via UserAdmin inline), and `NewsArticle` include a method/field providing a "View on Site" or "Preview" link using `get_absolute_url`. *(These links will work in preview mode based on the session)*.
+
+- [ ] **13.4 Update View Logic for Preview Awareness:**
+    *   **13.4.1 Public List Views (`apps/core/views.py` - Scans/Videos/Stills):** Modify `get_queryset`:
+        - If `self.request.is_preview`: return `PublicPortfolioItem.objects.filter(project_type=...)` including `status='draft'` or `'published'`.
+        - Else: return only `status='published'`.
+    *   **13.4.2 News Views (`apps/news/views.py`):** Modify `NewsListView` and `NewsDetailView` `get_queryset` (or `get_object`):
+        - If `self.request.is_preview`: query includes `draft`, `pending_review`, `published` statuses.
+        - Else: query only `published` status.
+        - Detail view must check status *after* fetching by slug and apply staff check for non-published items if *not* in preview mode.
+    *   **13.4.3 User Page View (`apps/accounts/views.py` - `UserPageView`):** Modify `get_context_data`:
+        - Fetch the `target_user`.
+        - If `self.request.is_preview` AND (`self.request.preview_user == target_user` OR `self.request.preview_user is None`): *(Show drafts if in general preview or specifically previewing this user)*
+            - Query `ClientDeliverable.objects.filter(client=target_user)` showing all statuses (draft, review, approved).
+        - Else (Live mode for client OR Admin not previewing this specific client):
+            - Query `ClientDeliverable.objects.filter(client=target_user, status='approved')` (or relevant 'live' status).
+        - Pass `client_deliverables` and `target_user` to context.
+
+- [ ] **13.5 Implement Admin Preview Controls:**
+    *   **13.5.1 Create Preview Control URLs:** Add URLs in `config/urls.py` (or `core/urls.py`) under `/admin/preview/` (ensure these require admin login):
+        - `/toggle/` (name: `preview_toggle`)
+        - `/set-client/<int:user_id>/` (name: `preview_set_client`)
+        - `/clear-client/` (name: `preview_clear_client`)
+    *   **13.5.2 Create Preview Control Views (`apps/core/views.py`):** Create simple FBVs decorated with `@staff_member_required`:
+        - `toggle_preview_mode(request)`: Flips `request.session['preview_mode_active']`. Clears `preview_target_user_id` when turning off. Redirects back.
+        - `set_preview_client(request, user_id)`: Sets `request.session['preview_target_user_id'] = user_id`. Sets `preview_mode_active = True`. Redirects back or to user page.
+        - `clear_preview_client(request)`: Deletes `preview_target_user_id` from session. Redirects back.
+    *   **13.5.3 Add Controls to Admin UI:** Modify `templates/admin/base_site.html` override:
+        - Add a clear "Preview Mode" section/button.
+        - Display current status: "Preview Mode: [ON/OFF]".
+        - Add link using `{% url 'preview_toggle' %}` to toggle the mode.
+        - If preview is ON, display "Previewing as: [Admin View / Client: username]".
+        - Add a link `{% url 'preview_clear_client' %}` if a client is being previewed.
+    *   **13.5.4 Add "Preview As Client" to User Admin:** Modify `CustomUserAdmin` (`apps/accounts/admin.py`):
+        - Add a method to display a "Preview This Client's Page" link in `list_display` or change form `readonly_fields`.
+        - The link should point to `{% url 'preview_set_client' user.id %}`.
+
+- [ ] **13.6 Implement Frontend Preview Indicator:**
+    - **13.6.1 Create Context Processor (`apps/core/context_processors.py`):** Create a processor `preview_context` that adds `is_preview_mode = request.session.get('preview_mode_active', False)` and `preview_target_client_username = User.objects.get(id=request.session['preview_target_user_id']).username` (if ID exists) to the template context for *all* requests. Add this processor to `TEMPLATES['OPTIONS']['context_processors']` in settings.
+    - **13.6.2 Add Indicator to `base.html`:** In @file:templates/base.html, add a conditional block (e.g., using `{% if user.is_staff and is_preview_mode %}`):
+        - Display a prominent banner/bar (e.g., fixed top/bottom).
+        - Text: "PREVIEW MODE ACTIVE [Previewing as Client: {{ preview_target_client_username }}]".
+        - Include an "Exit Preview Mode" link (`{% url 'preview_toggle' %}`).
+
+- [ ] **13.7 Verification:**
+    - **13.7.1 Admin Controls:** Test toggling preview mode on/off via admin header. Test setting/clearing specific client preview via User admin.
+    - **13.7.2 Frontend Indicator:** Verify the preview banner appears/disappears correctly on frontend pages when toggling mode as admin. Verify client name shows when previewing specific client. Verify non-staff never see the banner.
+    - **13.7.3 Draft Content Preview (Public):** Create draft `NewsArticle` & `PublicPortfolioItem`. Verify they appear on list/detail pages *only* when admin has preview mode ON. Verify object-level preview links from admin work.
+    - **13.7.4 Draft Content Preview (Client):** Create draft `ClientDeliverable` for `test01`.
+        - As admin with preview ON (general): Visit `/accounts/user/test01/`. Verify draft appears.
+        - As admin, click "Preview This Client's Page" for `test01`. Verify draft appears and banner indicates previewing as `test01`.
+        - As admin with preview ON but previewing *client02*: Visit `/accounts/user/test01/`. Verify draft *still* appears (or decide if admin general preview should override specific client preview - adjust logic in 13.4.3 if needed). *Let's default to: general preview shows all drafts*.
+        - As `test01` user (preview OFF): Verify draft does *not* appear.
+    - **13.7.5 Live Site Check:** Ensure non-staff/anonymous users *only* ever see published/approved content.
+
+- [ ] **13.8 Documentation & Memory Update:**
+    - **13.8.1 Update `README.md`/Docs:** Explain the comprehensive preview system (toggling via admin, previewing client pages, frontend indicator).
+    - **13.8.2 Update Rules:** Add rules regarding `request.is_preview`, context processor, status field usage in queries.
+    - **13.8.3 Update Memory Bank:** Detail the preview system in `system_patterns.md`. Update `progress.md`, `active_context.md`.
+
+- [ ] **13.9 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "feat: Implement comprehensive session-based content preview system"). Await confirmation to commit.
+
+---
 ---

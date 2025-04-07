@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import get_user_model # Import get_user_model
 from django.contrib.auth.views import LoginView # Import LoginView
 from django.urls import reverse_lazy, reverse, NoReverseMatch # Import reverse and NoReverseMatch
-from django.template.loader import select_template # Import select_template
+from django.template.loader import select_template, get_template # Import select_template and get_template
 from django.template import TemplateDoesNotExist # Import TemplateDoesNotExist
-from django.http import HttpResponseForbidden # Import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404 # Import HttpResponseForbidden and Http404
 import logging # Import logging
 
 # Get an instance of a logger
@@ -66,57 +66,50 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
         # Add any other profile-specific context data here later
         return context
 
-class UserPageView(LoginRequiredMixin, TemplateView):
-    """
-    Displays a specific user's public-facing page, restricted to the user or staff.
-    Fetches the user based on the username in the URL.
-    Dynamically selects a template:
-    1. Looks for 'accounts/user_templates/<username>.html'
-    2. Falls back to 'accounts/user_page.html'
-    Added LoginRequiredMixin and dispatch check for authorization.
-    """
-    login_url = reverse_lazy('accounts:login') # Required by LoginRequiredMixin
+# Updated UserPageView using DetailView and UserPassesTestMixin
+class UserPageView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = User
+    template_name = 'accounts/user_page.html' # Default fallback template
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+    context_object_name = 'target_user'
     permission_denied_message = "You do not have permission to view this page."
+    login_url = reverse_lazy('accounts:login') # Needed for LoginRequiredMixin
 
-    def dispatch(self, request, *args, **kwargs):
-        """Check if the logged-in user is the target user or staff."""
-        # First, ensure the user is logged in (handled by LoginRequiredMixin)
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
+    def test_func(self):
+        """Check if the requesting user is the target user or is staff."""
+        # self.get_object() retrieves the user based on the username in the URL (due to DetailView)
+        target_user = self.get_object()
+        return self.request.user == target_user or self.request.user.is_staff
 
-        # Get the username from the URL kwargs
-        username = self.kwargs.get('username')
-        # Get the target user object
-        target_user = get_object_or_404(User, username=username)
-
-        # Check if the requesting user is the target user OR is staff
-        if request.user == target_user or request.user.is_staff:
-            # If authorized, proceed with the normal view dispatch
-            return super().dispatch(request, *args, **kwargs)
-        else:
-            # If not authorized, return a Forbidden response
-            return HttpResponseForbidden(self.permission_denied_message)
+    def handle_no_permission(self):
+        """Handle permission denied scenarios."""
+        if not self.request.user.is_authenticated:
+            return super().handle_no_permission() # Redirect to login
+        return HttpResponseForbidden(self.get_permission_denied_message()) # Show 403
 
     def get_template_names(self):
-        """Return a list of template names to search for.
-
-        Checks for a user-specific template first, then falls back to default.
-        """
-        username = self.kwargs.get('username')
-        # Construct the path for the user-specific template
-        user_specific_template = f"accounts/user_templates/{username}.html"
-        default_template = "accounts/user_page.html"
-
-        # Django's template loader will try these in order
-        return [user_specific_template, default_template]
+        """Dynamically select template: user-specific or default."""
+        target_user = self.get_object()
+        username = target_user.username
+        user_specific_template = f'accounts/user_templates/{username}.html'
+        try:
+            # Check if user-specific template exists
+            # Note: Using template engine's get_template might be better for checking existence
+            # but select_template works for returning a list as expected by get_template_names
+            get_template(user_specific_template)
+            logger.info(f"Using user-specific template: {user_specific_template}")
+            return [user_specific_template, self.template_name]
+        except TemplateDoesNotExist:
+            logger.info(f"User-specific template not found for {username}, using default: {self.template_name}")
+            return [self.template_name]
 
     def get_context_data(self, **kwargs):
-        """Add the target user to the context."""
+        """Add client deliverables to the context."""
         context = super().get_context_data(**kwargs)
-        username = self.kwargs.get('username')
-        target_user = get_object_or_404(User, username=username)
-        context['target_user'] = target_user
-        context['page_title'] = f"{target_user.username}'s Page"
-        # Add user-specific content/data here later if needed
-        # This context is available to both the default and custom templates.
+        target_user = self.get_object()
+        # Correctly query ClientDeliverable using the related_name
+        context['client_deliverables'] = target_user.deliverables.all().order_by('-created_at')
+        context['page_title'] = f"{target_user.username}'s Deliverables"
+        logger.info(f"Fetched {context['client_deliverables'].count()} deliverables for user {target_user.username}")
         return context

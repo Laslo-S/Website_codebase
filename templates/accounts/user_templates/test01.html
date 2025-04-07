@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Special Page for {{ target_user.username }} | {{ block.super }}{% endblock title %}
+{% block title %}Special Page for {{ target_user.username }} | {{ block.super }}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     {# Custom header for this specific user #}
-    <h1 class="text-4xl font-bold text-center text-purple-700 mb-8">*** Projects for {{ target_user.username }} ***</h1>
+    <h1 class="text-4xl font-bold text-center text-purple-700 mb-8">✨ Special Page for {{ target_user.username }} ✨</h1>
 
     {# Custom content area - maybe some intro text #}
     <div class="bg-purple-100 border border-purple-300 shadow-lg rounded p-6 mb-8">
@@ -15,17 +15,17 @@
         </p>
     </div>
 
-    {# Restore original grid structure #}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for project in user_projects %}
-            {% include "core/_project_card.html" with project=project %}
-        {% empty %}
-            <div class="col-span-full text-center text-purple-600 py-8">
-                {# Use col-span-full for empty message #}
-                <p>Looks like {{ target_user.username }} hasn't added any projects yet!</p>
-            </div>
-        {% endfor %}
-    </div>
+    {# Correctly loop through client_deliverables and include the deliverable card #}
+    <h2 class="text-2xl font-semibold mb-4">Your Deliverables:</h2>
+    {% if client_deliverables %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for deliverable in client_deliverables %}
+                {% include "accounts/partials/_deliverable_card.html" with deliverable=deliverable %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-600">You currently have no deliverables assigned.</p>
+    {% endif %}
 
 </div>
-{% endblock content %} 
+{% endblock %} 

@@ -1,26 +1,27 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% comment %} Base template for displaying a list of projects (Scans, Videos, Stills) {% endcomment %}
+{% load static %}
 
-{% block title %}{{ page_title }} | {{ block.super }}{% endblock title %}
+{% block title %}{{ page_title|default:"Projects" }} | {{ block.super }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8 text-center">{{ page_title }}</h1>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-center">{{ page_title|default:"Our Work" }}</h1>
 
-    {% if projects %}
-        {# Restore original grid div #}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for project in projects %}
-                {# Include a reusable card template for each project #}
-                {% include "core/_project_card.html" with project=project %}
+    {# CORRECTED: Use portfolio_items context variable and pass item=item #}
+    {% if portfolio_items %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in portfolio_items %}
+                {% include "core/partials/_project_card.html" with item=item %}
             {% endfor %}
         </div>
 
-        {# Include Pagination Partial #}
-        {% include "partials/_pagination.html" %}
-
+        {% comment %} Include pagination controls if needed {% endcomment %}
+        {% if is_paginated %}
+            {% include "partials/_pagination.html" with page_obj=page_obj %}
+        {% endif %}
     {% else %}
-        <p class="text-center text-gray-600">No projects of this type found.</p>
+        <p class="text-center text-gray-600">No projects found in this category yet.</p>
     {% endif %}
-
 </div>
-{% endblock content %} 
+{% endblock %} 

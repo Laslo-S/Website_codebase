@@ -21,6 +21,7 @@
         <div class="hidden md:flex items-center space-x-4">
             {% if user.is_authenticated %}
                 <span class="text-gray-700">Hi, {{ user.username }}!</span>
+                <a href="{% url 'accounts:user_page' username=user.username %}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 text-sm">My Page</a>
                 <form action="{% url 'accounts:logout' %}" method="post" class="inline">
                     {% csrf_token %}
                     <button type="submit" class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline">Logout</button>
@@ -55,6 +56,7 @@
         {# Auth links - Mobile #}
         {% if user.is_authenticated %}
             <div class="px-4 py-2 text-sm text-gray-500">Hi, {{ user.username }}!</div>
+            <a href="{% url 'accounts:user_page' username=user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Page</a>
             <form action="{% url 'accounts:logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>

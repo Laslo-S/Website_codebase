@@ -1,0 +1,24 @@
+{% comment %} Card partial for displaying a Client Deliverable {% endcomment %}
+{% load static %}
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+    {% if deliverable.image %}
+        <img src="{{ deliverable.image.url }}" alt="{{ deliverable.title }}" class="w-full h-48 object-cover">
+    {% elif deliverable.embed_code %}
+        <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+            {# Basic attempt to make embed responsive, may need CSS #}
+            {{ deliverable.embed_code|safe }}
+        </div>
+    {% else %}
+        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+            <span class="text-gray-500">No Preview</span>
+        </div>
+    {% endif %}
+    <div class="p-4">
+        <h3 class="font-semibold text-lg mb-2">{{ deliverable.title }}</h3>
+        <p class="text-gray-600 text-sm mb-3">{{ deliverable.description|truncatewords:20 }}</p>
+        <span class="text-xs font-medium px-2 py-1 rounded bg-green-100 text-green-800">{{ deliverable.get_project_type_display }}</span>
+        {# Add status indicator in Phase 13 #}
+        {# <span class="text-xs font-medium px-2 py-1 rounded bg-yellow-100 text-yellow-800 ml-2">{{ deliverable.get_status_display }}</span> #}
+    </div>
+</div> 

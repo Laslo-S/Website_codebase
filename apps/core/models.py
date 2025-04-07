@@ -11,64 +11,114 @@ User = get_user_model()
 # class VisualizationType(models.Model):
 #     ...
 
-class VisualizationProject(models.Model):
-    """ Represents a single visualization project. """
-
-    # Define choices for the type field
-    TYPE_SCAN = 'scan'
-    TYPE_VIDEO = 'video'
-    TYPE_STILL = 'still'
-    PROJECT_TYPE_CHOICES = [
-        (TYPE_SCAN, '3D Scan'),
-        (TYPE_VIDEO, 'Video Visualization'),
-        (TYPE_STILL, 'Still Image'),
+# NEW MODELS
+class PublicPortfolioItem(models.Model):
+    VISUALIZATION_TYPES = [
+        ('scan', '3D Scan'),
+        ('video', 'Video Visualization'),
+        ('still', 'Still Image'),
     ]
 
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    # Changed type field to CharField with choices
     project_type = models.CharField(
         max_length=10,
-        choices=PROJECT_TYPE_CHOICES,
-        default=TYPE_STILL, # Or choose a sensible default
-        db_index=True # Add index for faster filtering by type
+        choices=VISUALIZATION_TYPES,
+        default='still',
+        db_index=True # Required index
     )
-    # Use TextField for potentially long iframe/embed code
-    embed_code = models.TextField(blank=True, help_text="Paste iframe embed code here (for Sketchfab, Vimeo, etc.)")
-    # Use ImageField for still images/thumbnails
-    image = models.ImageField(upload_to='visualizations/images/', blank=True, null=True, help_text="Upload a still image or thumbnail.")
-    slug = models.SlugField(max_length=255, unique=True, blank=True, help_text="Unique URL slug (auto-generated from title if left blank)")
+    embed_code = models.TextField(blank=True)
+    image = models.ImageField(upload_to='portfolio/', blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True) # Auto-generated
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        related_name='visualization_projects',
-        null=True,
-        blank=True
-    )
-    is_public = models.BooleanField(default=True, help_text="Is this project visible to the public?")
 
     class Meta:
-        verbose_name = "Visualization Project"
-        verbose_name_plural = "Visualization Projects"
+        verbose_name = "Public Portfolio Item"
         ordering = ['-created_at']
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        """ Auto-generate slug from title if not provided. """
         if not self.slug:
             self.slug = slugify(self.title)
+            # Ensure slug uniqueness
             original_slug = self.slug
-            counter = 1
-            # Ensure slug uniqueness (simple approach)
-            while VisualizationProject.objects.filter(slug=self.slug).exists():
-                self.slug = f'{original_slug}-{counter}'
-                counter += 1
+            num = 1
+            while PublicPortfolioItem.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                self.slug = f'{original_slug}-{num}'
+                num += 1
         super().save(*args, **kwargs)
 
-    # Optional: Add a method to get the absolute URL for a project detail page later
-    # def get_absolute_url(self):
-    #     return reverse('core:project_detail', kwargs={'slug': self.slug})
+    def get_absolute_url(self):
+        # Placeholder: Implement detail view later
+        return "#"
+
+class ClientDeliverable(models.Model):
+    DELIVERABLE_TYPES = [
+        ('scan', '3D Scan'),
+        ('video', 'Video Visualization'),
+        ('still', 'Still Image'),
+        ('other', 'Other Deliverable'),
+    ]
+
+    client = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='deliverables', # For reverse lookup user.deliverables.all()
+        db_index=True # Required index
+    )
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    project_type = models.CharField(
+        max_length=10,
+        choices=DELIVERABLE_TYPES,
+        default='other'
+    )
+    embed_code = models.TextField(blank=True)
+    image = models.ImageField(upload_to='client_deliverables/%Y/%m/%d/', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Client Deliverable"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.client.username} - {self.title}"
+
+# Managers for Proxy Models
+class PublicScanManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(project_type='scan')
+
+class PublicVideoManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(project_type='video')
+
+class PublicStillManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(project_type='still')
+
+# Proxy Models for Admin Organization
+class PublicScanItem(PublicPortfolioItem):
+    objects = PublicScanManager()
+    class Meta:
+        proxy = True
+        verbose_name = "Public 3D Scan"
+        verbose_name_plural = "Public 3D Scans"
+
+class PublicVideoItem(PublicPortfolioItem):
+    objects = PublicVideoManager()
+    class Meta:
+        proxy = True
+        verbose_name = "Public Video Visualization"
+        verbose_name_plural = "Public Videos"
+
+class PublicStillItem(PublicPortfolioItem):
+    objects = PublicStillManager()
+    class Meta:
+        proxy = True
+        verbose_name = "Public Still Image"
+        verbose_name_plural = "Public Stills"
