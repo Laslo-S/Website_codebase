@@ -1,55 +1,67 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Homepage - ArchViz Platform{% endblock title %}
+{% block title %}ArchViz Platform - Home{% endblock title %}
 
 {% block content %}
-    {# Hero Section #}
-    <section id="hero" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20 px-4 text-center">
-        <div class="container mx-auto">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Explore Architectural Visualizations</h1>
-            <p class="text-lg md:text-xl mb-8 text-indigo-100">High-fidelity 3D scans, realistic renderings, and immersive experiences.</p>
-            {# Optional: Link to one of the new pages or keep as is? #}
-            <a href="{% url 'core:scan_list' %}" class="bg-white text-blue-700 font-semibold py-2 px-6 rounded-full hover:bg-gray-100 transition duration-300">Explore Projects</a>
+    {# == Hero Section == #}
+    <section id="hero" class="py-12 md:py-20 lg:py-24"> {# Basic Padding #}
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             {# Content added in Phase 15 #}
+            <h2>Hero Section</h2> {# Placeholder #}
         </div>
     </section>
 
-    {# Removed Featured Work Section #}
-    {# Content is now on dedicated pages linked in the header #}
-
-    {# You could add other introductory content here if desired #}
-    <section class="py-16 px-4">
-        <div class="container mx-auto text-center">
-            <h2 class="text-3xl font-bold mb-6">Our Services</h2>
-            <p class="max-w-3xl mx-auto text-gray-700 mb-8">
-                We specialize in transforming architectural designs into stunning visual experiences. Explore our dedicated sections for detailed 3D scans, immersive video visualizations, and high-quality still image renderings.
-            </p>
-            <div class="flex justify-center space-x-4">
-                 <a href="{% url 'core:scan_list' %}" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded hover:bg-blue-600 transition duration-300">View 3D Scans</a>
-                 <a href="{% url 'core:video_list' %}" class="bg-green-500 text-white font-semibold py-2 px-6 rounded hover:bg-green-600 transition duration-300">View Videos</a>
-                 <a href="{% url 'core:still_list' %}" class="bg-purple-500 text-white font-semibold py-2 px-6 rounded hover:bg-purple-600 transition duration-300">View Images</a>
-            </div>
+    {# == Services Section == #}
+    <section id="services" class="py-12 md:py-20 lg:py-24 bg-gray-50"> {# Basic Padding + Placeholder BG #}
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2>Our Services</h2> {# Placeholder #}
+             {# Content added in Phase 15 #}
         </div>
     </section>
 
-    {# Latest News Section (Dynamic) #}
-    {% if latest_posts %}
-    <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-8 text-center">Latest News</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {% for post in latest_posts %}
-                    {# Include the blog card partial #}
-                    {% include "news/_news_card.html" with post=post %}
-                {% endfor %}
-            </div>
-            <div class="text-center mt-12">
-                <a href="{% url 'news:news_list' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition duration-300 shadow-md">View All News</a>
-            </div>
+    {# == Featured Projects Section == #}
+    <section id="featured-projects" class="py-12 md:py-20 lg:py-24">
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <h2>Featured Projects</h2> {# Placeholder #}
+             {# Content added in Phase 15 #}
         </div>
     </section>
-    {% endif %}
 
-    {# REMOVED Old Static News Section Placeholder #}
+    {# == Client Portal Section == #}
+    <section id="client-portal" class="py-12 md:py-20 lg:py-24 bg-gray-800 text-gray-100"> {# Placeholder BG/Text #}
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <h2>Client Portal</h2> {# Placeholder #}
+             {# Content added in Phase 15 #}
+        </div>
+    </section>
+
+    {# == Latest News Section == #}
+    <section id="news" class="py-12 md:py-20 lg:py-24">
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2>Latest News</h2> {# Placeholder #}
+            {# Existing news loop can be moved here in Phase 15 #}
+            {% comment %}
+                {% if latest_posts %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {% for post in latest_posts %}
+                            {% include "news/_news_card.html" with post=post %}
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-12">
+                        <a href="{% url 'news:news_list' %}">View All News</a>
+                    </div>
+                {% endif %}
+            {% endcomment %}
+        </div>
+    </section>
+
+    {# == CTA Banner Section == #}
+    <section id="cta-banner" class="py-12 md:py-16 lg:py-20 bg-gray-100"> {# Placeholder BG #}
+         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <h2>CTA Banner</h2> {# Placeholder #}
+             {# Content added in Phase 15 #}
+         </div>
+    </section>
 
 {% endblock content %} 

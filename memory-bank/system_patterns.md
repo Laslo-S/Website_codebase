@@ -93,4 +93,21 @@ This document records key architectural decisions and established conventions fo
 *   **Static Files:** Standard Django static file handling (`STATIC_URL`, `STATICFILES_DIRS`).
 *   **Media Files:** Standard Django media file handling (`MEDIA_URL`, `MEDIA_ROOT`) for user uploads (e.g., `NewsPost.featured_image`).
 *   **Configuration:** Uses environment variables via `django-environ` (`.env` file).
-*   **API Design:** RESTful principles using Django REST Framework (DRF) generic views and ModelSerializers. 
+*   **API Design:** RESTful principles using Django REST Framework (DRF) generic views and ModelSerializers.
+
+### Key System Patterns
+
+*   **Modular Monolith (Django Apps):** Project organized into discrete Django apps within the `apps/` directory (`core`, `accounts`, `news`).
+*   **Server-Side Rendering (SSR):** Frontend primarily rendered using Django Templates.
+*   **Template Structure:**
+    *   Base Template: `templates/base.html` provides overall page structure.
+    *   Partials: Reusable components (header, footer, cards) in `templates/partials/`.
+    *   App-Specific Templates: In `apps/<app_name>/templates/<app_name>/`.
+    *   Homepage Structure: Uses specific section IDs (`#hero`, `#services`, etc.) derived from v0.
+*   **Styling:** Utility-first CSS via Tailwind CSS. Global styles/variables integrated from v0.
+*   **Client-Specific Pages:** Achieved via dynamic template selection in `UserPageView`.
+*   **Admin Organization:** Uses Proxy Models for type-specific views (`Public...Item` admins) and cross-app grouping (`ClientDeliverableAdminView`).
+*   **Content Preview:** Session-based preview mode activated by staff via admin toggle, affecting querysets in views and displaying a banner.
+*   **API Authentication:** JWT via `djangorestframework-simplejwt` for external agents.
+*   **Configuration:** Uses `django-environ` loading from `.env`.
+*   **Memory Bank:** Persistent context maintained via files in `memory-bank/`. 

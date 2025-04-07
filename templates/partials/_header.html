@@ -1,69 +1,80 @@
+{% load static %}
 {# templates/partials/_header.html #}
-<header class="bg-white shadow-md sticky top-0 z-50 border-b border-gray-200">
-    <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div>
-            <a href="{% url 'core:home' %}" class="text-xl font-bold text-blue-700 hover:text-blue-900">ArchViz Platform</a>
-        </div>
-        {# Main Navigation Links #}
-        <div class="hidden md:flex items-center space-x-6">
-            {# Project Type Pages #}
-            <a href="{% url 'core:scan_list' %}" class="text-gray-600 hover:text-blue-700">3D Scans</a>
-            <a href="{% url 'core:video_list' %}" class="text-gray-600 hover:text-blue-700">Visualizations</a>
-            <a href="{% url 'core:still_list' %}" class="text-gray-600 hover:text-blue-700">Still Images</a>
-            {# News Page #}
-            <a href="{% url 'news:news_list' %}" class="text-gray-600 hover:text-blue-700">News</a>
-            {# Other Static Pages #}
-            <a href="{% url 'core:about' %}" class="text-gray-600 hover:text-blue-700">About</a>
-            <a href="{% url 'core:contact' %}" class="text-gray-600 hover:text-blue-700">Contact</a>
-        </div>
-
-        {# Auth links - Desktop #}
-        <div class="hidden md:flex items-center space-x-4">
+{# Structure based on ClientLayout.txt - Minimal styling #}
+<header class="fixed top-0 z-50 w-full border-b border-transparent backdrop-blur-lg bg-background/95">
+    <div class="container max-w-7xl mx-auto flex h-14 items-center justify-between px-4 md:px-6">
+        {# Logo Link #}
+        <a href="{% url 'core:home' %}" class="mr-6 flex items-center space-x-2">
+            {# Placeholder for logo image/svg #}
+            <span class="font-bold inline-block">ArchViz Platform</span> {# Placeholder Text Logo #}
+        </a>
+        
+        {# Main Navigation Links - Desktop #}
+        <nav class="hidden md:flex gap-6">
+            <a href="{% url 'core:scan_list' %}" class="/* Basic nav link styles */ text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80">3D Scans</a>
+            <a href="{% url 'core:video_list' %}" class="/* Basic nav link styles */ text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80">Visualizations</a>
+            <a href="{% url 'core:still_list' %}" class="/* Basic nav link styles */ text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80">Still Images</a>
+            <a href="{% url 'news:news_list' %}" class="/* Basic nav link styles */ text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80">News</a>
+            <a href="{% url 'core:about' %}" class="/* Basic nav link styles */ text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80">About</a>
+            <a href="{% url 'core:contact' %}" class="/* Basic nav link styles */ text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80">Contact</a>
+        </nav>
+        
+        {# Right side items: Auth/CTA - Desktop #}
+        <div class="hidden md:flex flex-1 items-center justify-end space-x-4">
             {% if user.is_authenticated %}
-                <span class="text-gray-700">Hi, {{ user.username }}!</span>
-                <a href="{% url 'accounts:user_page' username=user.username %}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 text-sm">My Page</a>
+                <a href="{% url 'accounts:user_page' username=user.username %}" class="/* Basic button style */ inline-flex items-center justify-center rounded-md text-sm font-medium px-4 py-2">My Page</a>
                 <form action="{% url 'accounts:logout' %}" method="post" class="inline">
                     {% csrf_token %}
-                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline">Logout</button>
+                    <button type="submit" class="/* Basic button style */ inline-flex items-center justify-center rounded-md text-sm font-medium px-4 py-2">Logout</button>
                 </form>
             {% else %}
-                <a href="{% url 'accounts:login' %}" class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline">Login</a>
-                {# Add Sign Up link later #}
+                 <a href="{% url 'accounts:login' %}" class="/* Basic button style */ inline-flex items-center justify-center rounded-md text-sm font-medium px-4 py-2">Login</a>
+                 {# Placeholder for other CTA if needed #}
             {% endif %}
         </div>
 
         {# Mobile menu toggle button #}
-        <div class="md:hidden">
-             <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
+        <div class="md:hidden flex items-center">
+             <button id="mobile-menu-button" class="inline-flex items-center justify-center rounded-md p-2 text-foreground/70 hover:text-foreground focus:outline-none">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    {# Add logic later to switch between hamburger/close icons #}
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
+                <span class="sr-only">Open main menu</span>
             </button>
         </div>
-    </nav>
-     {# Mobile menu - hidden by default, needs JS to toggle #}
-    <div id="mobile-menu" class="md:hidden hidden bg-white py-2">
-        {# Project Type Pages #}
-        <a href="{% url 'core:scan_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">3D Scans</a>
-        <a href="{% url 'core:video_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Visualizations</a>
-        <a href="{% url 'core:still_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Still Images</a>
-        {# News Page #}
-        <a href="{% url 'news:news_list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">News</a>
-        {# Other Static Pages #}
-        <a href="{% url 'core:about' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">About</a>
-        <a href="{% url 'core:contact' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">Contact</a>
-        <hr class="my-2">
-        {# Auth links - Mobile #}
-        {% if user.is_authenticated %}
-            <div class="px-4 py-2 text-sm text-gray-500">Hi, {{ user.username }}!</div>
-            <a href="{% url 'accounts:user_page' username=user.username %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Page</a>
-            <form action="{% url 'accounts:logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>
-            </form>
-        {% else %}
-            <a href="{% url 'accounts:login' %}" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50">Login</a>
-            {# <a href="#" class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50">Sign Up</a> #}
-        {% endif %}
+    </div>
+    
+     {# Mobile menu - structure based on ClientLayout, minimal style #}
+    <div id="mobile-menu" class="hidden md:hidden">
+        <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+            <a href="{% url 'core:scan_list' %}" class="block rounded-md px-3 py-2 text-base font-medium">3D Scans</a>
+            <a href="{% url 'core:video_list' %}" class="block rounded-md px-3 py-2 text-base font-medium">Visualizations</a>
+            <a href="{% url 'core:still_list' %}" class="block rounded-md px-3 py-2 text-base font-medium">Still Images</a>
+            <a href="{% url 'news:news_list' %}" class="block rounded-md px-3 py-2 text-base font-medium">News</a>
+            <a href="{% url 'core:about' %}" class="block rounded-md px-3 py-2 text-base font-medium">About</a>
+            <a href="{% url 'core:contact' %}" class="block rounded-md px-3 py-2 text-base font-medium">Contact</a>
+        </div>
+        <div class="border-t border-border pb-3 pt-4">
+            {% if user.is_authenticated %}
+                <div class="flex items-center px-5">
+                    <div class="ml-3">
+                        <div class="text-base font-medium leading-none">{{ user.username }}</div>
+                    </div>
+                </div>
+                <div class="mt-3 space-y-1 px-2">
+                    <a href="{% url 'accounts:user_page' username=user.username %}" class="block rounded-md px-3 py-2 text-base font-medium">My Page</a>
+                    <form action="{% url 'accounts:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="block w-full text-left rounded-md px-3 py-2 text-base font-medium">Logout</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="mt-3 space-y-1 px-2">
+                    <a href="{% url 'accounts:login' %}" class="block rounded-md px-3 py-2 text-base font-medium">Login</a>
+                    {# Sign up? #}
+                </div>
+            {% endif %}
+        </div>
     </div>
 </header> 

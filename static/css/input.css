@@ -1,5 +1,72 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
+/* --- v0 Globals Integration --- */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  /* Basic dark mode variables - can be expanded later if needed */
+  /* .dark { ... } */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Add font-heading definition if needed in tailwind.config.js */
+    /* @apply font-sans; */ /* Assuming base font is sans */
+  }
+  /* Removed heading font application - handle via Tailwind config */
+  /* h1,h2,h3,h4,h5,h6 { @apply font-heading; } */
+}
+
+/* Smooth scrolling - Applied on <html> tag in base.html */
+
+/* Full height - Handled by Tailwind/CSS on body/main elements */
+
+/* Line clamp utilities - Can add if needed, or use Tailwind plugin */
+
+/* Hide scrollbar - Apply utility class where needed */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+/* --- End v0 Globals Integration --- */
+
 /* You can add custom base styles or component styles here if needed */ 
