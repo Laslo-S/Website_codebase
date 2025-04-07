@@ -71,7 +71,7 @@ class UserPageView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = User
     template_name = 'accounts/user_page.html' # Default fallback template
     slug_field = 'username'
-    slug_url_kwarg = 'username'
+    slug_url_arg = 'username'
     context_object_name = 'target_user'
     permission_denied_message = "You do not have permission to view this page."
     login_url = reverse_lazy('accounts:login') # Needed for LoginRequiredMixin
@@ -108,8 +108,19 @@ class UserPageView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         """Add client deliverables to the context."""
         context = super().get_context_data(**kwargs)
         target_user = self.get_object()
-        # Correctly query ClientDeliverable using the related_name
-        context['client_deliverables'] = target_user.deliverables.all().order_by('-created_at')
+        deliverables_qs = target_user.deliverables.all()
+
+        # Filter by status based on preview mode
+        is_preview = getattr(self.request, 'is_preview', False)
+
+        # Show all statuses if general preview is active
+        if is_preview:
+            pass 
+        else:
+            # Live mode: Only show 'published' deliverables
+            deliverables_qs = deliverables_qs.filter(status='published')
+
+        context['client_deliverables'] = deliverables_qs.order_by('-created_at')
         context['page_title'] = f"{target_user.username}'s Deliverables"
-        logger.info(f"Fetched {context['client_deliverables'].count()} deliverables for user {target_user.username}")
+        logger.info(f"Fetched {context['client_deliverables'].count()} deliverables for user {target_user.username} (Preview: {is_preview})")
         return context

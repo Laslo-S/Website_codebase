@@ -13,11 +13,18 @@ class NewsListView(ListView):
     model = NewsPost
     template_name = 'news/news_list.html' # Path within templates directory
     context_object_name = 'posts'
-    paginate_by = 5 # Display 5 posts per page
+    paginate_by = 10 # Display 10 posts per page
 
     def get_queryset(self):
-        # Return only published posts, ordered by most recent published date
-        return super().get_queryset().filter(status='published').order_by('-published_at')
+        queryset = super().get_queryset()
+        # Filter by status based on preview mode
+        if not getattr(self.request, 'is_preview', False):
+            queryset = queryset.filter(status='published')
+        # In preview mode, show draft and published (adjust if other statuses needed)
+        else:
+            queryset = queryset.filter(status__in=['draft', 'published'])
+
+        return queryset.order_by('-published_at', '-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,8 +40,14 @@ class NewsDetailView(DetailView):
     slug_url_kwarg = 'slug' # Name of the slug argument in the URL pattern
 
     def get_queryset(self):
-        # Allow viewing only published posts via the detail URL
-        return super().get_queryset().filter(status='published')
+        queryset = super().get_queryset()
+        # Filter by status based on preview mode
+        if not getattr(self.request, 'is_preview', False):
+            queryset = queryset.filter(status='published')
+        # In preview mode, allow viewing draft and published via direct URL
+        else:
+            queryset = queryset.filter(status__in=['draft', 'published'])
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

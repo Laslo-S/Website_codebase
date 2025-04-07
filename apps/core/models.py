@@ -18,6 +18,10 @@ class PublicPortfolioItem(models.Model):
         ('video', 'Video Visualization'),
         ('still', 'Still Image'),
     ]
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    ]
 
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -30,6 +34,7 @@ class PublicPortfolioItem(models.Model):
     embed_code = models.TextField(blank=True)
     image = models.ImageField(upload_to='portfolio/', blank=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True) # Auto-generated
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', db_index=True) # Added status field
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -62,6 +67,10 @@ class ClientDeliverable(models.Model):
         ('still', 'Still Image'),
         ('other', 'Other Deliverable'),
     ]
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    ]
 
     client = models.ForeignKey(
         User,
@@ -78,6 +87,7 @@ class ClientDeliverable(models.Model):
     )
     embed_code = models.TextField(blank=True)
     image = models.ImageField(upload_to='client_deliverables/%Y/%m/%d/', blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

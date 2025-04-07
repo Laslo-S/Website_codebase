@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.utils.html import format_html
 # Import the base model and the new proxy models
 from .models import PublicPortfolioItem, PublicScanItem, PublicVideoItem, PublicStillItem, ClientDeliverable
 
@@ -13,21 +14,28 @@ User = get_user_model()
 
 # Base Admin class for common settings (NOT registered)
 class PublicPortfolioItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'project_type', 'created_at', 'updated_at')
+    list_display = ('formatted_title', 'project_type', 'status', 'created_at', 'updated_at')
     search_fields = ('title', 'description')
     prepopulated_fields = {'slug': ('title',)}
-    list_filter = ('created_at', 'updated_at') # Keep type filtering separate
+    list_filter = ('project_type', 'status', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('title', 'slug', 'project_type')
+            'fields': ('title', 'slug', 'project_type', 'status')
         }),
         ('Content', {
             'fields': ('description', 'embed_code', 'image')
         }),
     )
-    # Make project_type readonly in the base admin to prevent changing it
-    # Specific admins can override this if needed for initial setting
     readonly_fields = ('project_type',)
+    list_editable = ('status',)
+
+    def formatted_title(self, obj):
+        if obj.status == 'draft':
+            # Make draft titles bold and yellowish text
+            return format_html('<strong style="color: #DAA520; font-weight: bold;">{}</strong>', obj.title)
+        return obj.title
+    formatted_title.short_description = 'Title'
+    formatted_title.admin_order_field = 'title'
 
 # Specific Admins for Proxy Models (Registered)
 @admin.register(PublicScanItem)
@@ -129,15 +137,29 @@ class ClientFilter(admin.SimpleListFilter):
 
 # Define the admin class BUT DO NOT REGISTER IT HERE
 class ClientDeliverableAdmin(admin.ModelAdmin):
-    list_display = ('title', 'client', 'project_type', 'created_at')
-    list_filter = (ClientFilter, 'project_type') # Use the custom ClientFilter
+    list_display = ('formatted_title', 'client', 'project_type', 'status', 'created_at')
+    list_filter = (ClientFilter, 'project_type', 'status')
     search_fields = ('title', 'description', 'client__username')
-    autocomplete_fields = ['client'] # Use autocomplete for client selection
+    autocomplete_fields = ['client']
+    list_editable = ('status',)
     fieldsets = (
         (None, {
-            'fields': ('client', 'title', 'project_type')
+            'fields': ('client', 'title', 'project_type', 'status')
         }),
         ('Content', {
             'fields': ('description', 'embed_code', 'image')
         }),
     )
+    
+    def formatted_title(self, obj):
+        if obj.status == 'draft':
+            # Make draft titles bold and yellowish text
+            return format_html('<strong style="color: #DAA520; font-weight: bold;">{}</strong>', obj.title)
+        return obj.title
+    formatted_title.short_description = 'Title'
+    formatted_title.admin_order_field = 'title'
+
+    # Add preview link later if user page acts as detail view
+    # readonly_fields = ('view_on_site_link',)
+    # def view_on_site_link(self, obj):
+    #    ...

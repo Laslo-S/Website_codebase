@@ -1,28 +1,57 @@
 # Project Progress Log
 
-*   **Phase 1:** Foundation & Backend Setup (Django, SQLite, Env Vars, Initial Rules).
-*   **Phase 2:** Foundational Frontend Layout (Base HTML, Static Files Config, Mobile-First Structure).
-*   **Phase 3:** Homepage Content Structure (Placeholder Embeds/Images, Basic Routing).
-*   **Phase 4:** Initial Styling (Tailwind CSS Integration), Navigation, Auth Structure (Login/Logout, Profile Page, Basic User Pages), Admin Customization.
-*   **Phase 5:** Refactored Visualization Types (Hardcoded types, DB migration, updated views/templates/URLs).
-*   **Phase 6:** Enhanced AI Capabilities (Memory Bank implementation, GitHub & Browser Tools MCP setup and rules).
-*   **Phase 7:** User Content Flow & Refinement (Implemented dynamic user content display on user pages. Enhanced User admin with inline projects. Refined template structure with partials (_header, _footer). Documented final structure and conventions in README and memory bank.)
-*   **Phase 8:** Dynamic Content & Styling (Connected DB models to public list views. Implemented pagination. Refined Tailwind styling on base layout, cards, header/footer. Created pagination and Tailwind config partials/rules.)
-*   **Phase 9:** News/Blog Implementation (Created `news` app, `NewsPost` model with status/slug logic. Configured admin with CKEditor 5. Implemented list/detail views and templates. Added latest news to homepage and header link. Removed author field. Added featured image support.)
-*   **Phase 10:** Implement Foundational API for External AI News Writer (Refactored in Phase 11)
-*   **Phase 11:** Operationalize External NewsPost API (COMPLETE)
-*   **Revised Phase 12:** Implement Content-Centric Admin Interface (COMPLETE)
-    *   Defined `PublicPortfolioItem` & `ClientDeliverable` models.
-    *   Created Proxy Models & Managers for Public Portfolio types.
-    *   Configured Admin for Public Portfolio Proxy Models (type-specific sections).
-    *   Configured Client Designation via 'Active Clients' Group.
-    *   Implemented dedicated `ClientDeliverable` Admin (moved under "Client Management & Auth" via proxy) with custom `ClientFilter`.
-    *   Removed inline admin from User page.
-    *   Fixed public item display on add forms.
-    *   Fixed client item display on user pages.
-    *   Added "My Page" link to header.
-    *   Updated rules, documentation, and memory bank.
-    *   Verified admin workflows and frontend display.
-*   **Next:** Phase 13: Implement Comprehensive Content Preview System.
+## Phase 1: Foundation & Backend Setup (Completed)
+- Configured Django project structure, SQLite database, environment variables (.env), initial core app, and basic AI assistant rules.
 
---- 
+## Phase 2: Foundational Frontend Layout (Completed)
+- Created base HTML template (`templates/base.html`), configured static file serving, established a mobile-first responsive structure.
+
+## Phase 3: Homepage Content Structure (Completed)
+- Added placeholder sections for portfolio items (images/embeds) on the homepage, set up basic routing for the core app.
+
+## Phase 4: Initial Styling, Navigation & Auth Structure (Completed)
+- Integrated Tailwind CSS, created basic navigation bar, implemented core authentication views (Login/Logout), user profile page, basic user-specific pages, and initial admin customizations.
+
+## Phase 5: Refactored Visualization Types (Completed)
+- Replaced hardcoded project types with a database model (`VisualizationProject` - later replaced), updated views, templates, and URLs accordingly.
+
+## Phase 6: Enhanced AI Capabilities (Completed)
+- Implemented the Memory Bank system (`memory-bank/` files and protocol), configured GitHub & Browser Tools MCP integrations with corresponding rules.
+
+## Phase 7: User Content Flow & Refinement (Completed)
+- Implemented dynamic display of user-specific content (initially projects, later deliverables) on user pages. Enhanced User admin (initially with inlines). Refined template structure using partials (`_header`, `_footer`). Documented structure and conventions.
+
+## Phase 8: Dynamic Content & Styling (Completed)
+- Connected database models to public list views for portfolio items. Implemented pagination. Refined Tailwind styling on base layout, project cards, header, and footer. Created related partials and rules.
+
+## Phase 9: News/Blog Implementation (Completed)
+- Created `news` app and `NewsPost` model with status/slug logic. Configured its admin interface with CKEditor 5 integration. Implemented list and detail views/templates for news. Added latest news section to homepage and link to header.
+
+## Phase 10: Basic API Setup (JWT Auth & News) (Completed)
+- Set up Django REST Framework, implemented JWT authentication endpoints, and created a basic API endpoint for news post creation (later refined).
+
+## Phase 11: Proxy Models & Refined Portfolio/API Admin (Completed)
+- Refactored `VisualizationProject` into `PublicPortfolioItem` (base) and `ClientDeliverable`. 
+- Created Proxy Models (`PublicScanItem`, etc.) and Managers for public portfolio types.
+- Configured separate Admin sections for each public portfolio type using proxy models.
+- Operationalized the NewsPost creation API for external use.
+
+## Phase 12: Client Deliverables System (Completed)
+- Configured client designation via 'Active Clients' Group.
+- Implemented dedicated `ClientDeliverable` Admin (accessed via `ClientDeliverableAdminView` proxy under "Client Management & Auth").
+- Added custom `ClientFilter` to `ClientDeliverableAdmin`.
+- Removed inline admin from User page.
+- Ensured correct content display on client user pages.
+- Added "My Page" link to header for logged-in users.
+
+## Phase 13: Enhanced Models & Content Preview (Completed)
+- Added status field (`draft`/`published`) to `PublicPortfolioItem` and `NewsPost`.
+- Implemented `PreviewModeMiddleware` and `preview_context` processor.
+- Added admin preview toggle controls and frontend preview indicator banner.
+- Updated all relevant list and detail views (Public Portfolio, News, Client Pages) to filter content based on status and preview mode.
+- Simplified `ClientDeliverable` status choices to `draft`/`published` and updated related views.
+- Refined User admin UI (collapsible sections, conditional fields, list display links).
+- Simplified preview logic, removing client-specific preview trigger.
+- Resolved various bugs throughout the implementation.
+
+

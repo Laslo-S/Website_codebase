@@ -7,11 +7,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AV Platform{% endblock title %}</title> {# Simplified base title #}
     {% block styles %}
-    <!-- Link to main CSS file -->
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    {# Tailwind Import - Make sure this includes aspect ratio plugin or add CSS below #}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+    {# Custom CSS overrides #}
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> 
+    {# Add styles for the preview banner AND video embeds #}
+    <style>
+        /* === Preview Banner Styles === */
+        .preview-banner {
+            position: fixed; /* Keep it visible */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffc107; /* Bright yellow */
+            color: #212529; /* Dark text for contrast */
+            padding: 15px 20px; /* More padding */
+            text-align: center;
+            font-size: 1.2em; /* Larger font */
+            font-weight: bold;
+            border-top: 3px solid #e0a800; /* Darker yellow border */
+            z-index: 1000; /* Ensure it's on top */
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .preview-banner strong {
+             margin-right: 15px;
+        }
+        .preview-banner a {
+            display: inline-block;
+            margin-left: 20px;
+            padding: 5px 15px;
+            background-color: #e0a800; 
+            color: #212529;
+            border: 1px solid #c69500;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: normal; /* Reset weight */
+            transition: background-color 0.2s ease;
+        }
+        .preview-banner a:hover {
+            background-color: #c69500;
+            color: #fff;
+        }
+
+        /* === CSS for Responsive Video Embeds (Aspect Ratio) === */
+        .aspect-w-16 {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100) */
+        }
+
+        .aspect-h-9 {
+            /* Helper class, primary style is on aspect-w-* */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .aspect-w-16 > iframe,
+        .aspect-w-16 > video,
+        .aspect-w-16 > embed,
+        .aspect-w-16 > object {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none; /* Remove default iframe border */
+        }
+    </style>
     {% endblock styles %}
 </head>
 <body class="bg-gray-100 text-gray-900 font-sans text-base leading-normal">
+
+    {# Preview Mode Indicator Banner - RE-ADD #}
+    {% if is_preview_mode %} {# Context processor provides this flag #}
+        <div class="preview-banner">
+            <strong>PREVIEW MODE ACTIVE</strong>
+            <a href="{% url 'core_preview_toggle' %}">Exit Preview Mode</a>
+        </div>
+    {% endif %}
 
     {# Include Header Partial #}
     {% include 'partials/_header.html' %}

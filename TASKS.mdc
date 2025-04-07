@@ -4,22 +4,7 @@ globs:
 alwaysApply: false
 ---
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Tasks list
-globs: 
-alwaysApply: false
----
----
-description: 
-globs: 
-alwaysApply: false
----
----
-description: 
 globs: 
 alwaysApply: false
 ---
@@ -570,71 +555,49 @@ alwaysApply: false
 
 ---
 
-**Phase 12: Implement Content-Centric Admin Interface with Filters**
+**Phase 12 (Revised): Implement Content-Centric Admin Interface with Filters**
 
 *AI Assistant Guidance: Restructure the Admin for intuitive content management. Separate Public Portfolio items by type using Proxy Models & custom managers. Implement a standard admin view for Client Deliverables enhanced with custom filters for easy client-based viewing. Use Group membership to designate clients.*
 
-- [ ] **12.1 Define/Confirm Content Models (`apps/core/models.py`):**
-    *   **12.1.1 Confirm `PublicPortfolioItem`:** Ensure fields are correct (`title`, `description`, `project_type` [choices], `embed_code`, `image`, `slug`, timestamps). Add `db_index=True` to `project_type`.
-    *   **12.1.2 Confirm `ClientDeliverable`:** Ensure fields are correct (`client` [ForeignKey to User, `related_name='deliverables'`, `db_index=True`], `title`, `description`, `project_type` [choices], `embed_code`, `image`, timestamps).
-    *   *(No model changes likely needed if previous version was used, just confirmation).*
+- [X] **12.1 Define/Confirm Content Models (`apps/core/models.py`):**
+    *   [X] **12.1.1 Confirm `PublicPortfolioItem`:** Ensure fields are correct (`title`, `description`, `project_type` [choices], `embed_code`, `image`, `slug`, timestamps). Add `db_index=True` to `project_type`.
+    *   [X] **12.1.2 Confirm `ClientDeliverable`:** Ensure fields are correct (`client` [ForeignKey to User, `related_name='deliverables'`, `db_index=True`], `title`, `description`, `project_type` [choices], `embed_code`, `image`, timestamps).
 
-- [ ] **12.2 Create Proxy Models & Managers for Public Portfolio (`apps/core/models.py`):**
-    *   **12.2.1 Define Custom Managers:** Create managers filtering by type:
-        ```python
-        class PublicScanManager(models.Manager):
-            def get_queryset(self):
-                return super().get_queryset().filter(project_type='scan')
-        # ... similar managers for Video and Still ...
-        ```
-    *   **12.2.2 Define Proxy Models:** Create `PublicScanItem`, `PublicVideoItem`, `PublicStillItem` inheriting `PublicPortfolioItem`, set `Meta.proxy = True`, assign respective custom manager (`objects = PublicScanManager()`), set appropriate `verbose_name_plural` (e.g., "AA Public 3D Scans" - use prefix for ordering).
-    *   **12.2.3 Run Migrations (If needed):** `makemigrations` / `migrate` (likely no DB changes needed for proxies/managers).
+- [X] **12.2 Create Proxy Models & Managers for Public Portfolio (`apps/core/models.py`):**
+    *   [X] **12.2.1 Define Custom Managers:** Create managers filtering by type (`PublicScanManager`, `PublicVideoManager`, `PublicStillManager`).
+    *   [X] **12.2.2 Define Proxy Models:** Create `PublicScanItem`, `PublicVideoItem`, `PublicStillItem` inheriting `PublicPortfolioItem`, set `Meta.proxy = True`, assign respective custom manager, set appropriate `verbose_name_plural`.
+    *   [X] **12.2.3 Run Migrations:** `makemigrations` / `migrate` (applied proxy model migration).
 
-- [ ] **12.3 Configure Admin for Public Portfolio (Proxy Models) (`apps/core/admin.py`):**
-    *   **12.3.1 Create Base Admin:** `PublicPortfolioItemAdmin(admin.ModelAdmin)` with common settings (list_display, search, slug prepop). **Do NOT register `PublicPortfolioItem` itself.**
-    *   **12.3.2 Register Proxy Model Admins:** Create and register admin classes for `PublicScanItem`, `PublicVideoItem`, `PublicStillItem`, inheriting from `PublicPortfolioItemAdmin`. They will automatically use the filtered querysets from their managers. Customize `add_form` or initial data if desired to pre-fill type.
-    *   **12.3.3 Verification:** Check admin sidebar for separate entries ("AA Public 3D Scans", etc.). Verify lists are correctly filtered by type.
+- [X] **12.3 Configure Admin for Public Portfolio (Proxy Models) (`apps/core/admin.py`):**
+    *   [X] **12.3.1 Create Base Admin:** `PublicPortfolioItemAdmin` (not registered).
+    *   [X] **12.3.2 Register Proxy Model Admins:** Create and register admin classes inheriting from base admin.
+    *   [X] **12.3.3 Verification:** Checked admin sidebar and list filtering.
 
-- [ ] **12.4 Configure Client Designation via Group:**
-    *   **12.4.1 Create Group:** Via Admin (`/admin/auth/group/add/`), create group named `Active Clients`.
-    *   **12.4.2 Assign Test Users:** Add users `test01`, `test02` (or other client users) to the `Active Clients` group.
-    *   **12.4.3 Document:** Note this group usage in `README.md` and `memory-bank/system_patterns.md`.
+- [X] **12.4 Configure Client Designation via Group:**
+    *   [X] **12.4.1 Create Group:** Created 'Active Clients' group (Manual).
+    *   [X] **12.4.2 Assign Test Users:** Added users to group (Manual).
+    *   [X] **12.4.3 Document:** Noted group usage.
 
-- [ ] **12.5 Implement Enhanced Admin for Client Deliverables (`apps/core/admin.py`):**
-    *   **12.5.1 Create Custom Filter:** Create a custom `SimpleListFilter` named `ClientFilter`:
-        - `title = 'Client'`
-        - `parameter_name = 'client_id'`
-        - `lookups(self, request, model_admin)`: Returns tuples `(user.id, user.username)` for users in the 'Active Clients' group.
-        - `queryset(self, request, queryset)`: Filters the main queryset by `client_id=self.value()` if a value is selected.
-        *(AI: Implement this custom filter logic).*
-    *   **12.5.2 Create `ClientDeliverableAdmin`:** Define `ClientDeliverableAdmin(admin.ModelAdmin)`:
-        - `list_display = ('title', 'client', 'project_type', 'created_at')`
-        - `list_filter = (ClientFilter, 'project_type')` *(Use the custom filter)*
-        - `search_fields = ('title', 'description', 'client__username')` *(Allow searching by client username)*
-        - Configure `fields` or `fieldsets` appropriately. **Ensure `client` field is present and editable on the form.**
-    *   **12.5.3 Register Model:** Register `ClientDeliverable` with `ClientDeliverableAdmin`.
-    *   **12.5.4 Refine AppConfig Names (`apps/core/apps.py`, `apps/accounts/apps.py` etc.):** Set user-friendly `verbose_name` in each app's `AppConfig` class (e.g., `verbose_name = "Client Accounts"`).
+- [X] **12.5 Implement Enhanced Admin for Client Deliverables (`apps/core/admin.py`, `apps/accounts/admin.py`, `apps/accounts/models.py`):**
+    *   [X] **12.5.1 Create Custom Filter:** Implemented `ClientFilter` using 'Active Clients' group.
+    *   [X] **12.5.2 Create & Register `ClientDeliverableAdmin`:** Defined admin logic in `core.admin`, created proxy model `ClientDeliverableAdminView` in `accounts.models`, registered proxy using core admin logic in `accounts.admin`.
+    *   [X] **12.5.3 Refine AppConfig Names:** Set user-friendly `verbose_name` in `AppConfig` classes.
 
-- [ ] **12.6 Remove Inline Admin from User Page (`apps/accounts/admin.py`):**
-    *   **12.6.1 Remove Inline:** Edit `CustomUserAdmin` and remove `ClientDeliverableInline` (or the old `VisualizationProjectInline`) from the `inlines` list. Delete the inline class definition if no longer needed elsewhere.
-    *   **12.6.2 Verification:** Check the User admin page; verify the inline section for deliverables is gone.
+- [X] **12.6 Remove Inline Admin from User Page (`apps/accounts/admin.py`):**
+    *   [X] **12.6.1 Remove Inline:** Removed `inlines` from `CustomUserAdmin`.
+    *   [X] **12.6.2 Verification:** Confirmed inline section removed from User admin page.
 
-- [ ] **12.7 Update Rules & Documentation:**
-    *   **12.7.1 Update Rules:** Update `django_rules.mdc`, `core_rules.mdc`, etc., reflecting Proxy Models, custom Admin Filters, Client Group usage, removal of admin inlines.
-    *   **12.7.2 Update `README.md`:** Explain the new admin workflow: Public items via type sections, Client designation via 'Active Clients' group, managing deliverables via the dedicated "Client Deliverables" section using the Client filter.
-    *   **12.7.3 Update Memory Bank:** Update `system_patterns.md`, `tech_context.md`, `progress.md`, `active_context.md`.
+- [X] **12.7 Update Rules & Documentation:**
+    *   [X] **12.7.1 Update Rules:** Updated `django_rules.mdc`.
+    *   [X] **12.7.2 Update `README.md`:** Updated Features & added Admin Workflow.
+    *   [X] **12.7.3 Update Memory Bank:** Updated `system_patterns.md`, `tech_context.md`, `progress.md`, `active_context.md`.
 
-- [ ] **12.8 Verification (Comprehensive):**
-    *   **12.8.1 Public Admin:** Verify type-specific sections work. Add items.
-    *   **12.8.2 Client Deliverable Admin:** Go to `/admin/core/clientdeliverable/`.
-        - Verify the "Client" filter appears on the right and lists only users in the 'Active Clients' group.
-        - Filter by `test01`. Verify only their (currently none) deliverables show.
-        - Click "Add Client Deliverable +". **Manually select `test01` in the `Client` dropdown.** Add an item. Save.
-        - Filter by `test01` again, verify the item appears.
-        - Filter by `test02`, verify `test01`'s item is not shown. Add an item for `test02`.
-    *   **12.8.3 Frontend Checks:** Verify public pages show correct `PublicPortfolioItem`s. Log in as `test01`, check their user page shows *only* their assigned `ClientDeliverable` items. Test access controls.
+- [X] **12.8 Verification (Comprehensive):**
+    *   [X] **12.8.1 Public Admin:** Verified type-specific sections & add forms.
+    *   [X] **12.8.2 Client Deliverable Admin:** Verified custom filter, add/edit workflow.
+    *   [X] **12.8.3 Frontend Checks:** Verified public pages, client pages, data isolation, and "My Page" link.
 
-- [ ] **12.9 Version Control Checkpoint:** Stage changes. Generate commit message (e.g., "refactor: Implement content-centric admin using proxy models and custom client filters"). Await confirmation to commit.
+- [X] **12.9 Version Control Checkpoint:** Staged changes and committed `3f20b74`.
 
 ---
 

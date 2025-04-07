@@ -20,7 +20,13 @@ from django.urls import path, include
 from django.conf import settings # Import settings
 from django.conf.urls.static import static # Import static
 
+# Import preview control views
+from apps.core import views as core_views
+
 urlpatterns = [
+    # --- Custom Admin Preview URLs FIRST ---
+    path('admin/preview/toggle/', core_views.toggle_preview_mode, name='core_preview_toggle'),
+    # --- Standard Admin URLs ---
     path("admin/", admin.site.urls),
     # path("ckeditor/", include('ckeditor_uploader.urls')), # No longer needed for CKEditor 5
     path("", include(("apps.core.urls", "core"), namespace="core")),
@@ -28,6 +34,7 @@ urlpatterns = [
     path("news/", include(("apps.news.urls", "news"), namespace="news")),
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"), # Add CKEditor 5 URLs
     path('api/v1/accounts/', include('apps.accounts.api_urls')), # JWT Auth
+    path('api/v1/news/', include('apps.news.api_urls')),
 ]
 
 # Add static file serving helper for development

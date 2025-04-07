@@ -1,12 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, ListView, DetailView # Add DetailView
-# Corrected import: Import base model AND proxy models
+from django.shortcuts import render, redirect, get_object_or_404 # Added redirect, get_object_or_404
+from django.views.generic import TemplateView, ListView, DetailView # Added DetailView
 from .models import PublicPortfolioItem, PublicScanItem, PublicVideoItem, PublicStillItem
 from apps.news.models import NewsPost # Import NewsPost
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+# Imports needed for preview toggle
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 
@@ -17,10 +16,12 @@ class HomePageView(TemplateView):
         # Removed project query - projects are now on dedicated pages
         context = super().get_context_data(**kwargs)
         context['page_title'] = "Architectural Visualization Showcase"
-        # Fetch latest News Posts using the correct status string
         try:
-            # Use 'published' string directly as defined in STATUS_CHOICES
-            context['latest_posts'] = NewsPost.objects.filter(status='published').order_by('-published_at')[:3]
+            # Add preview logic for latest posts
+            if getattr(self.request, 'is_preview', False):
+                context['latest_posts'] = NewsPost.objects.filter(status__in=['draft', 'published']).order_by('-published_at')[:3]
+            else:
+                context['latest_posts'] = NewsPost.objects.filter(status='published').order_by('-published_at')[:3]
         except Exception as e:
             # Log error maybe, but prevent homepage from crashing if blog fails
             print(f"Error fetching latest posts: {e}") # Basic print logging
@@ -29,21 +30,25 @@ class HomePageView(TemplateView):
 
 # --- Views for Dedicated Project Type Pages --- 
 
-# Base view for common list functionality
 class BaseProjectListView(ListView):
-    # model = PublicPortfolioItem # Base model - subclasses override this
-    context_object_name = 'portfolio_items'
-    paginate_by = 12
+    """ Base view for listing projects of a specific type. """
+    model = PublicPortfolioItem
+    context_object_name = 'portfolio_items' # Use 'portfolio_items' in the template loop
+    paginate_by = 12 # Show 12 projects per page (adjust as needed)
     template_name = 'core/_project_list_base.html' # Fallback template
 
     def get_queryset(self):
-        # Explicitly use the model defined on the specific view (e.g., PublicStillItem)
-        # The manager attached to the proxy model handles the type filtering.
-        queryset = self.model.objects.all() # Use the specific model's manager
-        # Add status filter later in Phase 13
-        # Add public filter if needed (assuming all portfolio items are public for now)
-        # queryset = queryset.filter(is_public=True)
-        return queryset.order_by('-created_at') # Ensure consistent ordering
+        queryset = self.model.objects.all() 
+
+        # Filter by status based on preview mode
+        is_preview_active = getattr(self.request, 'is_preview', False)
+        if not is_preview_active:
+            queryset = queryset.filter(status='published')
+        else:
+            queryset = queryset.filter(status__in=['draft', 'published'])
+            
+        final_queryset = queryset.order_by('-created_at')
+        return final_queryset
 
     def get_template_names(self):
         # Determine template based on the actual model being listed (via proxy)
@@ -58,9 +63,6 @@ class BaseProjectListView(ListView):
         context['page_title'] = title_map.get(getattr(self, 'project_type', None), "Portfolio Items")
         return context
 
-# Specific list views inheriting from the base
-# These now primarily define the project_type for template/title logic
-# The queryset filtering is handled by the Managers attached to the Proxy Models in models.py
 class ScanListView(BaseProjectListView):
     project_type = 'scan'
     model = PublicScanItem # Point to the correct proxy model
@@ -73,25 +75,27 @@ class StillListView(BaseProjectListView):
     project_type = 'still'
     model = PublicStillItem # Point to the correct proxy model
 
-# --- View for Project Detail Page --- 
+# --- View for Project Detail Page (Added Back) --- 
 
 class ProjectDetailView(DetailView):
-    """ Displays a single visualization project. """
-    model = PublicPortfolioItem
+    model = PublicPortfolioItem # Use base model
     template_name = 'core/project_detail.html'
     context_object_name = 'item'
-    slug_field = 'slug' # Field in the model to match against the slug URL kwarg
-    slug_url_kwarg = 'slug' # Name of the slug argument in the URL pattern
+    slug_field = 'slug' 
+    slug_url_kwarg = 'slug' 
 
     def get_queryset(self):
-        # Allow viewing only public projects via the detail URL
-        return super().get_queryset().filter(is_public=True)
+        queryset = super().get_queryset()
+        # Filter by status based on preview mode for detail view access
+        if not getattr(self.request, 'is_preview', False):
+            queryset = queryset.filter(status='published')
+        else:
+            queryset = queryset.filter(status__in=['draft', 'published'])
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Set the page title dynamically based on the project title
         context['page_title'] = self.object.title
-        # Optional: Add related projects or other context later
         return context
 
 # --- Standard Static Pages --- 
@@ -110,4 +114,17 @@ class ContactPageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = "Contact Us"
-        return context
+        return context 
+
+# --- Admin Preview Control View (Added Back) ---
+
+@staff_member_required
+def toggle_preview_mode(request):
+    """Toggles the preview mode session variable."""
+    current_status = request.session.get('preview_mode_active', False)
+    request.session['preview_mode_active'] = not current_status
+    # Removed clearing of specific client ID as it's no longer used
+    messages.success(request, f"Preview mode {'ACTIVATED' if not current_status else 'DEACTIVATED'}.")
+    return redirect(request.META.get('HTTP_REFERER', reverse('admin:index')))
+
+# REMOVED set_preview_client and clear_preview_client functions 

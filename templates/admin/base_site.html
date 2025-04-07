@@ -17,4 +17,74 @@
 
 {% if user.is_anonymous %}
   {% include "admin/color_theme_toggle.html" %}
-{% endif %} 
+{% endif %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        .preview-controls {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            position: relative;
+        }
+        .preview-controls a {
+            text-decoration: none;
+            margin-left: 10px;
+            padding: 3px 8px;
+            border: 1px solid #ccc;
+            background-color: #e0e0e0;
+            color: #333;
+            border-radius: 3px;
+        }
+        .preview-controls a:hover {
+            background-color: #d0d0d0;
+        }
+        .preview-status-on {
+            font-weight: bold;
+        }
+        .preview-status-off {
+            font-weight: bold;
+            color: #dc3545;
+        }
+        
+        .preview-controls.preview-active {
+            background-color: #fff3cd;
+            border: 2px solid #ffeeba;
+            color: #856404;
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 10px 15px;
+        }
+        .preview-controls.preview-active .preview-status-on {
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .preview-controls.preview-active a {
+            background-color: #ffeeba;
+            border-color: #ffdf7e;
+            color: #856404;
+            font-weight: normal;
+        }
+         .preview-controls.preview-active a:hover {
+            background-color: #ffda6a;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block content_title %}
+    {# Add Preview Controls before the main content title #}
+    <div class="preview-controls{% if request.session.preview_mode_active %} preview-active{% endif %}">
+        <strong>Preview Mode:</strong>
+        {% if request.session.preview_mode_active %}
+            <span class="preview-status-on">ON</span>
+            <a href="{% url 'core_preview_toggle' %}">Deactivate Preview</a>
+        {% else %}
+            <span class="preview-status-off">OFF</span>
+            <a href="{% url 'core_preview_toggle' %}">Activate Preview</a>
+        {% endif %}
+    </div>
+    {{ block.super }}
+{% endblock %} 

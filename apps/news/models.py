@@ -12,6 +12,7 @@ class NewsPost(models.Model):
     STATUS_CHOICES = (
         ('draft', 'Draft'),
         ('published', 'Published'),
+        # Add other statuses from API phase if needed (e.g., pending_review, rejected)
     )
 
     title = models.CharField(max_length=200)
@@ -19,7 +20,7 @@ class NewsPost(models.Model):
     featured_image = models.ImageField(upload_to='news_images/', null=True, blank=True, help_text="Optional featured image for the post.")
     content = CKEditor5Field('Content', config_name='default', blank=True, null=True) # Use CKEditor 5 field again
     # author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='news_posts') # Removed author field
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft', db_index=True) # Added db_index
     published_at = models.DateTimeField(null=True, blank=True, help_text="Set automatically when status changes to 'Published'.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
