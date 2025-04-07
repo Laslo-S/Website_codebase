@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.news",
+    "apps.slideshow.apps.SlideshowConfig", # Added Slideshow app for admin grouping
 ]
 
 MIDDLEWARE = [

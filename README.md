@@ -45,6 +45,7 @@ The project follows a standard Django structure with specific customizations:
 │   ├── accounts/      # User authentication, profiles, user-specific pages
 │   ├── core/          # Main site functionality, project display
 │   └── news/          # Blog/News posts functionality
+│   └── slideshow/     # Homepage slideshow image management
 ├── config/            # Django project configuration (settings, root URLs)
 ├── media/             # User-uploaded media files (e.g., project images)
 ├── memory-bank/       # AI assistant persistent memory files (Markdown)
@@ -139,10 +140,11 @@ To run the development server, you need **three separate terminals**:
 
 ## Admin Workflow
 
-*   **Adding Public Items:** Go to the specific type under "Public Portfolio & Site Core" (e.g., "AA Public 3D Scans") and click "Add".
-*   **Managing Client Deliverables:** Go to "Public Portfolio & Site Core" -> "Client Deliverables". Use the "Client" filter on the right to select a user (only users in the 'Active Clients' group are shown). Then Add/Edit deliverables for that client. The `Client` field on the Add/Edit form must still be manually selected.
-*   **Managing Users/Groups:** Use the "Client Accounts & Auth" section.
-*   **Designating Clients:** Add users to the 'Active Clients' group under "Client Accounts & Auth" -> "Groups".
+*   **Adding Public Items:** Go to the specific type under "Public Portfolio & Site Core" (e.g., "Public 3D Scans") and click "Add".
+*   **Adding Homepage Slideshow Images:** Go to "Homepage Slideshow" -> "Slideshow Images" and click "Add". Upload an image, set status to Published, and adjust order.
+*   **Managing Client Deliverables:** Go to "Client Management & Auth" -> "Client Deliverables". Use the "Client" filter on the right to select a user (only users in the 'Active Clients' group are shown). Then Add/Edit deliverables for that client. The `Client` field on the Add/Edit form must still be manually selected.
+*   **Managing Users/Groups:** Use the "Client Management & Auth" section.
+*   **Designating Clients:** Add users to the 'Active Clients' group under "Client Management & Auth" -> "Groups".
 
 ## Conventions
 

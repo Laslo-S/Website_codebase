@@ -100,6 +100,12 @@
     {# Include Footer Partial #}
     {% include 'partials/_footer.html' %}
 
+    {# Site-wide scripts can go here, but prefer page-specific blocks #}
+
+    {# Load the interactive background script if needed #}
+    <script src="{% static 'js/interactive-hero-background.js' %}" defer></script>
+
+    {# Page Specific Scripts #}
     {% block scripts %}
     {# Basic JS for mobile menu toggle - can be moved to static/js/script.js later #}
     <script>

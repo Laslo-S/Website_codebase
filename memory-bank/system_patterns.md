@@ -5,23 +5,25 @@ This document records key architectural decisions and established conventions fo
 ## Core Architecture
 
 *   **Framework:** Django (Python)
-*   **Approach:** Modular Monolith - Functionality is separated into distinct Django Apps within the `apps/` directory (e.g., `core`, `accounts`, `news`).
+*   **Approach:** Modular Monolith - Functionality is separated into distinct Django Apps within the `apps/` directory (e.g., `core`, `accounts`, `news`, `slideshow`).
 *   **Rendering:** Server-Side Rendering (SSR) using Django Templates.
 *   **Database:** SQLite for development, planned PostgreSQL for production (via environment variable `DATABASE_URL`).
 
 ## Directory Structure Conventions
 
 *   **Project Config:** Django project settings (`settings.py`), root URL configuration (`urls.py`), and WSGI/ASGI files reside in the `config/` directory.
-*   **Applications:** Reusable Django applications are placed within the `apps/` directory.
+*   **Applications:** Reusable Django applications are placed within the `apps/` directory (e.g., `core`, `accounts`, `news`, `slideshow`).
 *   **Templates:**
     *   Base template (`base.html`) is at the root of the `templates/` directory.
     *   App-specific templates are organized within `templates/<app_name>/` (e.g., `templates/core/`, `templates/news/`).
     *   Reusable partial templates (e.g., header, footer, cards) are placed in `templates/partials/`.
+        *   Includes: `_header.html`, `_footer.html`, `_pagination.html`, `_service_card.html`, `_client_portal_card.html`, `_news_card.html`, `_hero_showcase.html`.
     *   Standard Django auth templates reside in `templates/registration/`.
     *   Admin overrides are in `templates/admin/`.
     *   User-specific dynamic templates are in `templates/accounts/user_templates/`.
 *   **Static Files:**
     *   Project-wide static files (compiled CSS, JS, images) are in the `static/` directory.
+        *   JS Includes: `static/js/interactive-hero-background.js`.
     *   Tailwind input CSS is at `static/css/input.css`, output at `static/css/output.css`.
 *   **Media Files:** User-uploaded content (e.g., project images) is stored in the `media/` directory (managed by `MEDIA_ROOT` and `MEDIA_URL` settings).
 *   **AI Context:** Persistent AI memory files are stored in `memory-bank/`. AI guidance rules are in `.cursor/rules/`.
@@ -34,7 +36,7 @@ This document records key architectural decisions and established conventions fo
     *   Always use named URL patterns within `urls.py` files (e.g., `path(..., name='my_view')`).
     *   Use namespaces for apps (e.g., `app_name = 'core'`).
     *   Reference URLs using `reverse()` or `reverse_lazy()` in Python code and `{% url 'namespace:name' %}` in templates.
-*   **Models:** Use `PublicPortfolioItem` (base), `ClientDeliverable` (defined in `apps.core`).
+*   **Models:** Use `PublicPortfolioItem` (base), `ClientDeliverable` (defined in `apps.core`), `SlideshowImage` (defined in `apps.slideshow`) for homepage gallery.
 *   **Proxy Models:**
     *   Use `PublicScanItem`, etc. (in `apps.core`) inheriting from `PublicPortfolioItem` for type-specific public admin views.
     *   Use `ClientDeliverableAdminView` (in `apps.accounts`) inheriting from `ClientDeliverable` (from `apps.core`) solely to place the admin interface under the "Client Management & Auth" section.
@@ -43,6 +45,7 @@ This document records key architectural decisions and established conventions fo
     *   Register Public Proxy Models (`PublicScanItem`, etc.) in `apps.core.admin`.
     *   Define `ClientDeliverableAdmin` logic in `apps.core.admin` but **do not register it there**.
     *   Register the `ClientDeliverableAdminView` proxy model (from `apps.accounts`) using the `ClientDeliverableAdmin` logic (from `apps.core`) within `apps.accounts.admin`.
+    *   Register `SlideshowImage` model with `SlideshowImageAdmin` in `apps.slideshow.admin` to create a dedicated admin section.
     *   Use custom `SimpleListFilter` (`ClientFilter`) on `ClientDeliverableAdmin` logic.
     *   Use `AppConfig.verbose_name` to customize sidebar app labels (e.g., "Public Portfolio & Site Core", "Client Management & Auth").
     *   Hide fields on add forms using `get_fieldsets` override in proxy admins.
@@ -71,6 +74,7 @@ This document records key architectural decisions and established conventions fo
 ## Content Management Workflows (Admin)
 
 *   **Public Portfolio:** Manage items via type-specific sections (e.g., "Public 3D Scans") under the "Public Portfolio & Site Core" app section.
+*   **Homepage Slideshow:** Manage images via the "Homepage Slideshow" -> "Slideshow Images" section. Upload images, set status, and control order using `slideshow_order`.
 *   **Client Deliverables:** Manage items via the "Client Deliverables" link under the "Client Management & Auth" app section. Use the "Client" filter.
 *   **Users/Groups:** Manage via the "Client Management & Auth" app section. Add users to the 'Active Clients' group here.
 *   **News Posts:** Manage via the "News" app section.
@@ -89,7 +93,11 @@ This document records key architectural decisions and established conventions fo
 *   **Content Types (Visualizations):** Handled via `project_type` CharField with choices on `VisualizationProject` model, displayed via dedicated list views.
 *   **Content Types (News):** Single `NewsPost` model used for both internal admin-created posts and external API-submitted posts (defaults to 'draft' status).
 *   **Admin Customization:** Uses `CustomUserAdmin` (simplified), `NewsPostAdmin`.
-*   **Template Structure:** Uses base template (`base.html`), includes partials (`_header.html`, `_footer.html`, `_pagination.html`), and reusable component partials (`_project_card.html`, `_news_card.html`).
+*   **Template Structure:**
+    *   Base Template: `templates/base.html` provides overall page structure.
+    *   Partials: Reusable components (header, footer, cards) in `templates/partials/`.
+        *   Includes: `_header.html`, `_footer.html`, `_pagination.html`, `_service_card.html`, `_client_portal_card.html`, `_news_card.html`, `_hero_showcase.html`.
+    *   App-Specific Templates: In `apps/<app_name>/templates/<app_name>/`.
 *   **Static Files:** Standard Django static file handling (`STATIC_URL`, `STATICFILES_DIRS`).
 *   **Media Files:** Standard Django media file handling (`MEDIA_URL`, `MEDIA_ROOT`) for user uploads (e.g., `NewsPost.featured_image`).
 *   **Configuration:** Uses environment variables via `django-environ` (`.env` file).
@@ -97,17 +105,19 @@ This document records key architectural decisions and established conventions fo
 
 ### Key System Patterns
 
-*   **Modular Monolith (Django Apps):** Project organized into discrete Django apps within the `apps/` directory (`core`, `accounts`, `news`).
+*   **Modular Monolith (Django Apps):** Project organized into discrete Django apps within the `apps/` directory (`core`, `accounts`, `news`, `slideshow`).
 *   **Server-Side Rendering (SSR):** Frontend primarily rendered using Django Templates.
 *   **Template Structure:**
     *   Base Template: `templates/base.html` provides overall page structure.
     *   Partials: Reusable components (header, footer, cards) in `templates/partials/`.
+        *   Includes: `_header.html`, `_footer.html`, `_pagination.html`, `_service_card.html`, `_client_portal_card.html`, `_news_card.html`, `_hero_showcase.html`.
     *   App-Specific Templates: In `apps/<app_name>/templates/<app_name>/`.
     *   Homepage Structure: Uses specific section IDs (`#hero`, `#services`, etc.) derived from v0.
 *   **Styling:** Utility-first CSS via Tailwind CSS. Global styles/variables integrated from v0.
 *   **Client-Specific Pages:** Achieved via dynamic template selection in `UserPageView`.
-*   **Admin Organization:** Uses Proxy Models for type-specific views (`Public...Item` admins) and cross-app grouping (`ClientDeliverableAdminView`).
+*   **Admin Organization:** Uses Proxy Models for type-specific views (`Public...Item` admins) and cross-app grouping (`ClientDeliverableAdminView`). Uses a dedicated app (`slideshow`) with a simple model (`SlideshowImage`) and admin for managing specific UI elements like the homepage gallery.
 *   **Content Preview:** Session-based preview mode activated by staff via admin toggle, affecting querysets in views and displaying a banner.
 *   **API Authentication:** JWT via `djangorestframework-simplejwt` for external agents.
 *   **Configuration:** Uses `django-environ` loading from `.env`.
-*   **Memory Bank:** Persistent context maintained via files in `memory-bank/`. 
+*   **Memory Bank:** Persistent context maintained via files in `memory-bank/`.
+*   **Static JS:** Custom JavaScript, like `interactive-hero-background.js`, resides in `static/js/`. 

@@ -60,4 +60,23 @@
 - Applied basic structural layout classes to header, footer, and homepage sections.
 - Updated frontend layout rules.
 
+## Phase 15: Component Styling & Static Visual Integration (Completed)
+- Applied Tailwind CSS classes to style Hero, Services, Projects, Client Portal, News, and CTA sections in `home.html` based on v0 design.
+- Created partials: `_service_card.html`, `_client_portal_card.html`, `_news_card.html`.
+- Translated and integrated interactive grid background animation from v0 React component into vanilla JS for Hero section.
+- Added placeholders for dynamic content (project images, news posts).
+- Iteratively refined Hero section text, button layout, and background animation based on feedback.
+
+## Refactoring (Post-Phase 15) (Completed)
+- Moved interactive background JavaScript from `home.html` to `static/js/interactive-hero-background.js`.
+- Moved Hero showcase elements (3 placeholders) from `home.html` into `templates/partials/_hero_showcase.html`.
+
+## Phase 16: Dynamic Data Integration (Completed)
+- Task 16.1 (Slideshow Refactor): Replaced homepage slideshow implementation. Removed `is_featured`/`slideshow_order` from `PublicPortfolioItem`. Created dedicated `slideshow` app with `SlideshowImage` model and admin. Updated `HomePageView` and template to use new model.
+- Task 16.2 (Services): Marked N/A as content is static.
+- Task 16.3 (News): Updated `home.html` news section to correctly loop through `latest_posts` context variable and use `_news_card.html` partial.
+- Task 16.4 (CTA Banner): Marked N/A as content is static.
+- Task 16.5 (Client Portal): Updated "Secure Login" button link to use `{% url 'accounts:login' %}`.
+- Task 16.6 (Header/Footer): Marked N/A for now.
+
 

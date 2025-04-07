@@ -1,0 +1,31 @@
+{# Base container for positioning #}
+<div class="relative w-full h-full">
+
+    {# Window 1: Video Placeholder (Orange - Bottom Landscape) #}
+    <div class="absolute bottom-[-60%] left-[-25%] right-[5%] w-[195%] h-[85%] z-10 bg-slate-800/50 backdrop-blur-sm rounded-md shadow-lg overflow-hidden border-2 border-cyan-500/50">
+         <div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs">Video Placeholder</div>
+         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent p-2 text-white">
+            <p class="text-xs font-medium">Flythrough Video</p>
+            <p class="text-[10px] text-slate-300">Interactive building tour</p>
+         </div>
+    </div>
+    
+    {# Window 2: 3D Model Placeholder (Pink - Middle Square, Top Layer) #}
+    <div class="absolute top-[-5%] left-[10%] w-[90%] h-[90%] z-20 bg-slate-800/50 backdrop-blur-sm rounded-md shadow-lg overflow-hidden border-2 border-cyan-600/50">
+         <div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs">3D Placeholder</div>
+         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent p-2 text-white">
+             <p class="text-xs font-medium">3D Model</p>
+             <p class="text-[10px] text-slate-300">Interactive building model</p>
+         </div>
+    </div>
+    
+    {# Window 3: Image Placeholder (Green - Top-Right Portrait, Middle Layer) #}
+    <div class="absolute top-[-55%] right-[-70%] w-[85%] h-[125%] z-30 bg-slate-800/50 backdrop-blur-sm rounded-md shadow-lg overflow-hidden border-2 border-slate-600/50">
+        <div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs">Image Placeholder</div>
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent p-2 text-white">
+            <p class="text-xs font-medium">Architectural Rendering</p>
+            <p class="text-[10px] text-slate-300">High-fidelity visualization</p>
+        </div>
+    </div>
+    
+</div> 

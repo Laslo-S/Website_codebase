@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404 # Added redirec
 from django.views.generic import TemplateView, ListView, DetailView # Added DetailView
 from .models import PublicPortfolioItem, PublicScanItem, PublicVideoItem, PublicStillItem
 from apps.news.models import NewsPost # Import NewsPost
+from apps.slideshow.models import SlideshowImage # Import SlideshowImage
 # Imports needed for preview toggle
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
@@ -13,19 +14,32 @@ class HomePageView(TemplateView):
     template_name = "core/home.html"
 
     def get_context_data(self, **kwargs):
-        # Removed project query - projects are now on dedicated pages
         context = super().get_context_data(**kwargs)
         context['page_title'] = "Architectural Visualization Showcase"
+        
+        is_preview = getattr(self.request, 'is_preview', False)
+        allowed_statuses = ['published']
+        if is_preview:
+            allowed_statuses.append('draft')
+
+        # Get Slideshow Images (formerly Featured Projects)
         try:
-            # Add preview logic for latest posts
-            if getattr(self.request, 'is_preview', False):
-                context['latest_posts'] = NewsPost.objects.filter(status__in=['draft', 'published']).order_by('-published_at')[:3]
-            else:
-                context['latest_posts'] = NewsPost.objects.filter(status='published').order_by('-published_at')[:3]
+            context['slideshow_images'] = SlideshowImage.objects.filter(
+                status__in=allowed_statuses
+            ).order_by('slideshow_order', '-uploaded_at') # Order by custom order, then date
         except Exception as e:
-            # Log error maybe, but prevent homepage from crashing if blog fails
+            print(f"Error fetching slideshow images: {e}")
+            context['slideshow_images'] = None
+
+        # Get Latest News Posts
+        try:
+            context['latest_posts'] = NewsPost.objects.filter(
+                status__in=allowed_statuses
+            ).order_by('-published_at')[:3]
+        except Exception as e:
             print(f"Error fetching latest posts: {e}") # Basic print logging
             context['latest_posts'] = None
+            
         return context
 
 # --- Views for Dedicated Project Type Pages --- 
