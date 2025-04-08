@@ -8,13 +8,41 @@
     <title>{% block title %}AV Platform{% endblock title %}</title> {# Simplified base title #}
     {# Link to the generated Tailwind output file #}
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    {# Swiper.js CSS - RESTORED #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     {% block styles %}
     {# Tailwind Import - Make sure this includes aspect ratio plugin or add CSS below #}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
     {# Custom CSS overrides #}
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     {# Add styles for the preview banner AND video embeds #}
     <style>
+        /* Define control variables - RESTORED */
+        :root {
+            /* Scroll animation control */
+            --scroll-anim-duration: 3.2s;
+            --scroll-move-distance: 12px;
+            --scroll-scale-diff: 0.08;
+            --scroll-fade-duration: 0.8s;
+
+            /* Gallery control */
+            --gallery-slide-height: 26rem; /* Control gallery image height */
+            --gallery-slide-spacing: 10px; /* Control space between slides */
+            --gallery-aspect-ratio-variance: 0.5; /* Control aspect ratio flexibility: 1 = fixed 16:9, 0 = allows down to 9:16 */
+            --gallery-full-aspect-threshold: 4096px; /* Viewport width ABOVE which 16:9 aspect is guaranteed */
+            --gallery-min-aspect-threshold: 320px;  /* Viewport width BELOW which MIN aspect ratio is guaranteed */
+
+            /* Services Section Background Sphere Animation Control */
+            --sphere-base-color: #cccccc; /* Original Subtle Grey */
+            --sphere-base-opacity: 0.00;  /* Original Subtle Opacity */
+            --sphere-edge-color: '#ffffff'; /* Changed to white */
+            --sphere-mouse-sensitivity: 0.2;
+            --sphere-acceleration: 0.6;
+            --sphere-damping: 0.92;
+            --sphere-camera-z: 3;
+            --sphere-geometry-radius: 2.61; /* Increased size */
+        }
+
         /* === Preview Banner Styles === */
         .preview-banner {
             position: fixed; /* Keep it visible */
@@ -74,6 +102,27 @@
             height: 100%;
             border: none; /* Remove default iframe border */
         }
+
+        /* Configure Swiper slide dimensions for the services gallery */
+        /* Base styles - JS will override width */
+        .services-gallery-swiper .swiper-slide {
+            height: var(--gallery-slide-height);
+            width: auto; /* Fallback/initial value, JS will set specific width */
+            flex-shrink: 0;
+            /* Keep max-width as a safeguard */
+            max-width: calc(var(--gallery-slide-height) * 16 / 9);
+            /* min-width removed, handled by JS calculation */
+        }
+        /* Ensure inner content respects slide height */
+        /* Media Query block REMOVED */
+
+        /* Style for Lottie containers in footer */
+        .lottie-icon-container {
+            width: 35px; /* Increased size */
+            height: 35px; /* Increased size */
+            cursor: pointer;
+            filter: invert(1) brightness(1.5); /* Attempt to force white color */
+        }
     </style>
     {% endblock styles %}
 </head>
@@ -101,6 +150,8 @@
     {% include 'partials/_footer.html' %}
 
     {# Site-wide scripts can go here, but prefer page-specific blocks #}
+    {# Swiper.js JS - RESTORED #}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     {# Load the interactive background script if needed #}
     <script src="{% static 'js/interactive-hero-background.js' %}" defer></script>
@@ -117,6 +168,89 @@
             });
         }
     </script>
+    {# Add Services Background Animation Script #}
+    <script type="module" src="{% static 'js/services-background.js' %}"></script>
     {% endblock scripts %}
+
+    {# Lottie Player Script - RESTORED #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    {# Lottie Initialization Script - RESTORED #}
+    <script>
+        function initializeLottieIcons() {
+            const lottieContainers = [
+                // Footer Icons
+                { id: 'lottie-facebook', path: '{% static "lottie/facebook.json" %}', loop: false, autoplay: false, hover: true },
+                { id: 'lottie-twitter', path: '{% static "lottie/twitter.json" %}', loop: false, autoplay: false, hover: true },
+                { id: 'lottie-instagram', path: '{% static "lottie/instagram.json" %}', loop: false, autoplay: false, hover: true },
+                { id: 'lottie-linkedin', path: '{% static "lottie/linkedin.json" %}', loop: false, autoplay: false, hover: true },
+                // Scroll Indicator (if still needed, adjust path/config)
+                 { id: 'lottie-scroll-indicator', path: '{% static "lottie/scroll_animation.json" %}', loop: true, autoplay: true, hover: false }
+            ];
+
+            lottieContainers.forEach(item => {
+                const container = document.getElementById(item.id);
+                if (container) {
+                    try {
+                        if (typeof lottie === 'undefined') {
+                            console.error('Lottie library not loaded yet for:', item.id);
+                            return;
+                        }
+                        const anim = lottie.loadAnimation({
+                            container: container,
+                            renderer: 'svg',
+                            loop: item.loop,
+                            autoplay: item.autoplay,
+                            path: item.path
+                        });
+
+                        // Add hover listeners only if specified (for footer icons)
+                        if (item.hover) {
+                            container.addEventListener('mouseenter', () => {
+                                anim.setDirection(1); // Play forward
+                                anim.play();
+                            });
+                            container.addEventListener('mouseleave', () => {
+                                anim.setDirection(-1); // Play backward
+                                anim.play(); // Needs to play to reverse
+                            });
+                        }
+                        
+                        // Example: Set speed for scroll indicator (adjust as needed)
+                        if (item.id === 'lottie-scroll-indicator') {
+                            const lottieScrollSpeedMultiplier = 0.45; // Example speed
+                            anim.setSpeed(lottieScrollSpeedMultiplier);
+                        }
+
+                    } catch (error) {
+                        console.error(`Error initializing Lottie animation for ${item.id}:`, error);
+                    }
+                }
+            });
+        }
+
+        function checkLottieAndInit() {
+            if (typeof window.lottie !== 'undefined') {
+                console.log('Lottie library loaded, initializing icons.');
+                initializeLottieIcons();
+            } else {
+                console.log('Lottie library not yet loaded, retrying in 100ms...');
+                setTimeout(checkLottieAndInit, 100); // Retry after 100ms
+            }
+        }
+
+        // Ensure initialization runs after DOM is ready and potentially after other scripts
+        if (document.readyState === 'loading') { // Loading hasn't finished yet
+            document.addEventListener('DOMContentLoaded', checkLottieAndInit);
+        } else { // DOMContentLoaded has already fired
+            checkLottieAndInit();
+        }
+
+        // Optional: Add scroll handling for scroll indicator if needed
+        // function handleScrollIndicatorVisibility() { ... }
+        // window.addEventListener('scroll', handleScrollIndicatorVisibility, { passive: true });
+
+    </script>
+
 </body>
 </html> 

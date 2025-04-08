@@ -152,8 +152,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# Optional: Define STATIC_ROOT for production collectstatic
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Define STATIC_ROOT for production collectstatic
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (User-uploaded content)
 # https://docs.djangoproject.com/en/5.2/topics/files/

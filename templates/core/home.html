@@ -14,7 +14,7 @@
         ></canvas>
         
         {# Gradient Overlay (Opacity Reduced Further) - Stays on top of canvas #}
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/50 to-slate-900/30 z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-slate-900/30 z-10"></div>
 
         {# Content Container - Must have higher z-index than canvas #}
         <div class="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
@@ -48,57 +48,57 @@
             </div>
         </div>
 
-        {# Scroll indicator #}
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-            <div class="w-8 h-12 rounded-full border-2 border-white/50 flex items-start justify-center">
-                <div class="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-            </div>
+        {# Scroll indicator - Replace with Lottie #}
+        <div id="lottie-scroll-indicator" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 w-16 h-16">
+            {# Lottie animation will be loaded here by JS #}
         </div>
     </section>
 
-    {# == Services Section == #}
-    <section id="services" class="py-20 bg-slate-100 relative overflow-hidden" 
-             style="background-image: url('data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cdefs%3E%3Cpattern id=\'grid\' width=\'50\' height=\'50\' patternUnits=\'userSpaceOnUse\'%3E%3Cpath d=\'M 50 0 L 0 0 0 50\' fill=\'none\' stroke=\'%23E2E8F0\' strokeWidth=\'0.5\'/%3E%3C/pattern%3E%3Cpattern id=\'circles\' width=\'100\' height=\'100\' patternUnits=\'userSpaceOnUse\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'1\' fill=\'%23CBD5E1\' /%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'url(%23grid)\' /%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'url(%23circles)\' /%3E%3C/svg%3E'); background-repeat: repeat; background-position: center; background-size: auto;">
+    {# == Services Section - INCLUDING Gallery == #}
+    <section id="services" class="py-20 relative overflow-hidden bg-slate-50" 
+             style="background-image: url('data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\' %3E%3Cdefs%3E%3Cpattern id=\'grid\' width=\'50\' height=\'50\' patternUnits=\'userSpaceOnUse\' %3E%3Cpath d=\'M 50 0 L 0 0 0 50\' fill=\'none\' stroke=\'%23E2E8F0\' strokeWidth=\'0.25\' /%3E%3C/pattern%3E%3Cpattern id=\'circles\' width=\'100\' height=\'100\' patternUnits=\'userSpaceOnUse\' %3E%3Ccircle cx=\'50\' cy=\'50\' r=\'1\' fill=\'%23CBD5E1\' /%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'url(%23grid)\' /%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'url(%23circles)\' /%3E%3C/svg%3E'); background-repeat: repeat; background-position: center; background-size: auto;">
         
-        {# Content Container #}
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {# Three.js Canvas for Background Effect #}
+        <canvas id="servicesBackgroundCanvas" class="absolute inset-0 w-full h-full z-0"></canvas>
+
+        {# Centered Content Container for Title/Cards #}
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8"> {# Reduced margin-bottom to mb-8 #}
             <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4 text-center">Our Services</h2>
             <p class="text-lg text-slate-600 mb-12 text-center max-w-3xl mx-auto">
                 We offer comprehensive visualization solutions to bring your architectural designs to life
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {# Service Cards - Include the partial #}
+                {# Service Cards #}
                 {% include "partials/_service_card.html" with title="3D Scans" description="Interactive 3D models that allow clients to explore spaces from every angle with precise measurements and details." link="#" %}
                 {% include "partials/_service_card.html" with title="Video Renderings" description="Cinematic walkthroughs that bring architectural designs to life with movement, lighting, and atmospheric elements." link="#" %}
                 {% include "partials/_service_card.html" with title="Still Imagery" description="High-resolution architectural visualizations with photorealistic quality, perfect lighting, and detailed textures." link="#" %}
             </div>
         </div>
-    </section>
 
-    {# == Gallery Section (formerly Featured Projects) == #}
-    <section id="gallery" class="bg-slate-100 py-16 px-4 sm:px-6 lg:px-8 h-[500px]">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-10 text-center">Gallery</h2>
-            {# Horizontal Scroll Container #}
-            <div class="flex overflow-x-auto space-x-8 pb-6 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-slate-200">
-                {# Loop through slideshow images from context #}
+        {# Full-width Swiper Gallery Container with Background #}
+        <div class="relative z-10 swiper services-gallery-swiper overflow-hidden bg-slate-200/60 py-3"> {# Removed parent bg-slate-100, set this to 60% opacity #}
+            <div class="swiper-wrapper"> {# Swiper wrapper #}
+                {# Loop through slideshow images #}
                 {% for item in slideshow_images %}
-                <div class="flex-shrink-0 w-80 h-64 bg-black rounded-lg shadow-md overflow-hidden relative group">
-                    {# Display Image #}
-                    {% if item.image %}
-                       <img src="{{ item.image.url }}" alt="{{ item.alt_text|default:'Slideshow image' }}" class="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-80">
-                    {% else %}
-                       <div class="w-full h-full bg-slate-300 flex items-center justify-center text-slate-500">No Image</div>
-                    {% endif %}
-                    {# Draft Indicator #}
-                    {% if request.is_preview and item.status == 'draft' %}
-                        <span class="absolute top-2 right-2 text-xs bg-yellow-500 text-yellow-900 px-2 py-0.5 rounded-full z-10">Draft</span>
-                    {% endif %}
-                </div>
+                    <div class="swiper-slide flex-shrink-0"> {# Removed w-96 #}
+                        <div class="rounded-lg shadow-md overflow-hidden relative group h-full"> {# Removed aspect-[16/9] #}
+                            {# Display Image #}
+                            {% if item.image %}
+                               <img src="{{ item.image.url }}" alt="{{ item.alt_text|default:'Slideshow image' }}" class="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-80">
+                            {% else %}
+                               <div class="w-full h-full bg-slate-300 flex items-center justify-center text-slate-500">No Image</div>
+                            {% endif %}
+                            {# Draft Indicator #}
+                            {% if request.is_preview and item.status == 'draft' %}
+                                <span class="absolute top-2 right-2 text-xs bg-yellow-500 text-yellow-900 px-2 py-0.5 rounded-full z-10">Draft</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 {% empty %}
-                <p class="text-slate-500">No images available in the gallery at the moment.</p>
+                    {# Optional: Handle empty gallery state if needed within Swiper #}
                 {% endfor %}
             </div>
+            {# Optional: Add Swiper Pagination/Navigation if desired later #}
         </div>
     </section>
 
@@ -193,4 +193,10 @@
         </div>
     </section>
 
-{% endblock content %} 
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }} {# Include scripts from base.html #}
+    {# Include the Swiper initialization script specific to this page #}
+    <script src="{% static 'js/gallery-swiper-init.js' %}" defer></script>
+{% endblock scripts %} 

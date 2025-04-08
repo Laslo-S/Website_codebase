@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
         maxLineDistance: 95, // Increased again to restore connection density
         baseColorHex: "#22D3EE", // Cyan-500 equivalent base color for points/lines
         hoverColorHex: "#FFFFFF", // Color to shift towards on hover
-        baseLineOpacity: 0.18, // Reduced base line opacity
-        hoverLineOpacityBoost: 0.35, // Reduced opacity boost on hover
+        baseLineOpacity: 0.15, // Reduced base line opacity
+        hoverLineOpacityBoost: 3.00, // Reduced opacity boost on hover
         mouseRadius: 250, // Increased radius of mouse influence
-        waveAmplitude: 4, // Amplitude of the subtle background wave
-        waveFrequency1: 0.0012,
-        waveFrequency2: 0.007,
+        waveAmplitude: 7.5, // Amplitude of the subtle background wave
+        waveFrequency1: 1.005,
+        waveFrequency2: 1.07,
         waveSpeed: 0.01,
         randomOffset: 15, // Max random offset for initial point positions
         mouseUpwardForce: 0.8, // How strongly points move up near mouse (adjust for subtlety)

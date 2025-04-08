@@ -71,7 +71,7 @@ class UserPageView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = User
     template_name = 'accounts/user_page.html' # Default fallback template
     slug_field = 'username'
-    slug_url_arg = 'username'
+    slug_url_kwarg = 'username'
     context_object_name = 'target_user'
     permission_denied_message = "You do not have permission to view this page."
     login_url = reverse_lazy('accounts:login') # Needed for LoginRequiredMixin

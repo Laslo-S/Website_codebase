@@ -1,46 +1,58 @@
 {% load static %}
 {# templates/partials/_footer.html #}
-{# Structure based on ClientLayout.txt - Minimal styling #}
-<footer class="mt-auto border-t border-border">
-    <div class="container mx-auto max-w-7xl px-4 py-8 md:py-12 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12">
-        {# Column 1: Logo & Description #}
-        <div class="flex flex-col items-start space-y-4">
+{# Structure based on v0 screenshot - Dark theme #}
+<footer class="mt-auto bg-gray-900 text-gray-300"> {# Dark background, light text #}
+    <div class="container mx-auto max-w-7xl px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {# Column 1: ArchViz Platform #}
+        <div class="flex flex-col items-start space-y-2">
             <a href="{% url 'core:home' %}" class="flex items-center space-x-2 mb-2">
-                 <span class="font-bold text-lg">ArchViz Platform</span> {# Placeholder Text Logo #}
+                 <span class="font-bold text-lg text-white">ArchViz Platform</span> {# White bold title #}
             </a>
-            <p class="text-sm text-muted-foreground">High-quality architectural visualizations.</p>
-            {# Optional Social Links #}
+            <p class="text-sm">High-quality architectural visualization services for architects, designers, and developers.</p>
         </div>
-        
-        {# Column 2: Quick Links #}
+
+        {# Column 2: Services #}
         <div class="grid gap-1">
-            <h3 class="font-semibold tracking-tight mb-2">Quick Links</h3>
-            <a href="{% url 'core:scan_list' %}" class="text-sm text-muted-foreground transition-colors hover:text-foreground">3D Scans</a>
-            <a href="{% url 'core:video_list' %}" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Videos</a>
-            <a href="{% url 'core:still_list' %}" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Images</a>
+            <h3 class="font-semibold text-white tracking-tight mb-2">Services</h3> {# White bold title #}
+            {# Update URLs if needed #}
+            <a href="{% url 'core:scan_list' %}" class="text-sm transition-colors hover:text-white">3D Scans</a>
+            <a href="{% url 'core:video_list' %}" class="text-sm transition-colors hover:text-white">Video Renderings</a>
+            <a href="{% url 'core:still_list' %}" class="text-sm transition-colors hover:text-white">Still Imagery</a>
         </div>
-        
-        {# Column 3: Company Info #}
+
+        {# Column 3: Company #}
         <div class="grid gap-1">
-             <h3 class="font-semibold tracking-tight mb-2">Company</h3>
-            <a href="{% url 'core:about' %}" class="text-sm text-muted-foreground transition-colors hover:text-foreground">About Us</a>
-            <a href="{% url 'core:contact' %}" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Contact</a>
-             <a href="{% url 'news:news_list' %}" class="text-sm text-muted-foreground transition-colors hover:text-foreground">News</a>
+             <h3 class="font-semibold text-white tracking-tight mb-2">Company</h3> {# White bold title #}
+             {# Update URLs if needed #}
+            <a href="{% url 'core:about' %}" class="text-sm transition-colors hover:text-white">About Us</a>
+            <a href="{% url 'news:news_list' %}" class="text-sm transition-colors hover:text-white">News</a>
+            <a href="{% url 'core:contact' %}" class="text-sm transition-colors hover:text-white">Contact</a>
         </div>
-        
-        {# Column 4: Legal #}
+
+        {# Column 4: Connect #}
         <div class="grid gap-1">
-             <h3 class="font-semibold tracking-tight mb-2">Legal</h3>
-            {# Placeholder Links #}
-            <a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Privacy Policy</a>
-            <a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Terms of Service</a>
+             <h3 class="font-semibold text-white tracking-tight mb-2">Connect</h3> {# White bold title #}
+             <div class="flex space-x-4">
+                 {# Replace text with Lottie container divs #}
+                 <a href="#" aria-label="Facebook">
+                     <div id="lottie-facebook" class="lottie-icon-container text-white"></div>
+                 </a>
+                 <a href="#" aria-label="Twitter">
+                     <div id="lottie-twitter" class="lottie-icon-container text-white"></div>
+                 </a>
+                 <a href="#" aria-label="Instagram">
+                     <div id="lottie-instagram" class="lottie-icon-container text-white"></div>
+                 </a>
+                 <a href="#" aria-label="LinkedIn">
+                     <div id="lottie-linkedin" class="lottie-icon-container text-white"></div>
+                 </a>
+             </div>
         </div>
     </div>
-    {# Bottom Copyright Bar #}
-    <div class="border-t border-border mt-8 py-6">
-        <div class="container mx-auto max-w-7xl flex flex-col items-center justify-center text-sm text-muted-foreground md:flex-row md:justify-between px-4">
+    {# Bottom Copyright Bar - with horizontal rule #}
+    <div class="border-t border-gray-700 mt-8 py-6"> {# Darker border #}
+        <div class="container mx-auto max-w-7xl flex flex-col items-center justify-center text-sm text-gray-400 px-4">
             <p>&copy; {% now "Y" %} ArchViz Platform. All rights reserved.</p>
-            {# Optional links #}
         </div>
     </div>
 </footer> 
