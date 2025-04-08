@@ -28,7 +28,7 @@
             /* Gallery control */
             --gallery-slide-height: 26rem; /* Control gallery image height */
             --gallery-slide-spacing: 10px; /* Control space between slides */
-            --gallery-aspect-ratio-variance: 0.5; /* Control aspect ratio flexibility: 1 = fixed 16:9, 0 = allows down to 9:16 */
+            --gallery-aspect-ratio-variance: 0.35; /* Control aspect ratio flexibility: 1 = fixed 16:9, 0 = allows down to 9:16 */
             --gallery-full-aspect-threshold: 4096px; /* Viewport width ABOVE which 16:9 aspect is guaranteed */
             --gallery-min-aspect-threshold: 320px;  /* Viewport width BELOW which MIN aspect ratio is guaranteed */
 
@@ -41,6 +41,10 @@
             --sphere-damping: 0.92;
             --sphere-camera-z: 3;
             --sphere-geometry-radius: 2.61; /* Increased size */
+
+            /* Services Section Grid Fade */
+            --services-grid-fade-height: 350px; /* Height of the top fade effect */
+            --services-grid-fade-start-opacity: 0.7; /* Starting opacity (0=transparent, 1=opaque) */
         }
 
         /* === Preview Banner Styles === */
@@ -122,6 +126,38 @@
             height: 35px; /* Increased size */
             cursor: pointer;
             filter: invert(1) brightness(1.5); /* Attempt to force white color */
+        }
+
+        /* Keyframes for combined bounce and scaling effect - RESTORED */
+        @keyframes bounce-and-scale {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                animation-timing-function: cubic-bezier(0.8, 0, 1, 1); /* Ease-in - start down fast */
+            }
+            50% {
+                /* Move down by distance, scale down by difference */
+                transform: translateY(var(--scroll-move-distance)) scale(calc(1 - var(--scroll-scale-diff)));
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1); /* Ease-out - slow down at bottom */
+            }
+        }
+
+        /* Apply custom animation to scroll indicator - RESTORED */
+        #lottie-scroll-indicator {
+            animation-duration: var(--scroll-anim-duration);
+            animation-name: bounce-and-scale; /* Apply combined animation */
+            animation-iteration-count: infinite;
+            cursor: default; /* Assuming no click action needed */
+            filter: none; /* Ensure no other filters affect it */
+            /* Optional: Add fade/scale out on scroll */
+            transition: opacity var(--scroll-fade-duration) ease, transform var(--scroll-fade-duration) ease;
+            transform-origin: center;
+        }
+
+        /* Optional: Class to hide the scroll indicator */
+        .scroll-indicator-hidden {
+            opacity: 0;
+            transform: scale(0); /* Scale down to hide */
+            pointer-events: none; /* Prevent interaction when hidden */
         }
     </style>
     {% endblock styles %}
@@ -239,16 +275,34 @@
             }
         }
 
-        // Ensure initialization runs after DOM is ready and potentially after other scripts
-        if (document.readyState === 'loading') { // Loading hasn't finished yet
-            document.addEventListener('DOMContentLoaded', checkLottieAndInit);
-        } else { // DOMContentLoaded has already fired
-            checkLottieAndInit();
+        // Scroll Indicator Visibility Logic - RESTORED
+        function handleScrollIndicatorVisibility() {
+            const scrollIndicator = document.getElementById('lottie-scroll-indicator');
+            // Adjust threshold as needed (pixels scrolled down to hide indicator)
+            const scrollThreshold = 50; 
+
+            if (scrollIndicator) {
+                if (window.scrollY > scrollThreshold) {
+                    scrollIndicator.classList.add('scroll-indicator-hidden');
+                } else {
+                    scrollIndicator.classList.remove('scroll-indicator-hidden');
+                }
+            }
         }
 
-        // Optional: Add scroll handling for scroll indicator if needed
-        // function handleScrollIndicatorVisibility() { ... }
-        // window.addEventListener('scroll', handleScrollIndicatorVisibility, { passive: true });
+        // Ensure initialization runs after DOM is ready and potentially after other scripts
+        if (document.readyState === 'loading') { // Loading hasn't finished yet
+            document.addEventListener('DOMContentLoaded', () => {
+                 checkLottieAndInit();
+                 handleScrollIndicatorVisibility(); // Call initially
+             });
+        } else { // DOMContentLoaded has already fired
+            checkLottieAndInit();
+            handleScrollIndicatorVisibility(); // Call initially
+        }
+
+        // Listen for scroll events - RESTORED
+        window.addEventListener('scroll', handleScrollIndicatorVisibility, { passive: true });
 
     </script>
 

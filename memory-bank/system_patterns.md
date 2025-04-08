@@ -120,4 +120,55 @@ This document records key architectural decisions and established conventions fo
 *   **API Authentication:** JWT via `djangorestframework-simplejwt` for external agents.
 *   **Configuration:** Uses `django-environ` loading from `.env`.
 *   **Memory Bank:** Persistent context maintained via files in `memory-bank/`.
-*   **Static JS:** Custom JavaScript, like `interactive-hero-background.js`, resides in `static/js/`. 
+*   **Static JS:** Custom JavaScript, like `interactive-hero-background.js`, resides in `static/js/`.
+
+## Frontend Patterns
+
+### JS-Driven Dynamic Element Sizing
+*   **Purpose:** To achieve responsive element dimensions (e.g., width, aspect ratio) that scale smoothly based on viewport size relative to defined thresholds, rather than relying solely on CSS breakpoints.
+*   **Implementation (Gallery Example):**
+    1.  Define configuration parameters as CSS custom properties (`:root` variables) in `base.html` (e.g., `--gallery-slide-height`, `--gallery-min-aspect-threshold`, `--gallery-full-aspect-threshold`, `--gallery-aspect-ratio-variance`).
+    2.  In JavaScript (`gallery-swiper-init.js`):
+        *   Read the CSS variables using `getComputedStyle`.
+        *   Read the current `window.innerWidth`.
+        *   Calculate minimum and maximum target element dimensions based on fixed dimension (height) and desired aspect ratios (e.g., 9:16 derived from variance, 16:9 max).
+        *   Calculate an interpolation factor (`viewportFactor`) between 0 and 1 based on where `window.innerWidth` falls between the min and max thresholds.
+        *   Calculate the target dimension (e.g., `targetSlideWidth`) using linear interpolation: `minDimension + (maxDimension - minDimension) * viewportFactor`.
+        *   Select the target HTML elements (`.swiper-slide`).
+        *   Apply the calculated dimension directly via inline style: `element.style.width = \`{targetSlideWidthPx}px\`;`.
+    3.  Add `resize` event listener (throttled with `requestAnimationFrame`) to re-run the calculation function.
+    4.  Run calculation function once on `DOMContentLoaded`.
+    5.  If interacting with a library (like Swiper), call its update method (e.g., `swiper.update()`) after modifying element sizes.
+*   **Benefits:** Smooth scaling, precise control via thresholds, configuration through CSS.
+*   **Considerations:** Requires JavaScript, relies on correct CSS variable reading and unit conversions, needs careful throttling on resize.
+
+### Layered Section Backgrounds
+*   **Purpose:** To create complex background effects by layering different elements (colors, patterns, animations).
+*   **Implementation (Services Section Example):**
+    1.  **Base Section:** Apply base padding (`py-20`), positioning context (`relative`), overflow control (`overflow-hidden`), and potentially a fallback background color (`bg-slate-50`) to the main `<section>` tag.
+    2.  **Static Pattern:** Add complex backgrounds like SVG patterns or gradients directly to the section via inline `style` or CSS classes. Use CSS gradient overlays (e.g., `linear-gradient` in `style`) for effects like fading the pattern from an edge.
+    3.  **Animated Canvas:** Place an absolutely positioned `<canvas>` element (`absolute inset-0 w-full h-full`) *inside* the section, *before* the main content containers.
+    4.  **Z-Indexing:** Assign a lower z-index (`z-0` or `z-[-1]`) to the canvas to place it behind the content.
+    5.  **Content:** Place the main content containers (`div`, etc.) *after* the canvas within the section. Give the content container `position: relative` and a higher z-index (e.g., `z-10`) to ensure it sits above the canvas and base background.
+    6.  **JS Animation:** Use JavaScript (e.g., Three.js) to draw onto the canvas.
+*   **Benefits:** Allows combining static and dynamic background elements. Clear separation of layers using positioning and z-index.
+*   **Considerations:** Requires careful management of `position` and `z-index`. Performance of JS animation needs monitoring.
+
+### CSS Variables for JS Configuration
+*   **Purpose:** To allow easy configuration and tweaking of JavaScript behavior (animation physics, thresholds, colors, opacity) without modifying the JS source code.
+*   **Implementation:**
+    1.  Define configuration parameters as CSS custom properties in a global scope (`:root` in `base.html`), using descriptive names (e.g., `--sphere-damping`, `--gallery-full-aspect-threshold`).
+    2.  In the relevant JavaScript file, use `getComputedStyle(document.documentElement).getPropertyValue(\'--variable-name\')` to read the value.
+    3.  Parse the retrieved string value to the appropriate type (float, integer, color). Provide sensible default values in the JS in case the CSS variable is missing or invalid.
+    4.  Use the parsed value within the JavaScript logic.
+*   **Benefits:** Centralized configuration, easy tweaking by modifying CSS, separation of configuration from logic.
+*   **Considerations:** Requires careful parsing and type conversion in JS, providing fallbacks is essential.
+
+### CSS Filter for Icon Recoloring
+*   **Purpose:** To change the apparent color of embedded SVG or Lottie animations where internal colors are hardcoded and cannot be easily targeted by standard CSS color properties (like `text-color`).
+*   **Implementation (Footer Icons Example):**
+    1.  Apply a CSS `filter` property to the container element (`.lottie-icon-container`).
+    2.  Use `invert(1)` to swap dark colors to light (and vice-versa).
+    3.  Optionally chain `brightness()` (e.g., `brightness(1.5)`) or `contrast()` filters to adjust the resulting color if simple inversion results in undesired tones (like grey instead of bright white).
+*   **Benefits:** Can force color changes on complex embedded graphics.
+*   **Considerations:** Can be imprecise, might affect all colors within the graphic, exact filter values may require tweaking, browser performance impact is usually minimal but possible. 

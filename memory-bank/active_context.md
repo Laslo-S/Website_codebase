@@ -1,16 +1,26 @@
 # Active Context
 
-*   **Status:** Completed **Phase 16** (Dynamic Data Integration).
-*   **Current Focus:** Ready to begin Phase 17.
-*   **Next Step:** Consult TASKS.mdc and proceed to Phase 17 (TBD).
+*   **Status:** Completed significant frontend refinements on homepage (Gallery responsiveness, Services background animation, Lottie fixes).
+*   **Current Focus:** Project Maintenance / Review after recent changes.
+*   **Next Step:** Awaiting next task assignment from user.
 
-Project Status: Active Development
+## Detailed State
 
-Current Focus: Homepage sections are styled and integrated with dynamic data (Gallery, News). Code refactored for JS and Hero Showcase.
+**Project Status:** Active Development
 
-Next Step: Consult TASKS.mdc for Phase 17 objectives.
+**Current Focus:** Reviewing and documenting recent frontend enhancements:
+    - Refined Gallery: Dynamic width calculation using JS based on viewport size relative to configurable thresholds, achieving responsive aspect ratio changes.
+    - Added Services Background: Implemented configurable Three.js wireframe sphere animation as a subtle background layer.
+    - Improved Services Styling: Made SVG grid fainter, added configurable gradient fade-in, layered backgrounds correctly.
+    - Fixed Lottie Elements: Restored footer icons and scroll indicator functionality (JS init, CSS animation, scroll behavior).
+    - Resolved Configuration/Build Issues: Corrected Django STATIC_ROOT and template block inheritance problems.
 
-Recent Milestones:
+**Next Step:** Await user direction for the next development task or phase. Consult @file:TASKS.mdc when instructed.
+
+**Recent Milestones:**
+- Completed dynamic gallery system overhaul.
+- Completed services section background animation implementation.
+- Completed Lottie element fixes and refinements.
 - Completed Phase 16: Integrated dynamic data for homepage gallery (via new `SlideshowImage` model) and news section. Updated static links (Client Portal login).
 - Completed Refactoring: Moved interactive background JS to `static/js/` and Hero showcase HTML to `templates/partials/`.
 - Completed Phase 15: Styled all homepage sections (`home.html`) based on v0 design, including interactive background and reusable partials.

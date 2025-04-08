@@ -4,25 +4,34 @@ This document outlines the specific technologies, versions, and setup details fo
 
 ## Backend
 
-*   **Framework:** Django 5.2
-*   **Language:** Python 3.12
-*   **Database (Dev):** SQLite (via `DATABASE_URL` in `.env`)
-*   **Database (Prod):** PostgreSQL (Planned, via `DATABASE_URL`)
+*   **Framework:** Django 5.x
+*   **Language:** Python 3.x
+*   **Database (Dev):** SQLite (default)
+*   **Database (Prod):** PostgreSQL (planned)
 *   **Environment Vars:** `django-environ`
 *   **Core Libraries:**
-    *   `django-ckeditor-5`: Rich text editing.
-    *   `djangorestframework` (DRF): For building REST APIs.
-    *   `djangorestframework-simplejwt`: For JWT authentication (used for API agent).
-    *   `Pillow`: Image processing (dependency for ImageField).
+    *   `django-crispy-forms` & `crispy-tailwind`: Form rendering with Tailwind CSS.
+    *   `django-ckeditor-5`: Rich text editing for model fields.
+    *   `Pillow`: Image processing (required by ImageField, CKEditor).
+    *   `python-dotenv`: Loading environment variables from `.env`.
+    *   `dj-database-url`: Parsing database URLs (useful for production).
+    *   `psycopg2-binary` (or `psycopg`): PostgreSQL adapter (for production).
+    *   `whitenoise`: Serving static files efficiently in production.
 
 ## Frontend
 
 *   **Approach:** Server-Side Rendering (SSR) via Django Templates.
-*   **Styling:** Tailwind CSS v3 (via PostCSS/npm build process).
+*   **Styling:** Tailwind CSS v3.x (using CLI for building `output.css`).
     *   Config: `tailwind.config.js`, `postcss.config.js`
     *   Input: `static/css/input.css`
     *   Output: `static/css/output.css`
-*   **JavaScript:** Vanilla JavaScript for minimal interactions (e.g., mobile menu toggle).
+*   **UI Components:** Primarily custom styled HTML, potentially leveraging headless UI libraries later if needed.
+*   **JavaScript:**
+    *   Vanilla JS for basic interactions (e.g., mobile menu toggle).
+    *   **Swiper.js (v11 via CDN):** Used for the homepage services gallery. Configured with `slidesPerView: 'auto'` and dynamic slide widths calculated by custom JS (`gallery-swiper-init.js`) based on viewport thresholds and CSS variables.
+    *   **Lottie (via CDN):** Used for footer social icons and hero scroll indicator. Initialized via global script in `base.html`. Footer icon color adjusted via CSS `filter`.
+    *   **Three.js (v0.160.0 via CDN module):** Used for interactive wireframe sphere background animation in the "Our Services" section (`services-background.js`). Animation physics and appearance configured via CSS variables.
+*   **Build Process:** Tailwind CLI (`npx tailwindcss ... --watch`).
 
 ## AI Assistant Integration
 
@@ -36,9 +45,16 @@ This document outlines the specific technologies, versions, and setup details fo
 
 *   **Virtual Env:** Uses `.venv` managed by `pip`.
 *   **Requirements:** `requirements.txt`.
+*   **Package Manager (Python):** `pip` (using `requirements.txt`).
+*   **Package Manager (JS):** `npm` (for Tailwind CLI and dependencies).
+*   **Version Control:** Git.
+*   **Environment Variables:** Managed via `.env` file (using `python-dotenv`).
 
 ## Deployment (Planned)
-*   TBD (Likely standard Django deployment with Gunicorn/Nginx or similar).
+*   **Platform:** TBD (e.g., Heroku, Render, Docker setup)
+*   **Web Server:** TBD (e.g., Gunicorn)
+*   **Static Files:** Served by Whitenoise or dedicated service (e.g., S3)
+*   **Database:** Managed PostgreSQL service.
 
 ## Key Libraries
 

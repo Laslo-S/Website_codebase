@@ -79,4 +79,11 @@
 - Task 16.5 (Client Portal): Updated "Secure Login" button link to use `{% url 'accounts:login' %}`.
 - Task 16.6 (Header/Footer): Marked N/A for now.
 
+**[Date - e.g., 2024-04-09] Frontend Refinements & Fixes:**
+*   **Homepage Gallery:** Overhauled gallery implementation. Replaced previous fixed-width/breakpoint approach with a JavaScript-driven dynamic width calculation. Slide width now interpolates between a minimum aspect ratio (controlled by `--gallery-aspect-ratio-variance`) and 16:9, based on the viewport width relative to `--gallery-min-aspect-threshold` and `--gallery-full-aspect-threshold`. Swiper (`slidesPerView: 'auto', `swiper.update()`) handles layout.
+*   **Services Background Animation:** Implemented a new background effect for the "Our Services" section using Three.js (v0.160.0). Added a subtle, interactive wireframe sphere (`services-background.js`) layered behind content (`z-0` canvas). Configuration (colors, opacity, physics) managed via CSS variables.
+*   **Services Background Styling:** Enhanced layering. Made existing SVG grid pattern fainter (`strokeWidth`). Added a configurable gradient fade-in from the top (`--services-grid-fade-height`, `--services-grid-fade-start-opacity`). Removed solid background from parent section, added light background (`bg-slate-50`) to ensure visibility of white sphere elements.
+*   **Lottie Fixes:** Restored missing footer social icons by re-adding Lottie player script and initialization logic (`initializeLottieIcons`) to `base.html`. Corrected icon color from black to white using CSS `filter: invert() brightness()`. Restored missing scroll indicator animation by re-adding CSS keyframes (`@keyframes bounce-and-scale`) and associated CSS rules to `base.html`. Restored scroll-based hiding logic (`handleScrollIndicatorVisibility` and scroll listener) in `base.html` script. Centered scroll indicator reliably using `left-0 right-0 mx-auto`.
+*   **Configuration & Build:** Resolved critical issues preventing script execution. Defined `STATIC_ROOT` in `config/settings.py` to enable `collectstatic`. Corrected template inheritance in `home.html` by adding `{{ block.super }}` to `{% block scripts %}`.
+
 
