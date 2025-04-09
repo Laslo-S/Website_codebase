@@ -76,6 +76,7 @@ The project follows a standard Django structure with specific customizations:
 ## Features
 
 *   **Visualization Display:** Separate pages for 3D Scans, Video Visualizations, and Still Images, showcasing projects managed via the Django Admin.
+*   **Homepage Interactive Gallery:** An auto-scrolling, infinitely looping gallery (currently in the Services section) showcasing slideshow images. Features interactive mouse control (hover to control speed/direction) and dynamic aspect ratio adjustment based on viewport width. Fully configurable via CSS variables defined in `templates/base.html` (search for `--gallery-...`).
 *   **User Accounts:** Basic user login/logout and profile pages.
 *   **User-Specific Pages:** Dynamically generated pages for logged-in users (e.g., `/accounts/user/<username>/`), potentially showing user-specific content.
 *   **News/Blog:** A simple blog section (`/news/`) for posts managed via the Django Admin, featuring rich text editing and featured images. Latest posts are displayed on the homepage.
@@ -163,3 +164,4 @@ To run the development server, you need **three separate terminals**:
 *   **Client-Specific Features:** Implement client-specific features such as client-specific dashboards or client-specific project management tools.
 *   **Advanced Search Capabilities:** Add advanced search capabilities to help users find specific projects or information quickly.
 *   **AI Integration:** Integrate AI assistants for more personalized and efficient project management and visualization.
+*   **Gallery Enhancements:** Add touch support, pagination, or explicit play/pause controls to the interactive gallery.

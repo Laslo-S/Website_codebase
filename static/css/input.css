@@ -76,6 +76,7 @@
 
 .css-gallery-track {
   @apply flex; /* Use flexbox for the track */
+  will-change: transform; /* Performance hint for animation */
   /* Width is handled implicitly by flex items + duplication */
 }
 

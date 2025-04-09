@@ -171,4 +171,22 @@ This document records key architectural decisions and established conventions fo
     2.  Use `invert(1)` to swap dark colors to light (and vice-versa).
     3.  Optionally chain `brightness()` (e.g., `brightness(1.5)`) or `contrast()` filters to adjust the resulting color if simple inversion results in undesired tones (like grey instead of bright white).
 *   **Benefits:** Can force color changes on complex embedded graphics.
-*   **Considerations:** Can be imprecise, might affect all colors within the graphic, exact filter values may require tweaking, browser performance impact is usually minimal but possible. 
+*   **Considerations:** Can be imprecise, might affect all colors within the graphic, exact filter values may require tweaking, browser performance impact is usually minimal but possible.
+
+### Custom JS Infinite Scroll Gallery (CSS Transform)
+*   **Purpose:** To create a horizontally scrolling gallery with seamless looping, interactive mouse control, idle scroll, dynamic item sizing, and full configuration via CSS variables.
+*   **Implementation (`css_gallery_init.js` example):**
+    1.  **HTML:** Container (`.css-gallery-container` with `overflow: hidden`), Track (`.css-gallery-track` with `display: flex`), Items (`.css-gallery-item` with `flex-shrink: 0`).
+    2.  **Duplication:** JS duplicates all gallery items within the track to create enough content for looping.
+    3.  **CSS Variables:** Define all control parameters (`--gallery-slide-height`, `--gallery-slide-spacing`, `--gallery-item-border-radius`, aspect ratio vars, physics vars, idle speed) in `:root` (`base.html`).
+    4.  **Styling:** CSS (`input.css`) applies appearance vars (height, spacing, radius) to items and sets `flex` on the track. `will-change: transform` is added for performance.
+    5.  **Dynamic Width:** JS function (`updateGalleryItemWidths`) reads aspect ratio vars, calculates item width based on viewport size and interpolation, and applies it via inline `style.width`. Runs on load and throttled resize.
+    6.  **Loop Boundary:** JS calculates `originalContentWidth` (width of original items + spacing) on load and resize.
+    7.  **Animation Loop:** JS `requestAnimationFrame` (`galleryJSScrollLoop`) runs continuously.
+    8.  **Physics:** Loop calculates `currentVelocityPPS` based on mouse position (reading physics variables) or idle speed (`--gallery-idle-scroll-pps`), applying acceleration and damping.
+    9.  **Position Update:** Loop updates an internal JS variable `currentTranslateX += currentVelocityPPS * deltaTime`.
+    10. **CSS Transform:** Loop applies the position to the track: `galleryTrack.style.transform = \`translateX(${-currentTranslateX}px)\`;`.
+    11. **Looping:** Loop checks if `currentTranslateX` exceeds `originalContentWidth` or goes below 0, resetting it using subtraction/addition of `originalContentWidth`.
+    12. **Idle Scroll Fix:** When mouse is off, the scroll update uses `idlePPS * deltaTime` directly for `translateX`, bypassing `currentVelocityPPS` to avoid stalling at low speeds.
+*   **Benefits:** Smooth animation via `transform`, unified JS logic, full CSS variable control, reliable low-speed idle scroll.
+*   **Considerations:** Requires careful JS logic for physics and looping, relies on accurate width/spacing calculations for loop boundary. 

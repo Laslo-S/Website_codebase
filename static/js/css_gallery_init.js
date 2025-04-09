@@ -1,6 +1,7 @@
 let isMouseOverGallery = false;
 let relativeMouseX = 0.5; // Start in the middle
-let currentScrollSpeed = 0; // Pixels per second
+let currentScrollSpeed = 0; // Pixels per second (Treat as Velocity)
+let currentTranslateX = 0; // NEW: Tracks the target translateX position
 let lastTimestamp = 0;
 let animationFrameId = null;
 
@@ -134,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let targetScrollSpeed = 0;
 
+        // --- Calculate Target Speed and Update Physics (Always Run) ---
         if (isMouseOverGallery) {
             // --- Calculate Target Speed based on Mouse Position ---
             if (relativeMouseX < deadzoneStart) {
@@ -170,84 +172,50 @@ document.addEventListener('DOMContentLoaded', () => {
         currentScrollSpeed *= Math.pow(dampingFactor, deltaTime * 60); // Frame-rate independent damping
 
 
-        // --- Revised Snapping/Stopping Logic ---
-        if (isMouseOverGallery) {
-            // Mouse OVER gallery logic (Handles stopping in deadzone)
-            if (targetScrollSpeed === 0 && Math.abs(currentScrollSpeed) < 0.5) {
-                currentScrollSpeed = 0;
-            }
-            // Otherwise, let acceleration/damping manage speed.
-        } else {
-            // Mouse NOT OVER gallery logic (Handles idle scroll)
-            const idleThreshold = 0.1; // Consider idle speed zero if below this
-            if (idlePPS < idleThreshold) {
-                // Target idle speed is effectively zero, allow stopping naturally via damping.
-                if (Math.abs(currentScrollSpeed) < 0.5) {
-                    currentScrollSpeed = 0;
-                }
-            } else {
-                // Target idle speed is positive, ensure we maintain it.
-                if (currentScrollSpeed < idlePPS && currentScrollSpeed >= 0) {
-                    // If damping pulled speed below target (but still positive), force it back UP to idlePPS.
-                    currentScrollSpeed = idlePPS;
-                } else if (Math.abs(currentScrollSpeed - idlePPS) < 0.5) {
-                    // If speed is already very close to idlePPS (slightly above or below), snap it exactly.
-                    currentScrollSpeed = idlePPS;
-                } else if (currentScrollSpeed < 0) {
-                    // Failsafe: If speed somehow became negative while idling, reset to positive idlePPS.
-                    currentScrollSpeed = idlePPS;
-                }
-                // Otherwise (speed is positive and significantly > idlePPS), let damping bring it down naturally.
-            }
+        // --- Simplified Snapping/Stopping Logic (for currentVelocityPPS) ---
+        // Only apply stopping logic when mouse is OVER the gallery and in the deadzone.
+        if (isMouseOverGallery && targetScrollSpeed === 0 && Math.abs(currentScrollSpeed) < 0.5) {
+            currentScrollSpeed = 0; // Set velocity to 0
+        }
+        // Optional: Snap physics velocity if very close during idle, helps transition
+        else if (!isMouseOverGallery && Math.abs(currentScrollSpeed - idlePPS) < 1.0) {
+             currentScrollSpeed = idlePPS;
         }
 
-        // --- Update Scroll Position Check (Revised for Idle Scroll Robustness) ---
-        const idleThreshold = 0.1; // Consider idle speed zero if below this
 
-        // >>> ADDED: Store scrollLeft BEFORE updating <<< 
-        const previousScrollLeft = galleryContainer.scrollLeft;
+        // --- Update Position Variable --- 
+        const deltaX = currentScrollSpeed * deltaTime;
+        currentTranslateX += deltaX;
 
-        if (isMouseOverGallery) {
-            // Mouse is OVER: Use calculated speed, allow stopping.
-            if (currentScrollSpeed !== 0) {
-                 galleryContainer.scrollLeft += currentScrollSpeed * deltaTime;
+        // --- Handle Looping using currentTranslateX ---
+        // Loop boundary is the width of the original content
+        if (originalContentWidth > 0) { // Avoid division by zero if width calculation failed
+            // If scrolled past the end of the original content (moving right)
+            if (currentTranslateX >= originalContentWidth) {
+                currentTranslateX -= originalContentWidth;
             }
-        } else {
-            // Mouse is NOT OVER: Idle state.
-            if (idlePPS >= idleThreshold) {
-                // If target idle speed is positive, scroll directly by that amount.
-                const intendedScrollDelta = idlePPS * deltaTime;
-                galleryContainer.scrollLeft += intendedScrollDelta;
+            // If scrolled past the beginning (moving left)
+            else if (currentTranslateX < 0) {
+                currentTranslateX += originalContentWidth;
             }
-            // If idlePPS is effectively zero, do nothing - gallery remains stopped.
-        }
-        // Note: currentScrollSpeed continues to be updated by accel/damping even during idle,
-        // ensuring smooth transition if mouse enters again. The revised snapping logic above
-        // keeps it near the idlePPS value.
+        } // else { console.warn("Looping skipped: originalContentWidth is zero."); }
+        
+        // --- Apply CSS Transform --- 
+        // Use the internal variable, apply with negative sign for correct direction
+        galleryTrack.style.transform = `translateX(${-currentTranslateX}px)`;
+        
+        // --- REMOVED scrollLeft update logic --- 
+        /*
+        const idleThreshold = 0.1; 
+        const previousScrollLeft = galleryContainer.scrollLeft; 
+        if (isMouseOverGallery) { ... } else { ... }
+        */
 
-        // --- Handle Looping (Using previousScrollLeft is necessary now) ---
-        const currentScrollLeft = galleryContainer.scrollLeft; // Get updated position
-
-        // Right edge loop: If scroll position crosses or lands on the boundary
-        if (currentScrollLeft >= originalContentWidth) {
-             // console.log(`Looping right -> left: ${currentScrollLeft} >= ${originalContentWidth}`)
-            galleryContainer.scrollLeft -= originalContentWidth;
-        }
-        // Left edge loop: Use previous position to check if boundary was crossed *during* this frame update
-        // This prevents stopping precisely at 0 when moving left from interfering with the loop.
-        else if (previousScrollLeft > 0 && currentScrollLeft <= 0 && currentScrollSpeed < 0) {
-            // console.log(`Looping left -> right: prev ${previousScrollLeft.toFixed(1)} > 0 && curr ${currentScrollLeft.toFixed(1)} <= 0 && speed ${currentScrollSpeed.toFixed(1)} < 0`)
-             // We crossed the zero boundary moving leftwards
-             galleryContainer.scrollLeft += originalContentWidth;
-             // Adjust based on how far *past* zero we went, if needed for precision, but simple reset is often enough.
-             // Example adjustment: galleryContainer.scrollLeft = originalContentWidth + currentScrollLeft; (currentScrollLeft is negative or zero here)
-
-             // Robustness for very high speeds potentially skipping over:
-             // while (galleryContainer.scrollLeft < 0) { // If the simple reset wasn't enough
-             //    galleryContainer.scrollLeft += originalContentWidth;
-             // }
-        }
-
+        // --- REMOVED scrollLeft based looping --- 
+        /*
+        const currentScrollLeft = galleryContainer.scrollLeft; 
+        if (currentScrollLeft >= originalContentWidth) { ... } else if (previousScrollLeft > 0 && currentScrollLeft <= 0 && currentScrollSpeed < 0) { ... }
+        */
 
         // --- Request Next Frame ---
         animationFrameId = requestAnimationFrame(galleryJSScrollLoop);
@@ -259,13 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
     animationFrameId = requestAnimationFrame(galleryJSScrollLoop); // Start the loop immediately
 
     // --- Resize Listener --- 
-    let resizeTimeout;
     function throttledUpdate() {
-        // Update widths first, then recalculate boundaries
+        // Update widths first, then recalculate boundaries used for looping
         window.requestAnimationFrame(() => {
             updateGalleryItemWidths();
-            calculateOriginalContentWidth();
-            // No need to update Swiper instance here
+            calculateOriginalContentWidth(); // Ensure boundary is updated after width change
         });
     }
     window.addEventListener('resize', throttledUpdate);

@@ -86,4 +86,9 @@
 *   **Lottie Fixes:** Restored missing footer social icons by re-adding Lottie player script and initialization logic (`initializeLottieIcons`) to `base.html`. Corrected icon color from black to white using CSS `filter: invert() brightness()`. Restored missing scroll indicator animation by re-adding CSS keyframes (`@keyframes bounce-and-scale`) and associated CSS rules to `base.html`. Restored scroll-based hiding logic (`handleScrollIndicatorVisibility` and scroll listener) in `base.html` script. Centered scroll indicator reliably using `left-0 right-0 mx-auto`.
 *   **Configuration & Build:** Resolved critical issues preventing script execution. Defined `STATIC_ROOT` in `config/settings.py` to enable `collectstatic`. Corrected template inheritance in `home.html` by adding `{{ block.super }}` to `{% block scripts %}`.
 
+**[Date - Add Current Date] Phase 17: Interactive Gallery Refinement (Completed)**
+*   **Goal:** Fix and refine the custom JavaScript gallery scroll logic (`css_gallery_init.js`) for seamless looping, CSS variable control, and reliable low-speed idle scroll.
+*   **Implementation:** Replaced `scrollLeft` manipulation with CSS `transform: translateX` controlled by JavaScript. Physics (velocity, acceleration, damping) calculated in JS `requestAnimationFrame` loop. Looping handled via modulo logic on the internal `currentTranslateX` variable. Dynamic item width based on viewport/aspect ratio variables calculated in JS and applied via inline styles. Idle scroll implemented by directly applying `idlePPS * deltaTime` to `translateX`, decoupling it from physics simulation stalling. All parameters controlled via `--gallery-...` CSS variables.
+*   **Outcome:** Achieved smooth bidirectional looping, reliable idle scroll at all speeds, dynamic aspect ratio sizing, and full CSS variable control.
+
 
