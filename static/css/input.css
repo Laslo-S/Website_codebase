@@ -69,4 +69,31 @@
 }
 /* --- End v0 Globals Integration --- */
 
+/* --- CSS Variable Driven Gallery Styles --- */
+.css-gallery-container {
+  @apply overflow-x-hidden; /* Hide scrollbar, scrolling handled by JS */
+}
+
+.css-gallery-track {
+  @apply flex; /* Use flexbox for the track */
+  /* Width is handled implicitly by flex items + duplication */
+}
+
+.css-gallery-item {
+  height: var(--gallery-slide-height, 300px); /* Use CSS var, provide fallback */
+  margin-right: var(--gallery-slide-spacing, 1rem); /* Use CSS var for spacing */
+  border-radius: var(--gallery-item-border-radius, 0.5rem); /* Use CSS var for border radius */
+  @apply flex-shrink-0 overflow-hidden; /* Keep flex-shrink, overflow; remove rounded */
+  /* Width is set dynamically via JS in this setup */
+}
+
+/* Optional: Remove margin from the very last duplicated item if visual artifacts occur */
+/* .css-gallery-track > .css-gallery-item:last-child {
+  margin-right: 0;
+} */
+
+.css-gallery-item img {
+    @apply w-full h-full object-cover; /* Make images fill the item container */
+}
+
 /* You can add custom base styles or component styles here if needed */ 

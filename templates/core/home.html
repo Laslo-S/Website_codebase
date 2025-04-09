@@ -82,30 +82,31 @@
             </div>
         </div>
 
-        {# Full-width Swiper Gallery Container with Background #}
-        <div class="relative z-10 swiper services-gallery-swiper overflow-hidden bg-slate-200/60 py-3"> {# Removed parent bg-slate-100, set this to 60% opacity #}
-            <div class="swiper-wrapper"> {# Swiper wrapper #}
+        {# UPDATED Full-width Custom CSS Gallery Container #}
+        <div class="relative z-10 css-gallery-container overflow-hidden bg-slate-200/60 py-3"> {# Renamed class, kept styling #}
+            <div class="css-gallery-track"> {# Renamed class #}
                 {# Loop through slideshow images #}
                 {% for item in slideshow_images %}
-                    <div class="swiper-slide flex-shrink-0"> {# Removed w-96 #}
-                        <div class="rounded-lg shadow-md overflow-hidden relative group h-full"> {# Removed aspect-[16/9] #}
-                            {# Display Image #}
-                            {% if item.image %}
-                               <img src="{{ item.image.url }}" alt="{{ item.alt_text|default:'Slideshow image' }}" class="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-80">
-                            {% else %}
-                               <div class="w-full h-full bg-slate-300 flex items-center justify-center text-slate-500">No Image</div>
-                            {% endif %}
-                            {# Draft Indicator #}
-                            {% if request.is_preview and item.status == 'draft' %}
-                                <span class="absolute top-2 right-2 text-xs bg-yellow-500 text-yellow-900 px-2 py-0.5 rounded-full z-10">Draft</span>
-                            {% endif %}
-                        </div>
+                    <div class="css-gallery-item"> {# Renamed class, removed flex-shrink-0 (handled in CSS) #}
+                        {# Removed inner div - simplified structure, styles applied to item directly #}
+                        {# Display Image #}
+                        {% if item.image %}
+                           <img src="{{ item.image.url }}" alt="{{ item.alt_text|default:'Slideshow image' }}">
+                           {# Img style w-full h-full object-cover is now applied via CSS #}
+                        {% else %}
+                           <div class="w-full h-full bg-slate-300 flex items-center justify-center text-slate-500">No Image</div>
+                        {% endif %}
+                        {# Draft Indicator #}
+                        {% if request.is_preview and item.status == 'draft' %}
+                            <span class="absolute top-2 right-2 text-xs bg-yellow-500 text-yellow-900 px-2 py-0.5 rounded-full z-10">Draft</span>
+                        {% endif %}
                     </div>
                 {% empty %}
-                    {# Optional: Handle empty gallery state if needed within Swiper #}
+                    {# Optional: Handle empty gallery state #}
+                     <p class="text-slate-500 text-center w-full">Gallery is empty.</p>
                 {% endfor %}
             </div>
-            {# Optional: Add Swiper Pagination/Navigation if desired later #}
+            {# Removed Swiper pagination/navigation placeholders #}
         </div>
     </section>
 
@@ -204,6 +205,6 @@
 
 {% block scripts %}
     {{ block.super }} {# Include scripts from base.html #}
-    {# Include the Swiper initialization script specific to this page #}
-    <script src="{% static 'js/gallery-swiper-init.js' %}" defer></script>
+    {# REMOVED Include the Swiper initialization script specific to this page #}
+    {# <script src="{% static 'js/gallery-swiper-init.js' %}" defer></script> #}
 {% endblock scripts %} 

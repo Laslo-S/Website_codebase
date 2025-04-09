@@ -685,38 +685,38 @@ alwaysApply: false
 
 *AI Assistant Guidance: Translate the core HTML structure from the v0 output (`page.txt`, `ClientLayout.txt`) into Django templates (`base.html`, `home.html`, partials). Integrate base styles and CSS variables from `globals.txt` into the Tailwind setup. Focus purely on semantic structure, layout containers, and global style integration. Responsiveness should be considered structurally (mobile-first flow).*
 
-- [ ] **14.1 Integrate Base Styles & Theme Variables (`globals.txt`):**
+- [X] **14.1 Integrate Base Styles & Theme Variables (`globals.txt`):**
     *   **14.1.1 Update `input.css`:** Merge base styles (`@layer base`), CSS variable definitions (`:root`, `.dark`), and core HTML/body styles from @file:globals.txt into `static/css/input.css`. Ensure `@tailwind base/components/utilities` are present.
     *   **14.1.2 Configure Tailwind Theme:** Update `tailwind.config.js` `theme.extend.colors` to use the CSS variables (e.g., `background: 'hsl(var(--background))'`). Also map `--radius` to Tailwind's `borderRadius` theme section.
     *   **14.1.3 Build CSS & Verify:** Run Tailwind build. Check browser dev tools on homepage to confirm CSS variables are applied and base body styles are active.
 
-- [ ] **14.2 Implement Base Template Structure (`base.html`):**
+- [X] **14.2 Implement Base Template Structure (`base.html`):**
     *   **14.2.1 HTML Boilerplate:** Ensure `templates/base.html` has correct HTML5 structure, `lang="en"`, essential `<meta>` tags (charset, viewport), and links the generated `output.css`. Include `scroll-smooth` class on `<html>` if desired (as per `ClientLayout.txt`).
     *   **14.2.2 Main Layout Sections:** Define the primary page structure within `<body>` using semantic tags: `<header>`, `<main>`, `<footer>`. Include the Django block tags (`{% block content %}`, `{% block scripts %}` etc.) in appropriate places.
     *   **14.2.3 Link Partials:** Include the header and footer using `{% include 'partials/_header.html' %}` and `{% include 'partials/_footer.html' %}` within `base.html`.
 
-- [ ] **14.3 Structure Header & Footer Partials (HTML Only):**
+- [X] **14.3 Structure Header & Footer Partials (HTML Only):**
     *   **14.3.1 Header Structure (`_header.html`):** Replicate the HTML structure from the `<header>` in @file:ClientLayout.txt (outer div, max-width container, flex layout, logo link placeholder, nav placeholder, mobile button placeholder). **Apply only basic structural Tailwind classes** (e.g., `fixed`, `top-0`, `z-50`, `w-full`, `max-w-7xl`, `mx-auto`, `flex`, `justify-between`, `items-center`, padding `px-`, `py-`). Defer detailed styling.
     *   **14.3.2 Footer Structure (`_footer.html`):** Replicate the HTML structure from the `<footer>` in @file:ClientLayout.txt (outer tag, max-width container, grid layout for columns, headings, link list structure, copyright div). **Apply only basic structural Tailwind classes** (e.g., `grid`, `grid-cols-`, `gap-`, padding `px-`, `py-`, `mt-`, `pt-`). Defer detailed styling.
 
-- [ ] **14.4 Structure Homepage Sections (`home.html`):**
+- [X] **14.4 Structure Homepage Sections (`home.html`):**
     *   **14.4.1 Section Containers:** In @file:templates/core/home.html (within `{% block content %}`), create the main `<section>` containers corresponding to the v0 `page.txt` structure, giving them appropriate IDs: `#hero`, `#services`, `#featured-projects`, `#client-portal`, `#news`, `#cta-banner`.
     *   **14.4.2 Basic Section Layout:** Apply basic structural Tailwind classes to each section for padding (`py-`) and potentially background placeholders (`bg-gray-100`, `bg-gray-800`, etc. - these will be refined later). Ensure content within sections uses a `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` container for consistency.
     *   **14.4.3 Add Headings:** Place placeholder `<h2>` headings within each section (e.g., "Our Services", "Latest News"). Defer styling.
 
-- [ ] **14.5 Update Frontend Rules (`01_layout_styling_base.mdc`):**
+- [X] **14.5 Update Frontend Rules (`01_layout_styling_base.mdc`):**
     *   **14.5.1 Add Structure Rules:** Add guidelines emphasizing the use of the defined section structure (`#hero`, `#services` etc.) on the homepage. Reinforce use of `max-w-7xl mx-auto px-` container pattern. Document base HTML/CSS variables setup. Reference @file:templates/base.html, @file:templates/partials/_header.html, @file:templates/partials/_footer.html.
 
-- [ ] **14.6 Verification:**
+- [X] **14.6 Verification:**
     *   **14.6.1 Run Server:** Start dev server.
     *   **14.6.2 Check Structure:** Inspect the rendered HTML source for `base.html` and `home.html`. Verify correct semantic tags, included partials, section containers with IDs, and basic structural Tailwind classes are present.
     *   **14.6.3 Visual Check:** The page will look unstyled but should have the basic sections laid out vertically with padding/margins. Header/footer structure should be visible. Base background/text colors from `globals.txt` should apply.
 
-- [ ] **14.7 Documentation & Memory Update:**
+- [X] **14.7 Documentation & Memory Update:**
     *   **14.7.1 Update `README.md`/Docs:** Add section detailing the core HTML structure (`base.html`, partials, homepage sections) and the integration of global styles.
     *   **14.7.2 Update Memory Bank:** Update `system_patterns.md` (document base layout, partials usage, section IDs), `tech_context.md` (global CSS variables setup), `progress.md`, `active_context.md`.
 
-- [ ] **14.8 Version Control Checkpoint:** Stage changes (templates, partials, input.css, tailwind.config.js, rules, docs, memory). Generate commit message (e.g., "feat(frontend): Implement base HTML structure, partials, and global styles integration"). Await confirmation to commit.
+- [X] **14.8 Version Control Checkpoint:** Stage changes (templates, partials, input.css, tailwind.config.js, rules, docs, memory). Generate commit message (e.g., "feat(frontend): Implement base HTML structure, partials, and global styles integration"). Await confirmation to commit.
 
 ---
 
@@ -724,14 +724,14 @@ alwaysApply: false
 
 *AI Assistant Guidance: Apply detailed Tailwind CSS styling to specific components (Hero elements, Service/News/Project cards) based on v0 designs. Integrate static visuals like the Services section background iframe and placeholder embeds/images. Focus on achieving the visual appearance without complex JS interactivity.*
 
-- [ ] **15.1 Style Hero Section Content (`home.html`):**
+- [X] **15.1 Style Hero Section Content (`home.html`):**
     *   **15.1.1 Text Styling:** Apply specific Tailwind typography classes (font family, size, weight, color, line height) to the H1 headline and paragraph in the `#hero` section, matching the v0 `page.txt`.
     *   **15.1.2 Button Styling:** Apply detailed Tailwind classes to the primary CTA button ("View Portfolio") and secondary button ("Our Services") for background color, text color, padding, border, rounded corners, hover/focus states, matching `page.txt`.
     *   **15.1.3 Background:** Apply the gradient background classes (`bg-gradient-to-r from-...`) to the main Hero `<section>` tag.
     *   **15.1.4 Visual Placeholder:** Instead of the complex `HeroShowcase` component, embed a relevant placeholder image (`<img>` tag referencing a high-quality static image, e.g., `static/images/hero/placeholder.jpg`) or **embed the primary Sketchfab iframe** here, styled appropriately to fit the right-side column on desktop. Add appropriate `alt`/`title` attributes. *(Decision: Use Sketchfab embed here).*
     *   **15.1.5 Scroll Indicator:** Style the scroll indicator div using Tailwind classes.
 
-- [ ] **15.2 Style Services Section & Integrate Background (`home.html`):**
+- [X] **15.2 Style Services Section & Integrate Background (`home.html`):**
     *   **15.2.1 Section Styling:** Style the `#services` section heading, paragraph, and grid container using Tailwind classes from `page.txt`. Apply the subtle pattern background from `page.txt` if easily achievable with CSS `background-image: url(...)` or defer if too complex.
     *   **15.2.2 Interactive Background (iframe):**
         - Create the static HTML file: `static/animations/inertia_background.html`. Copy the full HTML content from @file:finalt.html into this file.
@@ -739,30 +739,30 @@ alwaysApply: false
         - Add `title="Interactive background animation"` to the iframe.
     *   **15.2.3 Style Service Cards:** Update the partial @file:templates/partials/_service_card.html applying detailed Tailwind classes for background, padding, border, shadow, hover effects, icon container styling, text hierarchy, and link styling, matching the v0 `ServiceCard` component.
 
-- [ ] **15.3 Style Portfolio/News Cards & Lists:**
+- [X] **15.3 Style Portfolio/News Cards & Lists:**
     *   **15.3.1 Style Project Card (`_project_card.html`):** Apply detailed Tailwind classes matching the Service/News cards for consistency (background, border, shadow, padding, image/embed container, text styles, hover effects).
     *   **15.3.2 Style News Card (`_news_card.html`):** Ensure styling is consistent with other cards. Style date/metadata elements.
     *   **15.3.3 Style List Pages:** Apply consistent styling to titles, grid layout, and pagination controls on `/scans/`, `/videos/`, `/images/`, and `/news/` pages.
 
-- [ ] **15.4 Style Client Portal & CTA Sections (`home.html`):**
+- [X] **15.4 Style Client Portal & CTA Sections (`home.html`):**
     *   **15.4.1 Style Client Portal:** Apply styling to the heading, paragraph, login button, feature cards grid, and the two-column promo block, matching the v0 `page.txt`. Ensure `_client_portal_card.html` partial is styled.
     *   **15.4.2 Style CTA Banner:** Apply gradient background, text styling, and button styling to the final CTA banner section.
 
-- [ ] **15.5 Update Styling Rules:**
+- [X] **15.5 Update Styling Rules:**
     *   **15.5.1 Update Component Rules:** Add examples and specific class patterns used for cards, buttons, hero elements to relevant frontend rules files (e.g., `01_layout_styling_base.mdc`, `03_tailwind_config.mdc`).
     *   **15.5.2 Document Background:** Add notes to `01_layout_styling_base.mdc` or a new rule about the iframe background technique used for the Services section.
 
-- [ ] **15.6 Verification:**
+- [X] **15.6 Verification:**
     *   **15.6.1 Visual Match:** Compare key sections (Hero, Services, News, CTA, Cards, Footer, Header) against the v0 screenshots/design. Verify typography, colors, spacing, and component styles are closely matched.
     *   **15.6.2 Background Check:** Verify the interactive inertia background *iframe* loads and functions behind the Services cards.
     *   **15.6.3 Responsiveness:** Re-check responsiveness on key pages, ensuring styled elements adapt correctly.
     *   **15.6.4 Report:** Confirm visual fidelity and report any major deviations or issues.
 
-- [ ] **15.7 Documentation & Memory Update:**
+- [X] **15.7 Documentation & Memory Update:**
     *   **15.7.1 Update `README.md`/Docs:** Add details about specific styling implementations and the interactive background iframe.
     *   **15.7.2 Update Memory Bank:** Update `system_patterns.md` (styled component examples), `tech_context.md` (specific Tailwind plugins used), `progress.md`, `active_context.md`.
 
-- [ ] **15.8 Version Control Checkpoint:** Stage all styling changes. Generate commit message (e.g., "feat(frontend): Apply detailed Tailwind styling to components and integrate static visuals"). Await confirmation to commit.
+- [X] **15.8 Version Control Checkpoint:** Stage all styling changes. Generate commit message (e.g., "feat(frontend): Apply detailed Tailwind styling to components and integrate static visuals"). Await confirmation to commit.
 
 ---
 
@@ -770,35 +770,82 @@ alwaysApply: false
 
 *AI Assistant Guidance: Implement JavaScript-driven interactivity for elements like the Hero showcase hover effects, potentially image galleries, and the mobile navigation toggle. Focus on writing clean, efficient vanilla JavaScript.*
 
-- [ ] **16.1 Setup JS Execution:**
+- [X] **16.1 Setup JS Execution:**
     *   **16.1.1 Link Script:** Confirm `script.js` is linked in `base.html`.
     *   **16.1.2 DOM Ready:** Ensure JS code runs after `DOMContentLoaded`.
-- [ ] **16.2 Implement Hero Showcase Hover Effects (Simplified):**
+- [X] **16.2 Implement Hero Showcase Hover Effects (Simplified):**
     *   **16.2.1 Target Elements:** Add IDs or unique data attributes to the Hero section's primary CTA button and the main visual element (Sketchfab iframe/container).
     *   **16.2.2 JS Logic:** Add `mouseenter`/`mouseleave` listeners in `script.js`. On hover, add/remove simple visual feedback classes (e.g., slight scale `transform scale-105`, increased shadow `shadow-lg`) defined using Tailwind. *(Defer complex multi-window interactions from v0 `hero-showcase.txt` unless specifically requested).*
     *   **16.2.3 Verification:** Test hover effects are subtle and functional.
-- [ ] **16.3 Implement Mobile Navigation Toggle:**
+- [X] **16.3 Implement Mobile Navigation Toggle:**
     *   **16.3.1 Target Elements:** Ensure the mobile menu button (hamburger icon) and the navigation links container (`<nav>` block) in the header partial have unique IDs. Ensure the nav block is hidden on small screens using Tailwind (`hidden md:flex`).
     *   **16.3.2 JS Logic:** Add a click event listener to the hamburger button in `script.js`. On click, toggle a class (e.g., `hidden`) or specific Tailwind classes (`block`/`hidden`) on the navigation container to show/hide it. Change the button icon (hamburger/close) if desired.
     *   **16.3.3 Verification:** Test on small screens. Verify clicking the hamburger button opens/closes the mobile navigation menu smoothly.
-- [ ] **16.4 Implement Basic Image Gallery Interaction (Optional - e.g., Lightbox):**
+- [X] **16.4 Implement Basic Image Gallery Interaction (Optional - e.g., Lightbox):**
     *   **16.4.1 Choose Library (Optional):** Consider a lightweight vanilla JS lightbox library (e.g., Photoswipe, basic custom implementation) or defer this.
     *   **16.4.2 Implementation:** If proceeding, add necessary JS listeners and HTML structure changes to the image gallery section on `home.html` and potentially list pages.
     *   **16.4.3 Verification:** Test lightbox functionality. *(Decision: Defer lightbox for now unless requested).*
-- [ ] **16.5 Implement Gallery Scroll Effects (Optional - Choose One):**
+- [X] **16.5 Implement Gallery Scroll Effects (Optional - Choose One):**
     *   **16.5.1 Choose Effect:** Decide whether to implement the auto-ticker OR the position-controlled gallery from v0 examples for the `#featured-projects` section. Start with the simpler **auto-ticker** (`image-ticker.txt`).
     *   **16.5.2 Implement JS:** Create `static/js/image-ticker.js` (or add to `script.js`). Translate the core logic: clone elements, use `requestAnimationFrame` for scrolling, implement `pauseOnHover`.
     *   **16.5.3 Link & Verify:** Include the script. Verify the featured projects section scrolls automatically and pauses on hover.
-- [ ] **16.6 Update JavaScript Rules:**
+- [X] **16.6 Update JavaScript Rules:**
     *   **16.6.1 Create/Update Rule File:** Ensure `.cursor/rules/frontend/04_javascript_interactions.mdc` exists.
     *   **16.6.2 Populate Rules:** Add rules for vanilla JS best practices, DOM manipulation efficiency, event handling, and specific patterns used (mobile menu toggle, gallery scroll).
-- [ ] **16.7 Verification (Overall Interactivity):**
+- [X] **16.7 Verification (Overall Interactivity):**
     *   **16.7.1 Test Features:** Test Hero hover effects, mobile menu toggle, and the implemented gallery scroll.
     *   **16.7.2 Performance Check:** Briefly check if added JS impacts page load speed significantly (using browser dev tools network tab).
     *   **16.7.3 Cross-Browser/Mobile:** Re-check interactivity on different devices/browsers.
-- [ ] **16.8 Documentation & Memory Update:**
+- [X] **16.8 Documentation & Memory Update:**
     *   **16.8.1 Update `README.md`/Docs:** Document JS interactions implemented, any libraries used, and deferred interactivity.
     *   **16.8.2 Update Memory Bank:** Update relevant files.
-- [ ] **16.9 Version Control Checkpoint:** Stage JS changes and related files. Generate commit message (e.g., "feat(frontend): Implement JS for mobile nav toggle, hero hover, and gallery scroll"). Await confirmation to commit.
+- [X] **16.9 Version Control Checkpoint:** Stage JS changes and related files. Generate commit message (e.g., "feat(frontend): Implement JS for mobile nav toggle, hero hover, and gallery scroll"). Await confirmation to commit.
+
+---
+
+**Phase 17: Fix & Refine Interactive CSS Variable-Driven Gallery**
+
+*AI Assistant Guidance: Overhaul and fix the JavaScript-driven gallery scroll logic (`css_gallery_init.js`) to ensure seamless bidirectional looping and correct mouse interaction physics. Re-integrate CSS variable-based control for slide dimensions (`--gallery-slide-height`, aspect ratio variables) and spacing (`--gallery-slide-spacing`). Ensure all control variables (`--gallery-idle-scroll-pps`, `--gallery-mouse-...`) function correctly.*
+
+- [ ] **17.1 Refactor JavaScript Scroll & Loop Logic (`css_gallery_init.js`):**
+    *   **17.1.1 Analyze Loop Glitch:** Review the existing `galleryJSScrollLoop` function, specifically the interaction between velocity calculation, damping/stopping logic (`Math.abs(currentScrollSpeed) < 0.5`), and the loop handling logic (`if (scrollLeft >= originalContentWidth)` and `while (scrollLeft < 0)`).
+    *   **17.1.2 Implement Robust Loop Handling:** Modify the loop logic to prevent stopping exactly at `scrollLeft = 0` when decelerating leftward. Potential strategies:
+        *   **Offset Check:** Instead of checking `< 0`, check if `scrollLeft` is less than a small positive number (e.g., `1`) when scrolling left, and reset to `originalContentWidth - 1` to avoid hitting exactly 0. Or, when resetting *from* the right edge, set `scrollLeft` to a small positive value instead of exactly 0.
+        *   **Velocity-Based Reset:** Trigger the loop reset *before* `scrollLeft` actually reaches the boundary, based on the anticipated next position using `currentScrollSpeed`. If `scrollLeft + (currentScrollSpeed * deltaTime)` will cross the boundary, perform the reset *now*.
+        *   **Simplify Stopping Logic:** Temporarily disable the `if (isMouseOverGallery && Math.abs(currentScrollSpeed) < 0.5)` condition to see if it's interfering with the left loop boundary. If so, refine how stopping near zero velocity is handled.
+    *   **17.1.3 Refine Physics:** Ensure acceleration and damping calculations (`+= (target - current) * accel`, `*= damping^delta`) are applied correctly and provide smooth inertia. Consider slightly adjusting `damping` or `acceleration` defaults if needed, but primarily ensure the loop works first.
+    *   **17.1.4 Clean Up:** Remove any console logs used for debugging the previous version. Add clear comments explaining the loop handling logic.
+
+- [ ] **17.2 Re-integrate CSS Variable Styling for Items:**
+    *   **17.2.1 Update `updateGallerySlideWidths` JS:** Ensure this function still correctly reads `--gallery-slide-height`, `--gallery-aspect-ratio-variance`, etc., and calculates `targetSlideWidthPx`. Verify it applies `slide.style.width`.
+    *   **17.2.2 Update Gallery Item CSS (`input.css` or `<style>`):** Modify the CSS rule for `.css-gallery-item` (or the class used for individual slides within the track):
+        - Set `height: var(--gallery-slide-height);`.
+        - Set `flex-shrink: 0;`.
+        - **Add Spacing:** Use `margin-right: var(--gallery-slide-spacing);` to apply the space *between* items. *(Using margin is generally more reliable in a JS-scrolled flex container than `gap`)*. Ensure the last item doesn't have extra margin if needed (e.g., using `:last-child`).
+        - Apply `overflow: hidden;` and any desired `border-radius`.
+    *   **17.2.3 Update Track CSS:** Ensure `.css-gallery-track` uses `display: flex;`. The width calculation in JS (item width * item count * 2) needs to account for the added margins. Alternatively, let the browser calculate track width (`width: max-content;` might work if container has `overflow-x: scroll` internally handled by JS). *AI: Analyze and implement the best way to handle track width calculation considering dynamic item widths and margins.*
+    *   **17.2.4 Update Image Styling:** Ensure the `<img>` tag inside the item uses `w-full h-full object-cover` to fill the dynamically sized item container correctly.
+
+- [ ] **17.3 Verify & Tune Control Variables:**
+    *   **17.3.1 Test Dimensions & Spacing:** Run dev server. Verify gallery items have the correct height (`--gallery-slide-height`) and spacing (`--gallery-slide-spacing`). Resize the browser window and verify item widths adjust according to the aspect ratio variance and thresholds.
+    *   **17.3.2 Test Loop (Both Directions):** Thoroughly test the seamless looping by manually scrolling (via mouse hover) fully left and fully right multiple times. Verify no images disappear or jump unexpectedly, especially near the `scrollLeft = 0` boundary when moving left.
+    *   **17.3.3 Test Idle Scroll:** Let the gallery idle scroll rightward. Verify speed matches `--gallery-idle-scroll-pps` and looping is smooth.
+    *   **17.3.4 Test Interactive Scroll:** Hover over the gallery. Verify mouse position controls direction and speed. Check the deadzone (`--gallery-mouse-deadzone-percent`). Check the maximum speed (`--gallery-mouse-max-pps`). Verify the acceleration (`--gallery-mouse-acceleration`) and damping (`--gallery-mouse-damping`) provide a smooth, inertial feel when starting/stopping scroll or leaving the hover area.
+    *   **17.3.5 Tune Variables (Iterative):** Adjust the values of `--gallery-...` variables directly in the `:root` definition within `templates/base.html`. Reload the page to see the effect. Fine-tune `idle-pps`, `max-pps`, `acceleration`, `damping`, and `deadzone` until the desired feel is achieved. *(AI: Be prepared to suggest changes to these variables based on user feedback after testing).*
+
+- [ ] **17.4 Update Rules & Documentation:**
+    *   **17.4.1 Update JS Rules (`04_javascript_interactions.mdc`):** Document the final JS scrolling mechanism, the loop handling strategy, and how CSS variables control the behavior and styling.
+    *   **17.4.2 Update CSS Rules (`01_layout_styling_base.mdc`):** Update notes on how gallery item dimensions and spacing are controlled via CSS variables and applied in `input.css`.
+    *   **17.4.3 Update `README.md`/Docs:** Explain the interactive gallery feature and list the key CSS variables available for tuning its appearance and behavior.
+    *   **17.4.4 Update Memory Bank:** Update relevant files (`progress.md`, `active_context.md`, `system_patterns.md`) with the details of the fixed gallery implementation.
+
+- [ ] **17.5 Final Verification:**
+    *   **17.5.1 Cross-Browser/Device Check:** Briefly test the gallery interaction and appearance on different browsers (Chrome, Firefox) and screen sizes (desktop, mobile simulation).
+    *   **17.5.2 Performance Check:** Use browser dev tools to monitor performance during scroll interaction. Ensure no major frame drops or excessive CPU usage.
+    *   **17.5.3 Confirm Functionality:** Confirm all required behaviors (idle scroll, mouse control, looping, dynamic sizing, spacing) are working correctly.
+
+- [ ] **17.6 Version Control Checkpoint:** Stage all changes (JS, CSS, templates, rules, docs, memory). Generate commit message (e.g., "fix(gallery): Implement JS-driven scroll with robust looping and CSS variable control"). Await confirmation to commit.
+
+---
 
 ---

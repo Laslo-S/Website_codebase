@@ -711,10 +711,6 @@ body {
   left: 0px;
 }
 
-.left-1\/2 {
-  left: 50%;
-}
-
 .left-\[-25\%\] {
   left: -25%;
 }
@@ -773,10 +769,6 @@ body {
 
 .z-50 {
   z-index: 50;
-}
-
-.z-\[1\] {
-  z-index: 1;
 }
 
 .mx-auto {
@@ -880,10 +872,6 @@ body {
   display: none;
 }
 
-.aspect-\[16\/9\] {
-  aspect-ratio: 16/9;
-}
-
 .h-12 {
   height: 3rem;
 }
@@ -968,10 +956,6 @@ body {
   width: 1.5rem;
 }
 
-.w-96 {
-  width: 24rem;
-}
-
 .w-\[195\%\] {
   width: 195%;
 }
@@ -1030,11 +1014,6 @@ body {
 
 .flex-grow {
   flex-grow: 1;
-}
-
-.-translate-x-1\/2 {
-  --tw-translate-x: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .transform {
@@ -1796,12 +1775,6 @@ body {
   transition-duration: 150ms;
 }
 
-.transition-opacity {
-  transition-property: opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
 .transition-shadow {
   transition-property: box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1853,6 +1826,46 @@ body {
 }
 
 /* --- End v0 Globals Integration --- */
+
+/* --- CSS Variable Driven Gallery Styles --- */
+
+.css-gallery-container {
+  overflow-x: hidden;
+  /* Hide scrollbar, scrolling handled by JS */
+}
+
+.css-gallery-track {
+  display: flex;
+  /* Use flexbox for the track */
+  /* Width is handled implicitly by flex items + duplication */
+}
+
+.css-gallery-item {
+  height: var(--gallery-slide-height, 300px);
+  /* Use CSS var, provide fallback */
+  margin-right: var(--gallery-slide-spacing, 1rem);
+  /* Use CSS var for spacing */
+  border-radius: var(--gallery-item-border-radius, 0.5rem);
+  /* Use CSS var for border radius */
+  flex-shrink: 0;
+  overflow: hidden;
+  /* Keep flex-shrink, overflow; remove rounded */
+  /* Width is set dynamically via JS in this setup */
+}
+
+/* Optional: Remove margin from the very last duplicated item if visual artifacts occur */
+
+/* .css-gallery-track > .css-gallery-item:last-child {
+  margin-right: 0;
+} */
+
+.css-gallery-item img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  /* Make images fill the item container */
+}
 
 /* You can add custom base styles or component styles here if needed */
 
@@ -1965,10 +1978,6 @@ body {
 .group:hover .group-hover\:translate-x-1 {
   --tw-translate-x: 0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.group:hover .group-hover\:opacity-80 {
-  opacity: 0.8;
 }
 
 @media (min-width: 640px) {

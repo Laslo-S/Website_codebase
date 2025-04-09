@@ -6,15 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AV Platform{% endblock title %}</title> {# Simplified base title #}
+    {# Use SVG Logo as Favicon #}
+    <link rel="icon" href="{% static 'svg/Logo_Avem3D.svg' %}" type="image/svg+xml" sizes="any">
     {# Link to the generated Tailwind output file #}
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
-    {# Swiper.js CSS - RESTORED #}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    {# REMOVED Swiper.js CSS Link #}
+    {# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/> #}
     {% block styles %}
     {# Tailwind Import - Make sure this includes aspect ratio plugin or add CSS below #}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
-    {# Custom CSS overrides #}
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    {# REMOVED Custom CSS overrides link as the file doesn't exist #}
+    {# <link rel="stylesheet" href="{% static 'css/custom.css' %}"> #}
     {# Add styles for the preview banner AND video embeds #}
     <style>
         /* Define control variables - RESTORED */
@@ -25,14 +27,27 @@
             --scroll-scale-diff: 0.08;
             --scroll-fade-duration: 0.8s;
 
-            /* Gallery control */
-            --gallery-slide-height: 26rem; /* Control gallery image height */
-            --gallery-slide-spacing: 10px; /* Control space between slides */
-            --gallery-aspect-ratio-variance: 0.35; /* Control aspect ratio flexibility: 1 = fixed 16:9, 0 = allows down to 9:16 */
-            --gallery-full-aspect-threshold: 4096px; /* Viewport width ABOVE which 16:9 aspect is guaranteed */
-            --gallery-min-aspect-threshold: 320px;  /* Viewport width BELOW which MIN aspect ratio is guaranteed */
+            /* --- Gallery Control Variables --- */
+            /* Appearance */
+            --gallery-slide-height: 26rem; /* Sets the fixed height of each gallery item. */
+            --gallery-slide-spacing: 5px; /* Sets the horizontal gap between gallery items. */
+            --gallery-item-border-radius: 0.25rem; /* Controls the roundness of the corners for each gallery item (e.g., 0px, 0.25rem, 0.5rem). */
 
-            /* Services Section Background Sphere Animation Control */
+            /* Dynamic Width / Aspect Ratio */
+            --gallery-aspect-ratio-variance: 0.35; /* Controls width flexibility (0=allows ~9:16, 1=fixed 16:9). Determines the minimum width relative to height. */
+            --gallery-full-aspect-threshold: 4096px; /* Viewport width ABOVE which item width is fixed at max (16:9 of height). */
+            --gallery-min-aspect-threshold: 320px;  /* Viewport width BELOW which item width is fixed at minimum (derived from variance). */
+
+            /* Scrolling Physics & Interaction */
+            --gallery-idle-scroll-pps: 11; /* Speed (pixels per second) of the automatic scroll when the mouse is not over the gallery. */
+            --gallery-mouse-max-pps: 250; /* Maximum speed (pixels per second) the gallery scrolls when reacting to mouse position near the edges. */
+            --gallery-mouse-acceleration: 0.45; /* How quickly the gallery accelerates towards the target speed (mouse or idle). Higher = faster response. Range typically 0-1. */
+            --gallery-mouse-damping: 0.94; /* Friction factor applied to slow down the scroll speed. Lower = stops faster. Range typically 0.8-0.99. */
+            --gallery-mouse-deadzone-percent: 7; /* Percentage of the gallery width (centered) where mouse movement does not affect scroll speed. */
+            --gallery-mouse-speed-exponent: 1.45; /* Controls the curve of mouse speed response (>1 = faster near edge, 1 = linear). */
+
+
+            /* --- Services Section Background Sphere Animation Control --- */
             --sphere-base-color: #cccccc; /* Original Subtle Grey */
             --sphere-base-opacity: 0.00;  /* Original Subtle Opacity */
             --sphere-edge-color: '#ffffff'; /* Changed to white */
@@ -186,11 +201,14 @@
     {% include 'partials/_footer.html' %}
 
     {# Site-wide scripts can go here, but prefer page-specific blocks #}
-    {# Swiper.js JS - RESTORED #}
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    {# REMOVED Swiper.js JS Link #}
+    {# <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> #}
 
     {# Load the interactive background script if needed #}
     <script src="{% static 'js/interactive-hero-background.js' %}" defer></script>
+
+    {# ADDED Custom CSS Gallery script #}
+    <script src="{% static 'js/css_gallery_init.js' %}" defer></script>
 
     {# Page Specific Scripts #}
     {% block scripts %}
