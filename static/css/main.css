@@ -14,8 +14,11 @@
 
 /* 5. Component Styles */
 @import "./components/gallery.css";
+@import "./components/scroll_indicator.css";
+@import "./components/our_services_card.css";
 /* @import "./components/buttons.css"; */ /* Example for later */
 /* @import "./components/cards.css"; */ /* Example for later */
 
 /* 6. Utility/Helper Classes */
 @import "./utils/helpers.css"; 
+/* Lottie Scroll Indicator styles removed - moved to components/scroll_indicator.css */ 

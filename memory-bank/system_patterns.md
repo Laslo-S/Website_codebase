@@ -185,4 +185,13 @@ This document records key architectural decisions and established conventions fo
     3.  Tailwind's `@screen` directives are used within the `.layout-container` definition to apply responsive padding variables.
     4.  Applied in templates (e.g., @file:templates/core/home.html) by replacing Tailwind container utilities (`max-w-*, mx-auto, px-*, sm:px-*, lg:px-*`) with the single `.layout-container` class.
 *   **Benefits:** Centralized control over site width/padding via CSS variables. Cleaner HTML templates. Consistent layout application.
-*   **Considerations:** Requires maintaining the variable definitions and the utility class definition. Changes require recompiling CSS. 
+*   **Considerations:** Requires maintaining the variable definitions and the utility class definition. Changes require recompiling CSS.
+
+### JS Hover State Toggle Pattern
+*   **Purpose:** To trigger complex hover effects (animations, multiple element changes) reliably, avoiding potential conflicts with nested Tailwind `group-hover` utilities or complex transforms.
+*   **Implementation (Service Card Example):**
+    1.  **HTML:** Add a marker class (e.g., `.service-card-group`) to the parent hover target.
+    2.  **CSS:** Define base styles and animation `@keyframes` in a component CSS file (e.g., @file:static/css/components/our_services_card.css). Create rules targeting descendant elements based on the parent having an `.is-hovered` class (e.g., `.service-card-group.is-hovered .learn-more-text { animation: ...; }`).
+    3.  **JS:** Create a script (e.g., @file:static/js/service_card_hover.js) that selects the parent elements and uses `mouseenter`/`mouseleave` event listeners to add/remove the `.is-hovered` class.
+*   **Benefits:** Decouples hover detection (JS) from animation/styling (CSS), reliable triggering, allows for sophisticated CSS animations not easily achievable with utility classes alone.
+*   **Considerations:** Requires small amount of JS for state management. 

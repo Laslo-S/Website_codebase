@@ -1,0 +1,134 @@
+:root {
+    /* Service Icon Colors */
+    /* --service-icon-stroke-color: #ffffff; */ /* Removed - Handled internally by SVG */
+    --service-icon-bg-color: #cffafe;    /* Equivalent to cyan-50 or primary-50 */
+    /* --service-icon-fill-color: #ffffff; */    /* Removed - Handled internally by SVG */
+
+    /* Service Icon Hover Animation */
+    --service-icon-hover-scale: 1.05;          /* Scale factor for icon container */
+    --service-icon-scale-duration: 0.3s;
+    --service-icon-hover-bob-enabled: 1;      /* Not currently used for logic, set duration/distance to 0 to disable */
+    --service-icon-hover-duration: 0.75s;
+    --service-icon-hover-bob-distance: 3px;
+    --service-icon-hover-timing-function: ease-in-out; 
+
+    /* Learn More Link Hover Effects */
+    --learn-more-base-color: #06b6d4; /* text-cyan-500 */
+    --learn-more-hover-color: #0891b2; /* text-cyan-600 */
+    --learn-more-scale: 1.15; /* Scale factor for text */
+    --learn-more-arrow-translate: 4px;
+    --learn-more-transition-duration: 0.3s;
+}
+
+/* Base styling using variables (applied via HTML classes) */
+.service-icon-container {
+    background-color: var(--service-icon-bg-color);
+    /* color: var(--service-icon-fill-color); */ /* Removed - Color handled internally by SVG */
+    /* Use the new scale duration for the transform transition */
+    transition: transform var(--service-icon-scale-duration) ease-in-out;
+}
+
+/* Animation Keyframes */
+@keyframes service-icon-bob {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(calc(-1 * var(--service-icon-hover-bob-distance))); /* Move up */
+    }
+}
+
+/* Apply hover effects */
+.service-card-group:hover .service-icon-container {
+    /* Apply scaling directly using the CSS variable */
+    transform: scale(var(--service-icon-hover-scale));
+}
+
+/* --- Bobbing Logic --- */
+
+.service-icon-image {
+    /* Define animation properties but start paused */
+    animation-name: service-icon-bob;
+    animation-duration: var(--service-icon-hover-duration);
+    animation-timing-function: var(--service-icon-hover-timing-function);
+    animation-iteration-count: infinite;
+    animation-play-state: paused; /* Start paused */
+    transform: translateY(0); /* Ensure consistent starting point */
+    /* Note: Add transition here if smooth start/stop is desired, otherwise remove */
+    /* transition: transform 0.3s ease-in-out; */
+}
+
+.service-card-group:hover .service-icon-image {
+    /* Start animation on hover */
+    /* To disable bobbing: set --service-icon-hover-duration or --service-icon-hover-bob-distance to 0 */
+    animation-play-state: running;
+}
+
+/* Class to forcefully disable bobbing via JS or direct application */
+.service-icon-bob-disabled .service-icon-image {
+    animation-name: none;
+}
+
+/* Initial state for image to avoid layout shift if bobbing starts */
+.service-icon-image {
+    transform: translateY(0); /* Start at base position */
+    transition: transform 0.3s ease-in-out; /* Add transition for smoother start/stop */
+}
+
+/* Add rule to pause animation if bobbing is disabled via variable */
+/* This approach doesn't work directly in CSS. Toggling a class via JS is more robust */
+/* We rely on the animation-play-state in the main rule for now */
+
+/* --- Learn More Link Styling --- */
+@keyframes learnMoreScaleUp { 
+    from { transform: scale(1); } 
+    to { transform: scale(var(--learn-more-scale)); } 
+}
+@keyframes arrowTranslateRight { 
+    from { transform: translateX(0); } 
+    to { transform: translateX(var(--learn-more-arrow-translate)); } 
+}
+
+.learn-more-link {
+    color: var(--learn-more-base-color);
+    transition: color var(--learn-more-transition-duration) ease-in-out;
+}
+
+.learn-more-text {
+    display: inline-block; /* Needed for transform */
+    transform-origin: bottom left; 
+    animation-play-state: paused; /* Ensure animation is paused initially */
+    /* Animation properties will be applied on hover */
+}
+
+.learn-more-arrow {
+    display: inline-block; /* Ensure consistent alignment */
+    animation-play-state: paused; /* Ensure animation is paused initially */
+    /* Animation properties will be applied on hover */
+}
+
+/* --- HOVER STATE RULES (Triggered by JS adding .is-hovered) --- */
+.service-card-group.is-hovered .service-icon-container {
+    transform: scale(var(--service-icon-hover-scale));
+}
+
+.service-card-group.is-hovered .service-icon-image {
+    animation-play-state: running;
+}
+
+.service-card-group.is-hovered .learn-more-link {
+    color: var(--learn-more-hover-color);
+}
+
+.service-card-group.is-hovered .learn-more-text {
+    animation: learnMoreScaleUp var(--learn-more-transition-duration) ease-in-out forwards;
+}
+
+.service-card-group.is-hovered .learn-more-arrow {
+    animation: arrowTranslateRight var(--learn-more-transition-duration) ease-in-out forwards;
+}
+
+/* Optional: Force disable bobbing class */
+.service-icon-bob-disabled .service-icon-image {
+    animation-name: none;
+} 

@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AV Platform{% endblock title %}</title> {# Simplified base title #}
     {# Use SVG Logo as Favicon #}
-    <link rel="icon" href="{% static 'svg/Logo_Avem3D.svg' %}" type="image/svg+xml" sizes="any">
-    {# Link to the generated Tailwind output file #}
+    <link rel="icon" href="{% static 'svg/general/Logo_Avem3D.svg' %}" type="image/svg+xml" sizes="any">
+    {# Link to the compiled Tailwind output file #}
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
     {# REMOVED Swiper.js CSS Link #}
     {# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/> #}
@@ -19,6 +19,88 @@
     {# <link rel="stylesheet" href="{% static 'css/custom.css' %}"> #}
     {# Add styles for the preview banner AND video embeds #}
     {# Style block removed - styles moved to separate CSS files imported via main.css #}
+    <style>
+        /* === Preview Banner Styles === */
+        .preview-banner {
+            position: fixed; /* Keep it visible */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffc107; /* Bright yellow */
+            color: #212529; /* Dark text for contrast */
+            padding: 15px 20px; /* More padding */
+            text-align: center;
+            font-size: 1.2em; /* Larger font */
+            font-weight: bold;
+            border-top: 3px solid #e0a800; /* Darker yellow border */
+            z-index: 1000; /* Ensure it's on top */
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .preview-banner strong {
+             margin-right: 15px;
+        }
+        .preview-banner a {
+            display: inline-block;
+            margin-left: 20px;
+            padding: 5px 15px;
+            background-color: #e0a800; 
+            color: #212529;
+            border: 1px solid #c69500;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: normal; /* Reset weight */
+            transition: background-color 0.2s ease;
+        }
+        .preview-banner a:hover {
+            background-color: #c69500;
+            color: #fff;
+        }
+
+        /* === CSS for Responsive Video Embeds (Aspect Ratio) === */
+        .aspect-w-16 {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100) */
+        }
+
+        .aspect-h-9 {
+            /* Helper class, primary style is on aspect-w-* */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .aspect-w-16 > iframe,
+        .aspect-w-16 > video,
+        .aspect-w-16 > embed,
+        .aspect-w-16 > object {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none; /* Remove default iframe border */
+        }
+
+        /* Configure Swiper slide dimensions for the services gallery */
+        /* Base styles - JS will override width */
+        .services-gallery-swiper .swiper-slide {
+            height: var(--gallery-slide-height);
+            width: auto; /* Fallback/initial value, JS will set specific width */
+            flex-shrink: 0;
+            /* Keep max-width as a safeguard */
+            max-width: calc(var(--gallery-slide-height) * 16 / 9);
+            /* min-width removed, handled by JS calculation */
+        }
+        /* Ensure inner content respects slide height */
+        /* Media Query block REMOVED */
+
+        /* Style for Lottie containers in footer */
+        .lottie-icon-container {
+            width: 35px; /* Increased size */
+            height: 35px; /* Increased size */
+            cursor: pointer;
+            filter: invert(1) brightness(1.5); /* Attempt to force white color */
+        }
+    </style>
     {% endblock styles %}
 </head>
 <body class="min-h-screen flex flex-col"> {# Use flex-col for sticky footer pattern if needed later #}
@@ -53,6 +135,9 @@
 
     {# ADDED Custom CSS Gallery script #}
     <script src="{% static 'js/css_gallery_init.js' %}" defer></script>
+
+    {# ADDED Service Card Hover script #}
+    <script src="{% static 'js/service_card_hover.js' %}" defer></script>
 
     {# Page Specific Scripts #}
     {% block scripts %}

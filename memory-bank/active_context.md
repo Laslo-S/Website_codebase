@@ -1,19 +1,24 @@
 # Active Context
 
-*   **Status:** Completed Phase 18: Frontend Structure Refinement & Layout Control.
+*   **Status:** Completed Phase 21: Enhance "Our Services" Section.
 *   **Current Focus:** Awaiting next phase/task.
-*   **Next Step:** User to define Phase 19 or next task.
+*   **Next Step:** User to define Phase 22 or next task.
 
 ## Detailed State
 
 **Project Status:** Active Development
 
 **Project Systems:**
-*   Core project systems (Backend, Frontend, Auth, Admin, API, Blog, Preview, Gallery) are implemented and documented.
+*   Core project systems (Backend, Frontend, Auth, Admin, API, Blog, Preview, Gallery, Project Structure Docs) are implemented and documented.
 *   Task history (Phase 1-17) archived in @file:docs/archived_tasks_phase_1_to_17.md.
-*   Active task list: @file:TASKS.mdc (reset for Phase 18+).
+*   Active task list: @file:TASKS.mdc (Includes Phase 18, 19, 20, 21).
 
 **Recent Milestones:**
+*   Completed Phase 21: Enhanced Service Cards (SVGs, adaptive layout, JS hover state).
+*   Completed Phase 20: Documented Project Structure.
+*   Completed Phase 19: Consolidated Templates.
+*   Completed Phase 18: Refined CSS Structure & Centralized Layout Control.
+*   Completed scroll indicator CSS refactoring.
 *   Completed Phase 17: Interactive Gallery Refinement.
 *   Archived completed tasks (Phase 1-17).
 *   Reset `TASKS.mdc` for Phase 18 onwards.

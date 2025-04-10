@@ -101,4 +101,24 @@
 *   **Implementation:** Created new CSS structure (`static/css/{main.css, base/, components/, utils/}`). Moved CSS variables from `base.html` and styles from `input.css` into new files (`variables.css`, `gallery.css`, etc.). Deleted `input.css`, `style.css`, removed `<style>` from `base.html`. Defined layout variables (`--layout-max-width`, padding) in `variables.css`. Created `.layout-container` class in `layout.css`. Updated `package.json` build scripts for `main.css`. Re-verified `tailwind.config.js`. Replaced container utilities with `.layout-container` in `home.html`, `_header.html`, `_footer.html`.
 *   **Outcome:** Cleaner CSS organization. All custom variables centralized in `variables.css`. Consistent layout width/padding controlled via `.layout-container` and CSS variables.
 
+**[Date - Add Current Date] CSS Refactoring: Scroll Indicator**
+*   **Goal:** Move scroll indicator animation CSS from `main.css` to a dedicated component file.
+*   **Implementation:** Removed keyframes and styles from `main.css`. Created `static/css/components/scroll_indicator.css` with these styles. Updated `main.css` to import the new component file.
+*   **Outcome:** Scroll indicator styles are now modularized within the components directory.
+
+**[Date - Add Current Date] Phase 19: Consolidate Templates (Completed)**
+*   **Goal:** Streamline template partials for `_project_card.html` and `_news_card.html`.
+*   **Implementation:** Identified canonical partials, moved/deleted redundant files, updated include paths in relevant templates (`home.html`, `news_list.html`, project list views).
+*   **Outcome:** Reduced template duplication and clarified partial usage.
+
+**[Date - Add Current Date] Phase 20: Document Project Structure (Completed)**
+*   **Goal:** Create comprehensive project structure documentation and a rule for its maintenance.
+*   **Implementation:** Explored project structure using `list_dir` and file reads. Created `memory-bank/project_structure.md`. Updated `memory-bank/system_patterns.md` to reference the new file. Created `.cursor/rules/core/02_project_structure_maintenance.md` rule.
+*   **Outcome:** Centralized project structure documentation available in `memory-bank/project_structure.md` and a rule ensuring its future maintenance.
+
+**[Date - Add Current Date] Phase 21: Enhance "Our Services" Section (Completed)**
+*   **Goal:** Refine service cards with SVG icons, adaptive layout, and unified hover animations.
+*   **Implementation:** Restructured `static/svg/` directory. Used `<img>` with `{% static %}` for SVG icons. Implemented adaptive layout switching at `xl` breakpoint. Replaced Tailwind `group-hover` utilities for complex effects with a JS-driven approach: JS adds/removes `.is-hovered` class on `mouseenter`/`mouseleave` of `.service-card-group`. CSS (`our_services_card.css`) uses this class to trigger animations (`@keyframes`) for icon scale/bob, text scale, text color, and arrow translation, controlled by CSS variables.
+*   **Outcome:** Service cards now display specific icons and feature consistent, configurable hover animations triggered reliably via JS and CSS.
+
 

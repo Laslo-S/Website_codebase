@@ -59,20 +59,14 @@ This document provides a detailed overview of the main directories and their pur
 ├── media/             # User-uploaded media files (e.g., news images, portfolio images) (Git ignored)
 ├── node_modules/      # Installed Node.js frontend dependencies (Tailwind, PostCSS, etc.) (Git ignored)
 ├── static/            # Project-wide static assets (served directly in development)
-│   ├── css/           # CSS related files
-│   │   ├── base/          # Base styles (variables.css, tailwind_directives.css, typography.css, layout.css)
-│   │   ├── components/    # Component-specific styles (gallery.css)
-│   │   ├── utils/         # Utility styles (helpers.css)
-│   │   ├── admin_overrides.css # Custom styles loaded only for Django admin
-│   │   ├── main.css       # Main CSS entry point, @imports other source files
-│   │   └── output.css     # Compiled Tailwind CSS output file (Git ignored)
-│   ├── js/            # Custom JavaScript files
-│   │   ├── css_gallery_init.js  # Logic for homepage interactive gallery scrolling and sizing
-│   │   ├── interactive-hero-background.js # Three.js animation for hero section background
-│   │   └── services-background.js # Three.js animation for services section background sphere
-│   ├── images/        # Static site images (e.g., logos) (currently empty, uses .keep)
-│   ├── lottie/        # Lottie animation JSON files (facebook.json, twitter.json, etc.)
-│   └── svg/           # SVG asset files (e.g., Logo_Avem3D.svg used as favicon)
+│   ├── css/           # CSS related files (organized into base/, components/, utils/)
+│   ├── js/            # Custom JavaScript files (interactive-hero-background.js, services-background.js, css_gallery_init.js)
+│   ├── images/        # Static site images (.keep placeholder)
+│   ├── lottie/        # Lottie animation JSON files (footer icons, scroll indicator)
+│   └── svg/           # SVG asset files
+│       ├── general/       # General purpose SVGs (Logo_Avem3D.svg, potentially arrows etc.)
+│       ├── footer/        # SVGs used in the footer (facebook.svg, instagram.svg, etc.)
+│       └── services/      # SVGs specific to service cards (3d.svg, video.svg, image.svg)
 ├── templates/         # Django HTML templates (base, partials, app-specific)
 │   ├── accounts/      # Accounts app specific templates dir (contains accounts/, partials/)
 │   ├── admin/         # Admin interface overrides (base_site.html for adding preview toggle)

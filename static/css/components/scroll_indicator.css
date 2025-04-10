@@ -1,0 +1,30 @@
+/* === Lottie Scroll Indicator Animation === */
+@keyframes bounce-and-scale {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1); /* Ease-in - start down fast */
+    }
+    50% {
+        /* Move down by distance, scale down by difference */
+        transform: translateY(var(--scroll-move-distance)) scale(calc(1 - var(--scroll-scale-diff)));
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1); /* Ease-out - slow down at bottom */
+    }
+}
+
+#lottie-scroll-indicator {
+    animation-duration: var(--scroll-anim-duration);
+    animation-name: bounce-and-scale; /* Apply combined animation */
+    animation-iteration-count: infinite;
+    cursor: default; /* Assuming no click action needed */
+    filter: none; /* Ensure no other filters affect it */
+    /* Optional: Add fade/scale out on scroll */
+    transition: opacity var(--scroll-fade-duration) ease, transform var(--scroll-fade-duration) ease;
+    transform-origin: center;
+}
+
+/* Optional: Class to hide the scroll indicator */
+.scroll-indicator-hidden {
+    opacity: 0;
+    transform: scale(0); /* Scale down to hide */
+    pointer-events: none; /* Prevent interaction when hidden */
+} 

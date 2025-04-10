@@ -1,10 +1,5 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
-description: 
+description: Current active tasks list
 globs: 
 alwaysApply: false
 ---
