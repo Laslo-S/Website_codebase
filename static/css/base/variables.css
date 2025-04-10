@@ -40,7 +40,7 @@
     --services-grid-fade-start-opacity: 0.7;
 
     /* === Custom Layout Colors === */
-    --services-background-color-hsl: 186 16% 86%; /* Approx #d5dfe0 - Light Mode */
+    --services-background-color-hsl: 186 6% 96%; /* Approx #d5dfe0 - Light Mode */
 
     /* === Layout Control === */
     --layout-max-width: 1280px; /* Default max content width (e.g., xl screen) */

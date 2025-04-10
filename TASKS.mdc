@@ -1,4 +1,14 @@
 ---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
 description: Current active tasks list
 globs: 
 alwaysApply: false
@@ -17,99 +27,185 @@ This file contains tasks starting from Phase 18.
 
 *AI Assistant Guidance: Reorganize CSS files for maintainability. Move ALL CSS custom properties from `base.html` into a dedicated `variables.css`. Implement a `.layout-container` utility class driven by CSS variables. Update Tailwind config and build process. Refactor templates to use the new container class.*
 
-- [ ] **18.1 Define New CSS Directory Structure:**
-    *   **18.1.1 Finalize Structure Plan:** Confirm the target structure within `static/css/`:
-        - `base/`:
-            - `variables.css` (ALL `:root` variables)
-            - `tailwind_directives.css` (`@tailwind ...`)
-            - `typography.css` (Base font styles, if any beyond Tailwind config)
-            - `layout.css` (`.layout-container` class)
-        - `components/`:
-            - `gallery.css` (Rules for `.css-gallery-*`)
-            - `admin_overrides.css` (Keep existing, or move here?) -> **Decision:** Keep at `static/css/admin_overrides.css` for clarity as it's loaded separately by AdminMedia.
-            - *(Add other component CSS files later if needed)*
-        - `utils/`:
-            - `helpers.css` (`.hide-scrollbar` etc.)
-        - `main.css` (Entry point, imports others)
-        - *(Delete `input.css`, `style.css`)*
-        - *(Ignore `output.css`)*
-    *   **18.1.2 Define Import Order in `main.css`:**
-        1. `@import "./base/variables.css";`
-        2. `@import "./base/tailwind_directives.css";`
-        3. `@import "./base/typography.css";` (Create empty if no specific base typography needed beyond Tailwind config/body style)
-        4. `@import "./base/layout.css";`
-        5. `@import "./components/gallery.css";`
-        6. `@import "./utils/helpers.css";`
+- [x] **18.1 Define New CSS Directory Structure:**
+    *   [x] **18.1.1 Finalize Structure Plan:**
+    *   [x] **18.1.2 Define Import Order in `main.css`:**
 
-- [ ] **18.2 Implement New CSS Structure & Migrate:**
-    *   **18.2.1 Create Directories:** Create `static/css/base/`, `static/css/components/`, `static/css/utils/` if they don't exist.
-    *   **18.2.2 Create `main.css`:** Create `static/css/main.css` with the `@import` statements from 18.1.2.
-    *   **18.2.3 Create & Populate `variables.css`:** Create `static/css/base/variables.css`. **Cut** the entire content *inside* the `<style>:root { ... }</style>` block from @file:templates/base.html and **paste** it inside this file (within a `:root { ... }` block).
-    *   **18.2.4 Create & Populate `tailwind_directives.css`:** Create `static/css/base/tailwind_directives.css`. Copy the `@tailwind base; @tailwind components; @tailwind utilities;` lines from the current @file:static/css/input.css into this file.
-    *   **18.2.5 Create & Populate `gallery.css`:** Create `static/css/components/gallery.css`. **Move** the CSS rules targeting `.css-gallery-container`, `.css-gallery-track`, `.css-gallery-item` from @file:static/css/input.css to this file.
-    *   **18.2.6 Create & Populate `helpers.css`:** Create `static/css/utils/helpers.css`. **Move** the `.hide-scrollbar` rules from @file:static/css/input.css here.
-    *   **18.2.7 Create Empty `typography.css`:** Create `static/css/base/typography.css` (can be empty for now, or move base body/heading font rules here if preferred).
-    *   **18.2.8 Delete Old Files:** Delete `static/css/input.css` and `static/css/style.css`.
-    *   **18.2.9 Remove Inline Style Block:** **Delete** the entire `<style>...</style>` block (including the `:root` definition) from @file:templates/base.html.
-    *   **18.2.10 Update `.gitignore`:** Verify `static/css/output.css` is in @file:.gitignore.
+- [x] **18.2 Implement New CSS Structure & Migrate:**
+    *   [x] **18.2.1 Create Directories:**
+    *   [x] **18.2.2 Create `main.css`:**
+    *   [x] **18.2.3 Create & Populate `variables.css`:**
+    *   [x] **18.2.4 Create & Populate `tailwind_directives.css`:**
+    *   [x] **18.2.5 Create & Populate `gallery.css`:**
+    *   [x] **18.2.6 Create & Populate `helpers.css`:**
+    *   [x] **18.2.7 Create Empty `typography.css`:**
+    *   [x] **18.2.8 Delete Old Files:**
+    *   [x] **18.2.9 Remove Inline Style Block:**
+    *   [x] **18.2.10 Update `.gitignore`:**
 
-- [ ] **18.3 Implement Centralized Layout Control:**
-    *   **18.3.1 Define Layout Variables:** In `static/css/base/variables.css`, add specific variables for layout control (potentially using Tailwind `theme()` if PostCSS runs before Tailwind):
-        ```css
-        /* Inside :root in variables.css */
-        --layout-max-width: 1280px; /* Or theme('screens.xl') if processed correctly */
-        --layout-padding-base: 1rem; /* theme('spacing.4') */
-        --layout-padding-sm: 1.5rem; /* theme('spacing.6') */
-        --layout-padding-lg: 2rem;  /* theme('spacing.8') */
-        ```
-        *(AI: Recommend sensible default values based on common screen sizes and existing padding)*.
-    *   **18.3.2 Define `.layout-container` Class:** Create `static/css/base/layout.css` (and import it in `main.css`). Define the utility class using `@apply` or standard CSS:
-        ```css
-        /* static/css/base/layout.css */
-        @layer utilities { /* Apply in utilities layer */
-          .layout-container {
-            width: 100%;
-            max-width: var(--layout-max-width);
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: var(--layout-padding-base);
-            padding-right: var(--layout-padding-base);
-          }
-          @screen sm {
-            .layout-container {
-              padding-left: var(--layout-padding-sm);
-              padding-right: var(--layout-padding-sm);
-            }
-          }
-          @screen lg {
-            .layout-container {
-              padding-left: var(--layout-padding-lg);
-              padding-right: var(--layout-padding-lg);
-            }
-          }
-        }
-        ```
+- [x] **18.3 Implement Centralized Layout Control:**
+    *   [x] **18.3.1 Define Layout Variables:**
+    *   [x] **18.3.2 Define `.layout-container` Class:**
 
-- [ ] **18.4 Update Build Process & Tailwind Config:**
-    *   **18.4.1 Update `package.json` Scripts:** Modify `build:css` and `watch:css` scripts to use `static/css/main.css` as input (`-i`).
-    *   **18.4.2 Verify `tailwind.config.js`:** Double-check that `theme.extend.colors` and `theme.extend.fontFamily` correctly reference the CSS variables defined in `variables.css` (e.g., `background: 'hsl(var(--background-hsl))'`, `sans: ['var(--font-body)', ...]`). Ensure `darkMode: 'class'` is set. Verify `content` paths include `templates/**/*.html` etc.
-    *   **18.4.3 Re-run `npm install` (If needed):** If PostCSS plugins are required for `theme()` function, ensure they are installed.
+- [x] **18.4 Update Build Process & Tailwind Config:**
+    *   [x] **18.4.1 Update `package.json` Scripts:**
+    *   [x] **18.4.2 Verify `tailwind.config.js`:**
+    *   [x] **18.4.3 Re-run `npm install` (If needed):**
 
-- [ ] **18.5 Refactor Templates to Use Layout Container:**
-    *   **18.5.1 Identify Containers:** Locate the elements currently using `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` (or similar) in key templates like @file:templates/core/home.html (within each section), @file:templates/core/_project_list_base.html, @file:templates/news/news_list.html, etc.
-    *   **18.5.2 Replace with Class:** Replace the multiple utility classes with the single `layout-container` class on the appropriate container `div`s.
-    *   **18.5.3 Verify Header/Footer:** Check if @file:templates/partials/_header.html and @file:templates/partials/_footer.html's internal `div` need `layout-container` or if their existing `max-w-7xl...` is sufficient/intended. Adjust if necessary for consistency.
+- [x] **18.5 Refactor Templates to Use Layout Container:**
+    *   [x] **18.5.1 Identify Containers:**
+    *   [x] **18.5.2 Replace with Class:**
+    *   [x] **18.5.3 Verify Header/Footer:**
 
-- [ ] **18.6 Build, Verify & Document:**
-    *   **18.6.1 Run `npm run build:css`:** Ensure `output.css` is generated successfully from `main.css`. Check for build errors.
-    *   **18.6.2 Run Dev Server & Test:** Start `python manage.py runserver`. Thoroughly check:
-        - **All Styles Load:** Verify styles previously in `input.css` and `base.html <style>` are still applied correctly (gallery, scrollbar, theme colors/fonts).
-        - **Layout Container:** Verify main content sections consistently use the width/padding defined by `--layout-*` variables and the `.layout-container` class. Check responsiveness of padding.
-        - **Theme Editing Test:** Manually edit a color, font, AND a layout variable (e.g., `--layout-max-width`) in `variables.css`. Re-run `build:css`. Hard refresh browser. Verify ALL changes are reflected. Change back.
-        - **Dark Mode:** Test dark mode toggle (if implemented in 18.4.2) works correctly with the variables defined in `.dark` scope within `variables.css`.
-    *   **18.6.3 Update Memory Bank & Rules:** Update `system_patterns.md` (new CSS structure, layout container), `tech_context.md` (main.css, variables.css role), rules (`theming_rules.mdc`, `layout_styling_base.mdc`), `progress.md`, `active_context.md`.
+- [x] **18.6 Build, Verify & Document:**
+    *   [x] **18.6.1 Run `npm run build:css`:**
+    *   [x] **18.6.2 Run Dev Server & Test:**
+    *   [x] **18.6.3 Update Memory Bank & Rules:**
 
-- [ ] **18.7 Version Control Checkpoint:** Stage all changes (CSS files/structure, template updates, package.json, tailwind.config.js, docs, memory, rules, .gitignore). Generate commit message (e.g., "refactor(frontend): Centralize CSS variables and reorganize static CSS structure"). Await confirmation to commit.
+- [x] **18.7 Version Control Checkpoint:**
+
+---
+
+**Phase 19: Consolidate Templates & Refine CSS Structure**
+
+**Objective:** Streamline template partials. Keep existing CSS structure (from end of Phase 17 / reverted state).
+
+**Tasks:**
+
+- [x] **19.1 Consolidate Template Partials**
+    - [x] **19.1.1 Investigate `_project_card.html` Usage:**
+        - Read `templates/core/_project_card.html`.
+        - Read `templates/core/partials/_project_card.html`.
+        - Read `templates/core/_project_list_base.html`, `project_list_scans.html`, `project_list_stills.html`, `project_list_videos.html`, `home.html` to identify which `_project_card.html` path is included and the context variable used (`project` or `item`).
+    - [x] **19.1.2 Consolidate `_project_card.html`:**
+        - Determined `templates/core/partials/_project_card.html` is canonical.
+        - Verified includes in list views use correct path and variable (`item`).
+        - Deleted redundant `templates/core/_project_card.html`.
+    - [x] **19.1.3 Investigate & Consolidate `_news_card.html`:**
+        - Read `templates/partials/_news_card.html`.
+        - Read `templates/news/_news_card.html`.
+        - Read `templates/news/news_list.html` and `templates/core/home.html`.
+        - Determined two distinct partials are needed.
+        - Created `templates/news/partials/` directory.
+        - Moved `news/_news_card.html` -> `news/partials/_news_card.html`.
+        - Moved `partials/_news_card.html` -> `news/partials/_news_card_home.html`.
+        - Updated includes in `news_list.html` and `home.html`.
+        - Deleted original redundant files.
+    - [x] **19.1.4 Verify Other Partials:** Reviewed partials in `templates/partials/` and `templates/accounts/partials/`. Confirmed locations are appropriate.
+    - [x] **19.1.5 Test Template Rendering:** Verified pages using consolidated partials render correctly.
+
+- [-] **19.2 Define New CSS Directory Structure:** (Skipped - Keeping existing structure)
+    - [-] **19.2.1 Finalize Structure Plan:**
+    - [-] **19.2.2 Define Import Order in `main.css`:**
+
+- [-] **19.3 Implement New CSS Structure & Migrate:** (Skipped - Keeping existing structure)
+    *   [-] **19.3.1 Create Directories:**
+    *   [-] **19.3.2 Create `main.css`:**
+    *   [-] **19.3.3 Create & Populate `variables.css`:**
+    *   [-] **19.3.4 Create & Populate `tailwind_directives.css`:**
+    *   [-] **19.3.5 Create & Populate `gallery.css`:**
+    *   [-] **19.3.6 Create & Populate `helpers.css`:**
+    *   [-] **19.3.7 Create Empty `typography.css`:**
+    *   [-] **19.3.8 Delete Old Files:**
+    *   [-] **19.3.9 Remove Inline Style Block:**
+    *   [-] **19.3.10 Update `.gitignore`:**
+
+- [-] **19.4 Implement Centralized Layout Control:** (Skipped - Keeping existing structure)
+    *   [-] **19.4.1 Define Layout Variables:**
+    *   [-] **19.4.2 Define `.layout-container` Class:**
+
+- [-] **19.5 Update Build Process & Tailwind Config:** (Skipped - Keeping existing structure)
+    *   [-] **19.5.1 Update `package.json` Scripts:**
+    *   [-] **19.5.2 Verify `tailwind.config.js`:**
+    *   [-] **19.5.3 Re-run `npm install`:**
+
+- [-] **19.6 Refactor Templates to Use Layout Container:** (Skipped - Keeping existing structure)
+    *   [-] **19.6.1 Identify & Replace:**
+
+- [-] **19.7 Build, Verify & Document:** (Skipped - CSS structure unchanged)
+    *   [-] **19.7.1 Run `npm run build:css`:**
+    *   [-] **19.7.2 Run Dev Server & Test:**
+    *   [-] **19.7.3 Update Memory Bank & Rules:** (No major structure change to document for CSS)
+
+- [ ] **19.8 Version Control Checkpoint:** Stage changes (template consolidation only). Propose commit message (e.g., "refactor(frontend): Consolidate template partials for project and news cards"). Await confirmation.
+
+---
+
+**Phase 20: Document Project Structure**
+
+**Objective:** Systematically explore the current project file and directory structure, document it in a dedicated memory bank file, remove the redundant structure section from `system_patterns.md`, and create a rule to enforce future updates.
+
+**Method:** Use `list_dir` recursively for comprehensive listing. Read key representative files within each section to understand purpose. Document findings incrementally.
+
+**Tasks:**
+
+- [ ] **20.1 Explore & Summarize Root Directory:**
+    *   [ ] List contents of the workspace root (`/`).
+    *   [ ] Read key files (`manage.py`, `.gitignore`, `.env.example`, `README.md` (if exists), `requirements.txt`, `package.json`, `tailwind.config.js`, etc.).
+    *   [ ] Summarize the purpose of root files and top-level directories.
+
+- [ ] **20.2 Explore & Summarize `.cursor/` Directory:**
+    *   [ ] List contents of `.cursor/`.
+    *   [ ] List contents of `.cursor/rules/` and its subdirectories (`core`, `frontend`, etc.).
+    *   [ ] Read key rule files (`core/00_core_assistant_protocol.mdc`, `core/01_memory_bank_protocol.mdc`) to confirm understanding.
+    *   [ ] Summarize the purpose of the `.cursor` directory and its rule structure.
+
+- [ ] **20.3 Explore & Summarize `apps/` Directory:**
+    *   [ ] List contents of `apps/`.
+    *   [ ] For each app (`core`, `accounts`, `news`, `slideshow`, etc.):
+        *   [ ] List contents of `apps/<app_name>/`.
+        *   [ ] Read key files (`models.py`, `views.py`, `urls.py`, `admin.py`, `apps.py`, representative templates in `apps/<app_name>/templates/`).
+        *   [ ] Summarize the primary responsibility of the app.
+    *   [ ] Summarize the overall structure and purpose of the `apps/` directory.
+
+- [ ] **20.4 Explore & Summarize `config/` Directory:**
+    *   [ ] List contents of `config/`.
+    *   [ ] Read key files (`settings.py`, `urls.py`, `wsgi.py`, `asgi.py`).
+    *   [ ] Summarize the purpose of the `config` directory and its files.
+
+- [ ] **20.5 Explore & Summarize `memory-bank/` Directory:**
+    *   [ ] List contents of `memory-bank/`.
+    *   [ ] Briefly review filenames to confirm purpose (no deep read needed unless structure is unclear).
+    *   [ ] Summarize the purpose of the `memory-bank` directory.
+
+- [ ] **20.6 Explore & Summarize `static/` Directory:**
+    *   [ ] List contents of `static/`.
+    *   [ ] List contents of `static/css/` (and subdirectories like `components`). Read `main.css`.
+    *   [ ] List contents of `static/js/`. Read key representative JS files (`css_gallery_init.js`, etc.).
+    *   [ ] List contents of `static/images/` (if exists).
+    *   [ ] List contents of `static/lottie/`.
+    *   [ ] Summarize the organization and purpose of static assets.
+
+- [ ] **20.7 Explore & Summarize `templates/` Directory:**
+    *   [ ] List contents of `templates/` (root level).
+    *   [ ] Read `templates/base.html`.
+    *   [ ] List contents of `templates/partials/`. Read a few representative partials.
+    *   [ ] List contents of `templates/registration/`.
+    *   [ ] List contents of `templates/admin/`.
+    *   [ ] List contents of app-specific template directories already covered in 20.3 (`templates/core/`, `templates/news/`, `templates/accounts/`). List partials dirs (`templates/news/partials/`, `templates/accounts/partials/`).
+    *   [ ] Summarize the template organization strategy.
+
+- [ ] **20.8 Explore & Summarize Other Root Items:**
+    *   [ ] List any remaining root-level items not covered (e.g., `media/` if present, `.venv/`, `node_modules/`, database file).
+    *   [ ] Summarize their purpose (often standard project components or generated directories).
+
+- [ ] **20.9 Create `project_structure.mdc`:**
+    *   [ ] Create the file `memory-bank/project_structure.mdc`.
+    *   [ ] Consolidate the summaries from steps 20.1-20.8 into a clear structure within this file. Use markdown lists or code blocks to represent the tree. Add brief descriptions for key directories/files.
+
+- [ ] **20.10 Update `system_patterns.mdc`:**
+    *   [ ] Read `memory-bank/system_patterns.mdc`.
+    *   [ ] Remove the entire "Directory Structure Conventions" section.
+    *   [ ] Add a sentence under a relevant heading (e.g., Core Architecture or create a new one) referencing the new documentation: "For a detailed view of the project directory layout, see @file:memory-bank/project_structure.mdc."
+
+- [ ] **20.11 Create Structure Maintenance Rule:**
+    *   [ ] Create a new rule file: `.cursor/rules/core/02_project_structure_maintenance.mdc`.
+    *   [ ] Add rule content mandating that `memory-bank/project_structure.mdc` MUST be updated whenever significant changes are made to the project's directory or key file structure (e.g., adding/removing apps, static/template directories, key config files).
+
+- [ ] **20.12 Final Verification & Commit:**
+    *   [ ] Briefly review `project_structure.mdc`, the modified `system_patterns.mdc`, and the new rule file for accuracy and clarity.
+    *   [ ] Stage relevant changes (`memory-bank/`, `.cursor/rules/`).
+    *   [ ] Propose commit message (e.g., "docs: Add project structure documentation and maintenance rule"). Await confirmation.
 
 ---
 

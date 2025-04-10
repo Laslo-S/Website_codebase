@@ -160,9 +160,9 @@
                 Stay updated with our latest projects, technologies, and industry insights
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {# Loop through latest news posts from context #}
+                {# Loop through latest news posts from context - UPDATED PATH #}
                 {% for post in latest_posts %}
-                    {% include "partials/_news_card.html" with post=post %}
+                    {% include "news/partials/_news_card_home.html" with post=post %}
                 {% empty %}
                     <p class="text-slate-500 md:col-span-3 text-center">No news posts available at the moment.</p>
                 {% endfor %}
@@ -172,7 +172,7 @@
                    class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 text-base font-medium rounded-md text-slate-700 hover:bg-slate-100 transition-all duration-300">
                     View All News
                      {# Placeholder icon - replace with actual arrow icon later #}
-                    <span class="ml-2">&rarr;</span> 
+                    <span class="ml-2">&rarr;</span>
                 </a>
             </div>
         </div>

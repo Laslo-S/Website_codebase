@@ -9,8 +9,8 @@
     {% if posts %}
         <div class="space-y-8">
             {% for post in posts %}
-                {# Include a reusable card template for each post #}
-                {% include "news/_news_card.html" with post=post %}
+                {# Include a reusable card template for each post - UPDATED PATH #}
+                {% include "news/partials/_news_card.html" with post=post %}
             {% endfor %}
         </div>
 
