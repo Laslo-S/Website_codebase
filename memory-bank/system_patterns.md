@@ -8,31 +8,7 @@ This document records key architectural decisions and established conventions fo
 *   **Approach:** Modular Monolith - Functionality is separated into distinct Django Apps within the `apps/` directory (e.g., `core`, `accounts`, `news`, `slideshow`).
 *   **Rendering:** Server-Side Rendering (SSR) using Django Templates.
 *   **Database:** SQLite for development, planned PostgreSQL for production (via environment variable `DATABASE_URL`).
-
-## Directory Structure Conventions
-
-*   **Project Config:** Django project settings (`settings.py`), root URL configuration (`urls.py`), and WSGI/ASGI files reside in the `config/` directory.
-*   **Applications:** Reusable Django applications are placed within the `apps/` directory (e.g., `core`, `accounts`, `news`, `slideshow`).
-*   **Templates:**
-    *   Base template (`base.html`) is at the root of the `templates/` directory.
-    *   App-specific templates are organized within `templates/<app_name>/` (e.g., `templates/core/`, `templates/news/`).
-    *   Reusable partial templates (e.g., header, footer, cards) are placed in `templates/partials/`.
-        *   Includes: `_header.html`, `_footer.html`, `_pagination.html`, `_service_card.html`, `_client_portal_card.html`, `_news_card.html`, `_hero_showcase.html`.
-    *   Standard Django auth templates reside in `templates/registration/`.
-    *   Admin overrides are in `templates/admin/`.
-    *   User-specific dynamic templates are in `templates/accounts/user_templates/`.
-*   **Static Files:**
-    *   Project-wide static files (compiled CSS, JS, images) are in the `static/` directory.
-        *   JS Includes: `static/js/interactive-hero-background.js`, `static/js/services-background.js`, `static/js/css_gallery_init.js`.
-    *   CSS Source Structure (within `static/css/`):
-        - `main.css`: Main entry point, imports other files.
-        - `base/`: Core styles (`variables.css`, `tailwind_directives.css`, `typography.css`, `layout.css`).
-        - `components/`: Component-specific styles (`gallery.css`, etc.).
-        - `utils/`: Utility classes (`helpers.css`).
-        - `admin_overrides.css`: Separate styles for Django Admin.
-    *   Compiled CSS Output: `static/css/output.css` (Git ignored).
-*   **Media Files:** User-uploaded content (e.g., project images) is stored in the `media/` directory (managed by `MEDIA_ROOT` and `MEDIA_URL` settings).
-*   **AI Context:** Persistent AI memory files are stored in `memory-bank/`. AI guidance rules are in `.cursor/rules/`.
+*   **Project Structure:** For a detailed view of the project directory layout, see @file:memory-bank/project_structure.mdc.
 
 ## Backend Conventions (Django)
 

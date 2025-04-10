@@ -1,0 +1,39 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Rule for maintaining project structure documentation.
+globs: ["memory-bank/project_structure.md", "**/*"]
+alwaysApply: true
+priority: 50 # Medium priority
+tags: ["core", "documentation", "structure"]
+---
+
+# Project Structure Documentation Maintenance Rule
+
+**Core Guideline:** The project structure overview MUST be kept up-to-date.
+
+**Trigger for Update:**
+
+Whenever significant changes are made to the project's directory or key file structure, the documentation file **MUST** be updated accordingly.
+
+Significant changes include (but are not limited to):
+
+*   Adding or removing a Django app (`apps/...`).
+*   Adding or removing major top-level directories (`static`, `templates`, etc.).
+*   Significantly reorganizing static asset subdirectories (`static/css`, `static/js`).
+*   Significantly reorganizing template subdirectories (`templates/partials`, `templates/<app>/partials`).
+*   Adding or removing key configuration files at the root or in `config/`.
+*   Adding or removing other major functional directories.
+
+**File to Update:**
+
+*   @file:memory-bank/project_structure.md
+
+**Procedure:**
+
+1.  After making structural changes, use `list_dir` or manual inspection to confirm the new layout.
+2.  Edit `@file:memory-bank/project_structure.md` to accurately reflect the new structure and purpose of added/modified/removed items.
+3.  Ensure the commit containing the structural code changes also includes the update to `project_structure.md`. 
