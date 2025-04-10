@@ -1,5 +1,5 @@
 ---
-description: 
+description:
 globs: static/js/**/*.js,templates/**/*.html,static/css/**.css
 alwaysApply: false
 ---
@@ -33,8 +33,16 @@ These rules govern the structure and presentation of the frontend components. Th
 
 ## 3. Client-Side Scripting (JavaScript)
 
-*   **Approach:** Write **vanilla JavaScript** in @file:static/js/script.js for basic interactions.
+*   **Approach:** Write **vanilla JavaScript** in @file:static/js/script.js for basic interactions (like mobile menu). More complex interactions, like the homepage gallery, may use dedicated scripts (e.g., @file:static/js/css_gallery_init.js).
+*   **Homepage Gallery (`css_gallery_init.js`):**
+    *   Uses `requestAnimationFrame` for smooth animation.
+    *   Manipulates CSS `transform: translateX` for scrolling (avoids `scrollLeft` issues).
+    *   Implements infinite looping via item duplication and JS position reset.
+    *   Handles idle scroll and interactive mouse control with physics simulation.
+    *   Calculates dynamic item widths based on viewport and CSS variables.
+    *   All behavior (physics, appearance, sizing) is controlled via `--gallery-...` CSS variables defined in @file:templates/base.html.
+    *   Refer to @file:memory-bank/system_patterns.md for detailed pattern description.
 *   **Avoid Frameworks:** Do not introduce complex JS frameworks without discussion.
 *   **Minimalism:** Prefer server-side rendering and standard HTML/CSS solutions where possible.
 
---- 
+---
