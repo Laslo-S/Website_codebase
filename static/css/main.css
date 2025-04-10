@@ -1,0 +1,21 @@
+/* Main CSS Entry Point */
+
+/* 1. Base Variables */
+@import "./base/variables.css";
+
+/* 2. Tailwind Directives */
+@import "./base/tailwind_directives.css";
+
+/* 3. Base Typography (Optional) */
+@import "./base/typography.css"; 
+
+/* 4. Base Layout (Container, etc.) */
+@import "./base/layout.css";
+
+/* 5. Component Styles */
+@import "./components/gallery.css";
+/* @import "./components/buttons.css"; */ /* Example for later */
+/* @import "./components/cards.css"; */ /* Example for later */
+
+/* 6. Utility/Helper Classes */
+@import "./utils/helpers.css"; 

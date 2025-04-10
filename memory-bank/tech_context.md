@@ -21,11 +21,12 @@ This document outlines the specific technologies, versions, and setup details fo
 ## Frontend
 
 *   **Approach:** Server-Side Rendering (SSR) via Django Templates.
-*   **Styling:** Tailwind CSS v3.x (using CLI for building `output.css`).
-    *   Config: `tailwind.config.js`, `postcss.config.js`
-    *   Input: `static/css/input.css`
-    *   Output: `static/css/output.css`
-*   **UI Components:** Primarily custom styled HTML, potentially leveraging headless UI libraries later if needed.
+*   **Styling:** Tailwind CSS v3.x.
+    *   Config: `tailwind.config.js`, `postcss.config.js`.
+    *   Source Files: Organized under `static/css/` with `main.css` as the entry point, importing from `base/`, `components/`, `utils/` subdirectories. See @file:memory-bank/system_patterns.md.
+    *   Variables: All CSS custom properties (layout, components, colors, fonts) centralized in `static/css/base/variables.css`.
+    *   Build Output: `static/css/output.css` (generated via `npm run build:css`, gitignored).
+*   **UI Components:** Primarily custom styled HTML.
 *   **JavaScript:**
     *   Vanilla JS for basic interactions (e.g., mobile menu toggle).
     *   **Swiper.js (v11 via CDN):** Used for the homepage services gallery. Configured with `slidesPerView: 'auto'` and dynamic slide widths calculated by custom JS (`gallery-swiper-init.js`) based on viewport thresholds and CSS variables.

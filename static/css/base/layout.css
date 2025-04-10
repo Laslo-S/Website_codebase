@@ -1,0 +1,24 @@
+/* Base Layout Styles */
+
+@layer utilities {
+  .layout-container {
+    @apply w-full mx-auto; /* Use auto margin for centering */
+    max-width: var(--layout-max-width);
+    padding-left: var(--layout-padding-base);
+    padding-right: var(--layout-padding-base);
+  }
+
+  @screen sm {
+    .layout-container {
+      padding-left: var(--layout-padding-sm);
+      padding-right: var(--layout-padding-sm);
+    }
+  }
+
+  @screen lg {
+    .layout-container {
+      padding-left: var(--layout-padding-lg);
+      padding-right: var(--layout-padding-lg);
+    }
+  }
+} 

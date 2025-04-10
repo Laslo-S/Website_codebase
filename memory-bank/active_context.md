@@ -1,8 +1,8 @@
 # Active Context
 
-*   **Status:** Completed Phase 17 & Archived old tasks.
-*   **Current Focus:** Awaiting Phase 18 Tasks.
-*   **Next Step:** User to provide Phase 18 tasks in @file:TASKS.mdc.
+*   **Status:** Completed Phase 18: Frontend Structure Refinement & Layout Control.
+*   **Current Focus:** Awaiting next phase/task.
+*   **Next Step:** User to define Phase 19 or next task.
 
 ## Detailed State
 
@@ -29,4 +29,4 @@
 *   Completed Phase 13: Implemented comprehensive preview mode.
 
 **Pending Actions:**
-*   Await definition of Phase 18 tasks from the user.
+*   Await next task definition from the user.

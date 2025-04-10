@@ -4,8 +4,8 @@
   "description": "Website project showcasing architectural visualizations using 3D embeds, videos, and images. Developed with AI assistance using Cursor.",
   "main": "index.js",
   "scripts": {
-    "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css",
-    "watch:css": "node .\\node_modules\\tailwindcss\\lib\\cli.js -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "build:css": "tailwindcss -i ./static/css/main.css -o ./static/css/output.css",
+    "watch:css": "node .\\node_modules\\tailwindcss\\lib\\cli.js -i ./static/css/main.css -o ./static/css/output.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3"

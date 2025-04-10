@@ -23,8 +23,14 @@ This document records key architectural decisions and established conventions fo
     *   User-specific dynamic templates are in `templates/accounts/user_templates/`.
 *   **Static Files:**
     *   Project-wide static files (compiled CSS, JS, images) are in the `static/` directory.
-        *   JS Includes: `static/js/interactive-hero-background.js`.
-    *   Tailwind input CSS is at `static/css/input.css`, output at `static/css/output.css`.
+        *   JS Includes: `static/js/interactive-hero-background.js`, `static/js/services-background.js`, `static/js/css_gallery_init.js`.
+    *   CSS Source Structure (within `static/css/`):
+        - `main.css`: Main entry point, imports other files.
+        - `base/`: Core styles (`variables.css`, `tailwind_directives.css`, `typography.css`, `layout.css`).
+        - `components/`: Component-specific styles (`gallery.css`, etc.).
+        - `utils/`: Utility classes (`helpers.css`).
+        - `admin_overrides.css`: Separate styles for Django Admin.
+    *   Compiled CSS Output: `static/css/output.css` (Git ignored).
 *   **Media Files:** User-uploaded content (e.g., project images) is stored in the `media/` directory (managed by `MEDIA_ROOT` and `MEDIA_URL` settings).
 *   **AI Context:** Persistent AI memory files are stored in `memory-bank/`. AI guidance rules are in `.cursor/rules/`.
 
@@ -113,7 +119,8 @@ This document records key architectural decisions and established conventions fo
         *   Includes: `_header.html`, `_footer.html`, `_pagination.html`, `_service_card.html`, `_client_portal_card.html`, `_news_card.html`, `_hero_showcase.html`.
     *   App-Specific Templates: In `apps/<app_name>/templates/<app_name>/`.
     *   Homepage Structure: Uses specific section IDs (`#hero`, `#services`, etc.) derived from v0.
-*   **Styling:** Utility-first CSS via Tailwind CSS. Global styles/variables integrated from v0.
+*   **Styling:** Utility-first CSS via Tailwind CSS. Custom CSS variables and component/utility styles organized into `static/css/base/`, `static/css/components/`, `static/css/utils/` and imported via `static/css/main.css`.
+*   **Layout Container:** Site width and padding controlled centrally via `--layout-*` CSS variables defined in `static/css/base/variables.css` and applied using the `.layout-container` utility class defined in `static/css/base/layout.css`.
 *   **Client-Specific Pages:** Achieved via dynamic template selection in `UserPageView`.
 *   **Admin Organization:** Uses Proxy Models for type-specific views (`Public...Item` admins) and cross-app grouping (`ClientDeliverableAdminView`). Uses a dedicated app (`slideshow`) with a simple model (`SlideshowImage`) and admin for managing specific UI elements like the homepage gallery.
 *   **Content Preview:** Session-based preview mode activated by staff via admin toggle, affecting querysets in views and displaying a banner.
@@ -189,4 +196,17 @@ This document records key architectural decisions and established conventions fo
     11. **Looping:** Loop checks if `currentTranslateX` exceeds `originalContentWidth` or goes below 0, resetting it using subtraction/addition of `originalContentWidth`.
     12. **Idle Scroll Fix:** When mouse is off, the scroll update uses `idlePPS * deltaTime` directly for `translateX`, bypassing `currentVelocityPPS` to avoid stalling at low speeds.
 *   **Benefits:** Smooth animation via `transform`, unified JS logic, full CSS variable control, reliable low-speed idle scroll.
-*   **Considerations:** Requires careful JS logic for physics and looping, relies on accurate width/spacing calculations for loop boundary. 
+*   **Considerations:** Requires careful JS logic for physics and looping, relies on accurate width/spacing calculations for loop boundary.
+
+### Base HTML CSS Variables for Specific Overrides -> Deprecated
+*Note: This pattern has been superseded by centralizing ALL custom variables in `static/css/base/variables.css`.*
+
+### Layout Container Utility Class
+*   **Purpose:** To provide consistent maximum width and responsive horizontal padding for main content sections across the site, controlled by centralized CSS variables.
+*   **Implementation:**
+    1.  CSS variables defined in `static/css/base/variables.css`: `--layout-max-width`, `--layout-padding-base`, `--layout-padding-sm`, `--layout-padding-lg`.
+    2.  Utility class `.layout-container` defined in `static/css/base/layout.css` using `@apply w-full mx-auto;` and applying the variables via `max-width` and `padding-left/right` properties.
+    3.  Tailwind's `@screen` directives are used within the `.layout-container` definition to apply responsive padding variables.
+    4.  Applied in templates (e.g., @file:templates/core/home.html) by replacing Tailwind container utilities (`max-w-*, mx-auto, px-*, sm:px-*, lg:px-*`) with the single `.layout-container` class.
+*   **Benefits:** Centralized control over site width/padding via CSS variables. Cleaner HTML templates. Consistent layout application.
+*   **Considerations:** Requires maintaining the variable definitions and the utility class definition. Changes require recompiling CSS. 

@@ -1,0 +1,62 @@
+:root {
+    /* Scroll animation control */
+    --scroll-anim-duration: 3.2s;
+    --scroll-move-distance: 12px;
+    --scroll-scale-diff: 0.08;
+    --scroll-fade-duration: 0.8s;
+
+    /* --- Gallery Control Variables --- */
+    /* Appearance */
+    --gallery-slide-height: 26rem; /* Sets the fixed height of each gallery item. */
+    --gallery-slide-spacing: 5px; /* Sets the horizontal gap between gallery items. */
+    --gallery-item-border-radius: 0.25rem; /* Controls the roundness of the corners for each gallery item (e.g., 0px, 0.25rem, 0.5rem). */
+
+    /* Dynamic Width / Aspect Ratio */
+    --gallery-aspect-ratio-variance: 0.35; /* Controls width flexibility (0=allows ~9:16, 1=fixed 16:9). Determines the minimum width relative to height. */
+    --gallery-full-aspect-threshold: 4096px; /* Viewport width ABOVE which item width is fixed at max (16:9 of height). */
+    --gallery-min-aspect-threshold: 320px;  /* Viewport width BELOW which item width is fixed at minimum (derived from variance). */
+
+    /* Scrolling Physics & Interaction */
+    --gallery-idle-scroll-pps: 8; /* Speed (pixels per second) of the automatic scroll when the mouse is not over the gallery. */
+    --gallery-mouse-max-pps: 250; /* Maximum speed (pixels per second) the gallery scrolls when reacting to mouse position near the edges. */
+    --gallery-mouse-acceleration: 0.45; /* How quickly the gallery accelerates towards the target speed (mouse or idle). Higher = faster response. Range typically 0-1. */
+    --gallery-mouse-damping: 0.94; /* Friction factor applied to slow down the scroll speed. Lower = stops faster. Range typically 0.8-0.99. */
+    --gallery-mouse-deadzone-percent: 7; /* Percentage of the gallery width (centered) where mouse movement does not affect scroll speed. */
+    --gallery-mouse-speed-exponent: 1.45; /* Controls the curve of mouse speed response (>1 = faster near edge, 1 = linear). */
+
+
+    /* --- Services Section Background Sphere Animation Control --- */
+    --sphere-base-color: #cccccc; /* Original Subtle Grey */
+    --sphere-base-opacity: 0.00;  /* Original Subtle Opacity */
+    --sphere-edge-color: '#ffffff'; /* Changed to white */
+    --sphere-mouse-sensitivity: 0.2;
+    --sphere-acceleration: 0.6;
+    --sphere-damping: 0.92;
+    --sphere-camera-z: 3;
+    --sphere-geometry-radius: 2.61; /* Increased size */
+
+    /* Services Section Grid Fade */
+    --services-grid-fade-height: 350px;
+    --services-grid-fade-start-opacity: 0.7;
+
+    /* === Custom Layout Colors === */
+    --services-background-color-hsl: 186 16% 86%; /* Approx #d5dfe0 - Light Mode */
+
+    /* === Layout Control === */
+    --layout-max-width: 1280px; /* Default max content width (e.g., xl screen) */
+    --layout-padding-base: 1rem;  /* Default horizontal padding (maps to px-4) */
+    --layout-padding-sm: 1.5rem; /* Horizontal padding for sm screens+ (maps to sm:px-6) */
+    --layout-padding-lg: 2rem;  /* Horizontal padding for lg screens+ (maps to lg:px-8) */
+
+    /* Add future layout variables here */
+    /* --layout-max-width: ... */
+}
+
+/* Optional: Define dark mode overrides for custom layout colors - DO NOT REMOVE THIS SECTION */
+/* 
+.dark {
+    --services-background-color-hsl: ...; 
+    
+    /* Add dark mode overrides for gallery, sphere etc. if needed */
+/* }
+*/ 

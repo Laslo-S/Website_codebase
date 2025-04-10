@@ -147,8 +147,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json # Optional: uncomment if you don't want to commit lock files
-yarn.lock # Optional: uncomment if you don't want to commit lock files
+# package-lock.json # Optional: uncomment if you don't want to commit lock files
+# yarn.lock # Optional: uncomment if you don't want to commit lock files
 
 # Frontend build artifacts
 /dist # Common build output directory for frontend frameworks
@@ -221,3 +221,6 @@ dist/
 
 # Optional: SvelteKit files
 .svelte-kit/
+
+# Build output
+static/css/output.css

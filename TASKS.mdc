@@ -13,7 +13,103 @@ This file contains tasks starting from Phase 18.
 
 ---
 
-**Phase 18: 
+**Phase 18: Refine CSS Structure & Centralize Theme/Layout Variables**
+
+*AI Assistant Guidance: Reorganize CSS files for maintainability. Move ALL CSS custom properties from `base.html` into a dedicated `variables.css`. Implement a `.layout-container` utility class driven by CSS variables. Update Tailwind config and build process. Refactor templates to use the new container class.*
+
+- [ ] **18.1 Define New CSS Directory Structure:**
+    *   **18.1.1 Finalize Structure Plan:** Confirm the target structure within `static/css/`:
+        - `base/`:
+            - `variables.css` (ALL `:root` variables)
+            - `tailwind_directives.css` (`@tailwind ...`)
+            - `typography.css` (Base font styles, if any beyond Tailwind config)
+            - `layout.css` (`.layout-container` class)
+        - `components/`:
+            - `gallery.css` (Rules for `.css-gallery-*`)
+            - `admin_overrides.css` (Keep existing, or move here?) -> **Decision:** Keep at `static/css/admin_overrides.css` for clarity as it's loaded separately by AdminMedia.
+            - *(Add other component CSS files later if needed)*
+        - `utils/`:
+            - `helpers.css` (`.hide-scrollbar` etc.)
+        - `main.css` (Entry point, imports others)
+        - *(Delete `input.css`, `style.css`)*
+        - *(Ignore `output.css`)*
+    *   **18.1.2 Define Import Order in `main.css`:**
+        1. `@import "./base/variables.css";`
+        2. `@import "./base/tailwind_directives.css";`
+        3. `@import "./base/typography.css";` (Create empty if no specific base typography needed beyond Tailwind config/body style)
+        4. `@import "./base/layout.css";`
+        5. `@import "./components/gallery.css";`
+        6. `@import "./utils/helpers.css";`
+
+- [ ] **18.2 Implement New CSS Structure & Migrate:**
+    *   **18.2.1 Create Directories:** Create `static/css/base/`, `static/css/components/`, `static/css/utils/` if they don't exist.
+    *   **18.2.2 Create `main.css`:** Create `static/css/main.css` with the `@import` statements from 18.1.2.
+    *   **18.2.3 Create & Populate `variables.css`:** Create `static/css/base/variables.css`. **Cut** the entire content *inside* the `<style>:root { ... }</style>` block from @file:templates/base.html and **paste** it inside this file (within a `:root { ... }` block).
+    *   **18.2.4 Create & Populate `tailwind_directives.css`:** Create `static/css/base/tailwind_directives.css`. Copy the `@tailwind base; @tailwind components; @tailwind utilities;` lines from the current @file:static/css/input.css into this file.
+    *   **18.2.5 Create & Populate `gallery.css`:** Create `static/css/components/gallery.css`. **Move** the CSS rules targeting `.css-gallery-container`, `.css-gallery-track`, `.css-gallery-item` from @file:static/css/input.css to this file.
+    *   **18.2.6 Create & Populate `helpers.css`:** Create `static/css/utils/helpers.css`. **Move** the `.hide-scrollbar` rules from @file:static/css/input.css here.
+    *   **18.2.7 Create Empty `typography.css`:** Create `static/css/base/typography.css` (can be empty for now, or move base body/heading font rules here if preferred).
+    *   **18.2.8 Delete Old Files:** Delete `static/css/input.css` and `static/css/style.css`.
+    *   **18.2.9 Remove Inline Style Block:** **Delete** the entire `<style>...</style>` block (including the `:root` definition) from @file:templates/base.html.
+    *   **18.2.10 Update `.gitignore`:** Verify `static/css/output.css` is in @file:.gitignore.
+
+- [ ] **18.3 Implement Centralized Layout Control:**
+    *   **18.3.1 Define Layout Variables:** In `static/css/base/variables.css`, add specific variables for layout control (potentially using Tailwind `theme()` if PostCSS runs before Tailwind):
+        ```css
+        /* Inside :root in variables.css */
+        --layout-max-width: 1280px; /* Or theme('screens.xl') if processed correctly */
+        --layout-padding-base: 1rem; /* theme('spacing.4') */
+        --layout-padding-sm: 1.5rem; /* theme('spacing.6') */
+        --layout-padding-lg: 2rem;  /* theme('spacing.8') */
+        ```
+        *(AI: Recommend sensible default values based on common screen sizes and existing padding)*.
+    *   **18.3.2 Define `.layout-container` Class:** Create `static/css/base/layout.css` (and import it in `main.css`). Define the utility class using `@apply` or standard CSS:
+        ```css
+        /* static/css/base/layout.css */
+        @layer utilities { /* Apply in utilities layer */
+          .layout-container {
+            width: 100%;
+            max-width: var(--layout-max-width);
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: var(--layout-padding-base);
+            padding-right: var(--layout-padding-base);
+          }
+          @screen sm {
+            .layout-container {
+              padding-left: var(--layout-padding-sm);
+              padding-right: var(--layout-padding-sm);
+            }
+          }
+          @screen lg {
+            .layout-container {
+              padding-left: var(--layout-padding-lg);
+              padding-right: var(--layout-padding-lg);
+            }
+          }
+        }
+        ```
+
+- [ ] **18.4 Update Build Process & Tailwind Config:**
+    *   **18.4.1 Update `package.json` Scripts:** Modify `build:css` and `watch:css` scripts to use `static/css/main.css` as input (`-i`).
+    *   **18.4.2 Verify `tailwind.config.js`:** Double-check that `theme.extend.colors` and `theme.extend.fontFamily` correctly reference the CSS variables defined in `variables.css` (e.g., `background: 'hsl(var(--background-hsl))'`, `sans: ['var(--font-body)', ...]`). Ensure `darkMode: 'class'` is set. Verify `content` paths include `templates/**/*.html` etc.
+    *   **18.4.3 Re-run `npm install` (If needed):** If PostCSS plugins are required for `theme()` function, ensure they are installed.
+
+- [ ] **18.5 Refactor Templates to Use Layout Container:**
+    *   **18.5.1 Identify Containers:** Locate the elements currently using `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` (or similar) in key templates like @file:templates/core/home.html (within each section), @file:templates/core/_project_list_base.html, @file:templates/news/news_list.html, etc.
+    *   **18.5.2 Replace with Class:** Replace the multiple utility classes with the single `layout-container` class on the appropriate container `div`s.
+    *   **18.5.3 Verify Header/Footer:** Check if @file:templates/partials/_header.html and @file:templates/partials/_footer.html's internal `div` need `layout-container` or if their existing `max-w-7xl...` is sufficient/intended. Adjust if necessary for consistency.
+
+- [ ] **18.6 Build, Verify & Document:**
+    *   **18.6.1 Run `npm run build:css`:** Ensure `output.css` is generated successfully from `main.css`. Check for build errors.
+    *   **18.6.2 Run Dev Server & Test:** Start `python manage.py runserver`. Thoroughly check:
+        - **All Styles Load:** Verify styles previously in `input.css` and `base.html <style>` are still applied correctly (gallery, scrollbar, theme colors/fonts).
+        - **Layout Container:** Verify main content sections consistently use the width/padding defined by `--layout-*` variables and the `.layout-container` class. Check responsiveness of padding.
+        - **Theme Editing Test:** Manually edit a color, font, AND a layout variable (e.g., `--layout-max-width`) in `variables.css`. Re-run `build:css`. Hard refresh browser. Verify ALL changes are reflected. Change back.
+        - **Dark Mode:** Test dark mode toggle (if implemented in 18.4.2) works correctly with the variables defined in `.dark` scope within `variables.css`.
+    *   **18.6.3 Update Memory Bank & Rules:** Update `system_patterns.md` (new CSS structure, layout container), `tech_context.md` (main.css, variables.css role), rules (`theming_rules.mdc`, `layout_styling_base.mdc`), `progress.md`, `active_context.md`.
+
+- [ ] **18.7 Version Control Checkpoint:** Stage all changes (CSS files/structure, template updates, package.json, tailwind.config.js, docs, memory, rules, .gitignore). Generate commit message (e.g., "refactor(frontend): Centralize CSS variables and reorganize static CSS structure"). Await confirmation to commit.
 
 ---
 
