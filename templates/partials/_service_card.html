@@ -4,7 +4,7 @@
 
 {# Props expected: title, description, icon_svg_path (relative to static), link #}
 
-<div class="group service-card-group bg-white/95 p-8 rounded-lg hover:shadow-xl transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2 hover:scale-[1.03] flex flex-col h-full border border-slate-100 relative z-10"> {# Added hover:shadow-xl, transition-all, ease-in-out, hover:transform, hover:-translate-y-2, hover:scale-[1.03] #}
+<div class="group service-card-group bg-white/95 p-8 rounded-[var(--service-card-border-radius)] hover:shadow-xl transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2 hover:scale-[1.03] flex flex-col h-full border border-slate-100 relative z-10"> {# Added hover:shadow-xl, transition-all, ease-in-out, hover:transform, hover:-translate-y-2, hover:scale-[1.03] #}
     {# New wrapper div for adaptive layout - Changed breakpoint to xl #}
     <div class="flex flex-col items-center text-center xl:flex-row xl:items-start xl:text-left xl:space-x-6 flex-grow"> {# Changed lg: prefixes to xl: #}
         {# Icon Container - Apply xl width and shrink #}

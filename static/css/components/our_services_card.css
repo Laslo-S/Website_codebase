@@ -1,27 +1,26 @@
 :root {
-    /* Service Icon Colors */
-    /* --service-icon-stroke-color: #ffffff; */ /* Removed - Handled internally by SVG */
-    --service-icon-bg-color: #cffafe;    /* Equivalent to cyan-50 or primary-50 */
-    /* --service-icon-fill-color: #ffffff; */    /* Removed - Handled internally by SVG */
+    /* === Service Card Layout Variables === */
+    --service-card-gap: 1.25rem;       /* Gap between service cards (e.g., in the grid) */
+    --service-card-border-radius: 0.25rem; /* Corner roundness of service cards */
 
-    /* Service Icon Hover Animation */
+    /* === Service Card Icon === */
+    --service-icon-bg-color: #cffafe;    /* Equivalent to cyan-50 or primary-50 */
     --service-icon-hover-scale: 1.05;          /* Scale factor for icon container */
     --service-icon-scale-duration: 0.3s;
-    /* ADDED for JS Animation */
+    /* JS Bobbing Animation Variables */
     --service-icon-initial-bob-distance: 4px; /* Starting distance for JS anim */
     --service-icon-bob-decay-seconds: 1.5s;  /* Time (seconds) over which bob decays to zero */
     --service-icon-bob-frequency: 1;         /* How many bobs per second (approx) */
 
-    /* Learn More Link Hover Effects */
+    /* === Service Card Learn More Link === */
+    /* Base Style */
     --learn-more-base-color: #06b6d4; /* text-cyan-500 */
-    --learn-more-hover-color: #0891b2; /* text-cyan-600 */
-    --learn-more-scale: 1.15; /* NOTE: Unused by JS pulse - Keep for reference? Or remove? Removing for now */
-    --learn-more-arrow-translate: 3px;
     --learn-more-transition-duration: 0.2s; /* Slightly faster transition */
-    /* ADDED Hover Variables */
+    /* Hover Style */
+    --learn-more-hover-color: #0891b2; /* Reverted to cyan-600 */
     --learn-more-hover-scale: 1.1; /* Scale factor on hover */
     --learn-more-hover-font-weight: 700; /* e.g., 400=normal, 600=semibold, 700=bold */
-    /* ADDED Lottie Arrow Hover Transform Variables */
+    /* Lottie Arrow Hover Transform */
     --lottie-arrow-hover-scale: 1.4;
     --lottie-arrow-hover-translate-y: 2px;
     --lottie-arrow-hover-translate-x: 8px;
@@ -154,9 +153,10 @@
 }
 
 .service-card-group.is-hovered .learn-more-text {
-    /* Apply hover scale and font-weight using variables */
     transform: scale(var(--learn-more-hover-scale));
     font-weight: var(--learn-more-hover-font-weight);
+    /* Restore variable, still applied directly to text span */
+    color: var(--learn-more-hover-color);
 }
 
 /* COMMENTED OUT for Lottie replacement */

@@ -14,8 +14,10 @@
 
 /* 5. Component Styles */
 @import "./components/gallery.css";
-@import "./components/scroll_indicator.css";
+/* @import "./components/scroll_indicator.css"; /* REMOVED - Merged into hero_interaction_indicator.css */
 @import "./components/our_services_card.css";
+@import "./components/hero_interaction_indicator.css"; /* Ensure the merged file is imported */
+/* @import "./components/rotating_text.css"; */ /* REMOVED - Handled by JS */
 /* @import "./components/buttons.css"; */ /* Example for later */
 /* @import "./components/cards.css"; */ /* Example for later */
 

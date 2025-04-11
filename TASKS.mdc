@@ -213,58 +213,123 @@ This file contains tasks starting from Phase 18.
 
 *AI Assistant Guidance: Refine the "Our Services" section on the homepage (`home.html`) by restructuring the `static/svg/` directory, integrating specific SVG icons, implementing advanced CSS hover animations for the service cards, creating an adaptive layout for icons/text based on screen width, and adding interactive hover effects to the "Learn more" links and icons. Reference @file:templates/partials/_service_card.html and apply changes there primarily, ensuring updates reflect on @file:templates/core/home.html. Adhere to frontend rules @file:.cursor/rules/frontend/04_styling_layout.mdc and @file:.cursor/rules/frontend/03_tailwind_config.mdc.*
 
-- [ ] **21.1 Restructure SVG Directory & Integrate Service Icons:**
-    *   [ ] **21.1.1 Propose SVG Structure:** Propose new structure: `static/svg/general/` (for logo?), `static/svg/footer/`, `static/svg/services/`. Identify existing SVGs (e.g., `Logo_Avem3D.svg` in `static/svg/`) and suggest placement (e.g., move logo to `general/`).
-    *   [ ] **21.1.2 Confirm Structure & File Placement:** *User Confirmation Needed:* User confirms proposed structure and placement of existing SVGs.
-    *   [ ] **21.1.3 Execute Restructuring:** Create new directories (`general/`, `footer/`, `services/`). Move existing SVGs according to confirmation. Update references in code (e.g., favicon link in `base.html` for `Logo_Avem3D.svg`) if files moved.
-    *   [ ] **21.1.4 Prepare Service SVG Files:** User confirms availability of SVG files/code for "3D Scans", "Video Renderings", "Still Imagery". AI places files/code into the new `static/svg/services/` directory (e.g., `scan_icon.svg`, `video_icon.svg`, `still_icon.svg`).
-    *   [ ] **21.1.5 Update Project Structure Docs:** Update `@file:memory-bank/project_structure.md` to reflect the new `static/svg/` subdirectories (`general/`, `footer/`, `services/`) and placement of key SVGs, following rule @file:.cursor/rules/core/02_project_structure_maintenance.mdc.
-    *   [ ] **21.1.6 Update Service Card Partial (`_service_card.html`):** Modify the partial to dynamically include the correct SVG from `static/svg/services/` based on the `title` or a new `icon_slug` context variable passed from the `home.html` include tag. Use `{% include %}` tag for SVGs.
-    *   [ ] **21.1.7 Update Homepage Inclusion:** In `@file:templates/core/home.html`, ensure the `{% include "partials/_service_card.html" ... %}` tags pass the correct `title` (or `icon_slug`) for the conditional logic.
-    *   [ ] **21.1.8 Apply Base Icon Styling:** Apply consistent Tailwind classes to the SVG container/SVG within the partial for size (e.g., `w-12 h-12`), color (prefer theme colors like `text-primary`), and margin (`mb-6`).
-    *   [ ] **21.1.9 Verification:** Verify references to moved SVGs work correctly (e.g., favicon). Check homepage Services section for correct custom SVG icons.
+- [x] **21.1 Restructure SVG Directory & Integrate Service Icons:**
+    *   [x] **21.1.1 Propose SVG Structure:** Proposed new structure: `static/svg/general/`, `static/svg/footer/`, `static/svg/services/`.
+    *   [x] **21.1.2 Confirm Structure & File Placement:** User confirmed.
+    *   [x] **21.1.3 Execute Restructuring:** Directories created. Logo moved to `general/`. Favicon reference updated.
+    *   [x] **21.1.4 Prepare Service SVG Files:** Placed user-provided SVGs (`3d.svg`, `video.svg`, `image.svg`) into `static/svg/services/`.
+    *   [x] **21.1.5 Update Project Structure Docs:** Updated `@file:memory-bank/project_structure.md`.
+    *   [x] **21.1.6 Update Service Card Partial (`_service_card.html`):** Modified partial to use `<img>` tag with `{% static %}` path constructed using `icon_slug` variable.
+    *   [x] **21.1.7 Update Homepage Inclusion:** Updated `{% include %}` tags in `home.html` to pass `icon_slug`.
+    *   [x] **21.1.8 Apply Base Icon Styling:** Applied `w-12 h-12 mb-4` etc. to icon `img` tag.
+    *   [x] **21.1.9 Verification:** Favicon loads. Icons appear correctly in service cards.
 
-- [ ] **21.2 Implement Card Hover Animation (Grow & Lift):**
-    *   [ ] **21.2.1 Add CSS Classes:** In `_service_card.html`, apply transition and hover transform classes: `transition-all duration-300 ease-in-out`, `hover:transform hover:-translate-y-2 hover:scale-[1.03]`. Ensure `hover:shadow-xl` is present.
-    *   [ ] **21.2.2 Verification:** Hover over service cards. Verify smooth scale/lift animation.
+- [x] **21.2 Implement Card Hover Animation (JS-Driven):**
+    *   [x] **21.2.1 Remove Old Tailwind Hover Classes:** Removed `hover:transform`, `hover:-translate-y-2`, `hover:scale-[1.03]`, `hover:shadow-xl` from the main card div in `_service_card.html`.
+    *   [x] **21.2.2 Add Marker Class:** Added `service-card-group` class to the main card `div`.
+    *   [x] **21.2.3 Create Component CSS File:** Created `static/css/components/our_services_card.css`.
+    *   [x] **21.2.4 Define Base & Hover Styles/Animations in CSS:** Defined base styles and `@keyframes` for icon scale/bob, text scale/color, arrow translate. Created CSS rules using `.service-card-group.is-hovered` selector to apply animations.
+    *   [x] **21.2.5 Import Component CSS:** Added `@import "./components/our_services_card.css";` to `static/css/main.css`.
+    *   [x] **21.2.6 Create JS Hover Toggle:** Created `static/js/service_card_hover.js` with `mouseenter`/`mouseleave` listeners on `.service-card-group` elements to add/remove `.is-hovered` class.
+    *   [x] **21.2.7 Include JS in `base.html`:** Added script tag for `service_card_hover.js` in `base.html`.
+    *   [x] **21.2.8 Verification:** Hover over cards. Verified CSS animations trigger correctly via JS class toggle.
 
-- [ ] **21.3 Implement Adaptive Icon/Text Layout:**
-    *   [ ] **21.3.1 Refactor Card Structure:** In `_service_card.html`, wrap the icon container and the text content in a parent `div`.
-    *   [ ] **21.3.2 Apply Responsive Flexbox:** Apply classes to the parent `div`: Default (Mobile): `flex flex-col items-center text-center`. Medium Screens Up: `lg:flex-row lg:items-start lg:text-left lg:space-x-6`.
-    *   [ ] **21.3.3 Size Icon Container:** Give the icon container div a fixed width on larger screens (e.g., `lg:w-16 lg:flex-shrink-0`).
-    *   [ ] **21.3.4 Verification:** Resize browser window. Verify layout change.
+- [x] **21.3 Implement Adaptive Icon/Text Layout:**
+    *   [x] **21.3.1 Refactor Card Structure:** Wrapped icon `img` and text content block in a parent `div` within `_service_card.html`.
+    *   [x] **21.3.2 Apply Responsive Flexbox:** Applied `flex flex-col items-center text-center` (mobile) and `lg:flex-row lg:items-start lg:text-left lg:space-x-6` (large screens) to the new parent `div`.
+    *   [x] **21.3.3 Size Icon:** Ensured icon `img` tag has appropriate size classes (e.g., `w-12 h-12`). Added `lg:mt-1` for slight vertical adjustment on large screens.
+    *   [x] **21.3.4 Verification:** Resized browser. Layout adapts correctly at `lg` breakpoint.
 
-- [ ] **21.4 Implement "Learn More" Link Hover Animation:**
-    *   [ ] **21.4.1 Target Link Text:** Focus on the text span within the "Learn more" `<a>` tag in `_service_card.html`.
-    *   [ ] **21.4.2 Apply Simple CSS Hover:** Add Tailwind classes: `group-hover:tracking-wide transition-all duration-200`.
-    *   [ ] **21.4.3 Verification:** Hover over "Learn more". Verify text subtly changes.
+- [x] **21.4 Refine "Learn More" Link (Already Part of 21.2):**
+    *   [x] **21.4.1 Target Link Text & Arrow:** Confirmed text scale/color and arrow translation are handled by the CSS defined in 21.2.4 using the `.is-hovered` class.
+    *   [x] **21.4.2 Add Arrow SVG:** Replaced placeholder `&rarr;` with appropriate arrow SVG code (`arrow-right.svg` placed in `static/svg/general/`). Styled SVG (`w-4 h-4 ml-1`).
+    *   [x] **21.4.3 Verification:** Hover over card. "Learn more" text and arrow animate as defined in the CSS.
 
-- [ ] **21.5 Implement Arrow Icon & Animation:**
-    *   [ ] **21.5.1 Add Arrow SVG:** Replace placeholder span (`→`) in "Learn more" link with appropriate arrow SVG code. *(Will likely be placed in `static/svg/general/` during step 21.1.3 or added here)*.
-    *   [ ] **21.5.2 Apply Styling & Animation:** Style SVG (`w-4 h-4 ml-2`). Apply `group-hover:translate-x-1 transition-transform duration-200`.
-    *   [ ] **21.5.3 Verification:** Hover over "Learn more". Verify arrow appears and slides right.
+- [x] **21.5 Refine Service Icon Animation (Already Part of 21.2):**
+    *   [x] **21.5.1 Target Icon:** Confirmed icon scale/bob animation is handled by the CSS defined in 21.2.4 using the `.is-hovered` class.
+    *   [x] **21.5.2 Verification:** Hover over card. Icon animates as defined in the CSS.
 
-- [ ] **21.6 Implement Service Icon Hover Animation:**
-    *   [ ] **21.6.1 Target Icon:** Focus on the icon container `div` or the `svg` itself.
-    *   [ ] **21.6.2 Apply Animation:** Add Tailwind classes: `group-hover:scale-110 transition-transform duration-300 ease-in-out`.
-    *   [ ] **21.6.3 Verification:** Hover over the entire service card. Verify the icon subtly scales.
+- [x] **21.6 Final Build & Documentation:**
+    *   [x] **21.6.1 Build CSS:** Ran `npm run build:css`.
+    *   [x] **21.6.2 Update Memory Bank:** Updated `progress.md`, `active_context.md`, `system_patterns.md` (added JS Hover State Toggle pattern).
+    *   [x] **21.6.3 Update Rules:** Updated frontend rules (`04_styling_layout.mdc`) with details on the JS hover pattern.
 
-- [ ] **21.7 Update Styling Rules:**
-    *   [ ] **21.7.1 Review Rules:** Read `@file:.cursor/rules/frontend/04_styling_layout.mdc` and `@file:.cursor/rules/frontend/03_tailwind_config.mdc`.
-    *   [ ] **21.7.2 Update Rules:** If necessary, update rules to document new patterns (SVG structure, adaptive layout, card hover). *(Note: `03_tailwind_config.mdc` refers to `input.css` which was removed in Phase 18; this rule itself needs updating later)*.
-
-- [ ] **21.8 Final Verification:**
-    *   [ ] **21.8.1 Test All Interactions:** Test all hover states and adaptive layout.
-    *   [ ] **21.8.2 Report:** Confirm all enhancements function as expected.
-
-- [ ] **21.9 Documentation & Memory Update:**
-    *   [ ] **21.9.1 Update `README.md`/Docs (If applicable):** Describe enhanced Service Card interactions and SVG structure.
-    *   [ ] **21.9.2 Update Memory Bank:** Update `@file:memory-bank/progress.md` and `@file:memory-bank/active_context.md`. Update `@file:memory-bank/system_patterns.md` if significant new patterns emerged.
-
-- [ ] **21.10 Version Control Checkpoint:**
-    *   [ ] **21.10.1 Stage Changes:** `git add .`
-    *   [ ] **21.10.2 Propose Commit Message:** (e.g., "feat(frontend): Enhance Services section cards with icons and hover animations"). Await confirmation to commit.
+- [x] **21.7 Version Control Checkpoint:** Staged changes. Proposed commit message. Committed changes.
 
 ---
 
-*End of currently defined tasks.*
+**Phase 22: Implement Hero Rotating Text Animation (Explicit Height CSS)**
+
+*AI Assistant Guidance: Implement the rotating text animation using only CSS keyframes and transforms. Define an explicit, matching height for both the text line-height and the clipping container using arbitrary Tailwind utility classes. Calculate `translateY` steps in the keyframes based on this explicit height. This aims to eliminate clipping issues caused by size mismatches.*
+
+- [ ] **22.1 Determine Explicit Height Value:**
+    *   [ ] **22.1.1 Analyze Font Size:** Confirm the largest text size applied to the `.rotating-text-span` in @file:templates/core/home.html is `md:text-4xl` (approx 2.25rem font size).
+    *   [ ] **22.1.2 Calculate Base Line Height:** Default `leading-tight` (1.25) for `text-4xl` results in approx `2.8125rem`.
+    *   [ ] **22.1.3 Select Explicit Value:** Choose a slightly larger explicit value to ensure comfortable fit and avoid potential browser rendering quirks. **Target Value: `3rem` (48px)**. *(Note: This value might need minor adjustment based on visual testing).* 
+
+- [ ] **22.2 Apply Explicit Sizing in HTML (`templates/core/home.html`):**
+    *   [ ] **22.2.1 Apply Wrapper Height:** Modify the `.rotating-text-wrapper` div. Replace any existing `h-*` class with `h-[3rem]`. Ensure `overflow-hidden` and block layout (`mt-1`) are present.
+        ```html
+         {# Outer div for context: <div class="mt-6 text-lg md:text-xl text-slate-300"> #}
+         {# ... preceding static text ... #}
+         <div class="rotating-text-wrapper mt-1 h-[3rem] overflow-hidden"> {/* Explicit Height & Block Layout */}
+              <span class="rotating-text-span ...">
+         {# ... #}
+        ```
+    *   [ ] **22.2.2 Apply Text Line Height:** Modify the `.rotating-text-span`. Replace any existing `leading-*` class with `leading-[3rem]`. Ensure `relative block whitespace-nowrap` and text size/color classes are present.
+        ```html
+         <span class="rotating-text-span relative block whitespace-nowrap text-cyan-400 font-semibold text-3xl md:text-4xl leading-[3rem]"> {/* Explicit Line Height */}
+             Architects<br>
+             Urban Planners<br>
+             Landscape Architects<br>
+             Interior Designers<br>
+             Real Estate Developers<br>
+             Architects {# Repeat first item #}
+         </span>
+        ```
+    *   [ ] **22.2.3 Adjust Button Margins:** Verify `mt-*` on the button container below provides adequate spacing.
+
+- [ ] **22.3 Define CSS Keyframes with Matching Steps (`static/css/components/rotating_text.css`):**
+    *   [ ] **22.3.1 Verify CSS File:** Ensure `static/css/components/rotating_text.css` exists and is imported in `main.css`.
+    *   [ ] **22.3.2 Define Keyframes:** Define `@keyframes rotateVertical`. Use the explicit height (`3rem`) for the `translateY` steps.
+        ```css
+        /* static/css/components/rotating_text.css */
+        @keyframes rotateVertical {
+            /* Steps based on explicit 3rem height */
+            0%,  14% { transform: translateY(0); }      /* Item 1 at 0rem */
+            17%, 31% { transform: translateY(-3rem); }  /* Item 2 */
+            34%, 48% { transform: translateY(-6rem); }  /* Item 3 */
+            51%, 65% { transform: translateY(-9rem); }  /* Item 4 */
+            68%, 82% { transform: translateY(-12rem); } /* Item 5 */
+            85%, 100%{ transform: translateY(-15rem); } /* Repeat Item 1 */
+        }
+        ```
+    *   [ ] **22.3.3 Apply Animation:** Ensure the `.rotating-text-span` rule applies the animation and essential properties:
+        ```css
+        .rotating-text-span {
+            position: relative; /* Essential */
+            display: block;
+            animation: rotateVertical 12s ease-in-out infinite; /* Adjust duration as needed */
+        }
+        ```
+
+- [ ] **22.4 Build & Verify:**
+    *   [ ] **22.4.1 Run Tailwind Build:** `npm run build:css`. Check for errors.
+    *   [ ] **22.4.2 Run Dev Server:** `python manage.py runserver`.
+    *   [ ] **22.4.3 Test Animation:** Load homepage. **Critically verify:** Does the text cycle smoothly? Is **exactly one line visible** at a time without any clipping (top or bottom)? Is the vertical alignment within the `3rem` window correct?
+    *   [ ] **22.4.4 Test Responsiveness:** Check on different screen sizes. How does the fixed `3rem` height look when the font size shrinks to `text-3xl`? Is the extra vertical space acceptable, or does it look awkward? *(Potential trade-off)*.
+    *   [ ] **22.4.5 Report:** Confirm functionality or describe specific clipping/alignment/responsiveness issues.
+
+- [ ] **22.5 Contingency Plan (If Pure CSS Fails):**
+    *   If significant clipping or alignment issues persist even with explicit pixel/rem values, or if the responsiveness trade-off is unacceptable, acknowledge that the pure CSS approach might be too brittle for responsive text sizes within a fixed container.
+    *   Revert the changes made in this phase (using version control).
+    *   Propose proceeding with a **JavaScript-driven approach** where JS calculates the *current* line height of the text dynamically (on load and resize) and updates both the container height and the animation offsets accordingly.
+
+- [ ] **22.6 Documentation & Memory Update (Upon Success):**
+    *   [ ] **22.6.1 Update Docs/README:** Document the explicit-height CSS rotating text implementation.
+    *   [ ] **22.6.2 Update Rules:** Update frontend rules if applicable.
+    *   [ ] **22.6.3 Update Memory Bank:** Update `progress.md`, `active_context.md`, `system_patterns.md`.
+
+- [ ] **22.7 Version Control Checkpoint (Upon Success):** Stage changes (template, CSS, docs, memory). Generate commit message (e.g., "feat(frontend): Implement CSS rotating text in hero with explicit height"). Await confirmation.
+
+---

@@ -46,12 +46,12 @@
   --sphere-edge-color: '#ffffff';
   /* Changed to white */
   --sphere-mouse-sensitivity: 0.2;
-  --sphere-acceleration: 0.6;
+  --sphere-acceleration: 0.75;
   --sphere-damping: 0.92;
   --sphere-camera-z: 0.94;
   --sphere-geometry-radius: 1;
   /* Increased size */
-  --sphere-line-width: 1.6;
+  --sphere-line-width: 1.2;
   /* Controls wireframe line width */
   --sphere-initial-rotation-y: 0deg;
   /* Start rotation in degrees */
@@ -60,11 +60,14 @@
   /* Grid Fade */
   --services-grid-fade-height: 350px;
   --services-grid-fade-start-opacity: 0.9;
+  /* ADDED: Smooth Scroll Control */
+  --smooth-scroll-duration: 750;
+  /* Duration in milliseconds */
   /* === Custom Layout Colors === */
   --services-background-color-hsl: 186 8% 95%;
   /* Approx #d5dfe0 - Light Mode */
   /* === Layout Control === */
-  --layout-max-width: 1280px;
+  --layout-max-width: 1380px;
   /* Default max content width (e.g., xl screen) */
   --layout-padding-base: 1rem;
   /* Default horizontal padding (maps to px-4) */
@@ -643,14 +646,6 @@ video {
   display: none;
 }
 
-.container {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 2rem;
-  padding-left: 2rem;
-}
-
 .\!container {
   width: 100% !important;
   margin-right: auto !important;
@@ -659,13 +654,21 @@ video {
   padding-left: 2rem !important;
 }
 
-@media (min-width: 1400px) {
-  .container {
-    max-width: 1400px;
-  }
+.container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
 
+@media (min-width: 1400px) {
   .\!container {
     max-width: 1400px !important;
+  }
+
+  .container {
+    max-width: 1400px;
   }
 }
 
@@ -1861,6 +1864,14 @@ video {
   margin-right: 1.5rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
 .mt-12 {
   margin-top: 3rem;
 }
@@ -1871,6 +1882,10 @@ video {
 
 .mt-3 {
   margin-top: 0.75rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
 }
 
 .mt-8 {
@@ -2111,6 +2126,10 @@ video {
   gap: 2rem;
 }
 
+.gap-\[var\(--service-card-gap\)\] {
+  gap: var(--service-card-gap);
+}
+
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.5rem * var(--tw-space-x-reverse));
@@ -2157,8 +2176,16 @@ video {
   scroll-behavior: smooth;
 }
 
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
 .rounded {
   border-radius: 0.25rem;
+}
+
+.rounded-\[var\(--service-card-border-radius\)\] {
+  border-radius: var(--service-card-border-radius);
 }
 
 .rounded-full {
@@ -2485,6 +2512,10 @@ video {
   padding-bottom: 2rem;
 }
 
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
 .pb-3 {
   padding-bottom: 0.75rem;
 }
@@ -2628,6 +2659,11 @@ video {
 .text-blue-800 {
   --tw-text-opacity: 1;
   color: rgb(30 64 175 / var(--tw-text-opacity, 1));
+}
+
+.text-cyan-400 {
+  --tw-text-opacity: 1;
+  color: rgb(34 211 238 / var(--tw-text-opacity, 1));
 }
 
 .text-cyan-500 {
@@ -2832,6 +2868,10 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.ease-out {
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
 .layout-container {
   margin-left: auto;
   margin-right: auto;
@@ -2908,82 +2948,41 @@ video {
   /* Make images fill the item container */
 }
 
-/* === Lottie Scroll Indicator Animation === */
-
-@keyframes bounce-and-scale {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-    /* Ease-in - start down fast */
-  }
-
-  50% {
-    /* Move down by distance, scale down by difference */
-    transform: translateY(var(--scroll-move-distance)) scale(calc(1 - var(--scroll-scale-diff)));
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    /* Ease-out - slow down at bottom */
-  }
-}
-
-#lottie-scroll-indicator {
-  animation-duration: var(--scroll-anim-duration);
-  animation-name: bounce-and-scale;
-  /* Apply combined animation */
-  animation-iteration-count: infinite;
-  cursor: default;
-  /* Assuming no click action needed */
-  filter: none;
-  /* Ensure no other filters affect it */
-  /* Optional: Add fade/scale out on scroll */
-  transition: opacity var(--scroll-fade-duration) ease, transform var(--scroll-fade-duration) ease;
-  transform-origin: center;
-}
-
-/* Optional: Class to hide the scroll indicator */
-
-.scroll-indicator-hidden {
-  opacity: 0;
-  transform: scale(0);
-  /* Scale down to hide */
-  pointer-events: none;
-  /* Prevent interaction when hidden */
-}
+/* @import "./components/scroll_indicator.css"; /* REMOVED - Merged into hero_interaction_indicator.css */
 
 :root {
-  /* Service Icon Colors */
-  /* --service-icon-stroke-color: #ffffff; */
-  /* Removed - Handled internally by SVG */
+  /* === Service Card Layout Variables === */
+  --service-card-gap: 1.25rem;
+  /* Gap between service cards (e.g., in the grid) */
+  --service-card-border-radius: 0.25rem;
+  /* Corner roundness of service cards */
+  /* === Service Card Icon === */
   --service-icon-bg-color: #cffafe;
   /* Equivalent to cyan-50 or primary-50 */
-  /* --service-icon-fill-color: #ffffff; */
-  /* Removed - Handled internally by SVG */
-  /* Service Icon Hover Animation */
   --service-icon-hover-scale: 1.05;
   /* Scale factor for icon container */
   --service-icon-scale-duration: 0.3s;
-  /* ADDED for JS Animation */
+  /* JS Bobbing Animation Variables */
   --service-icon-initial-bob-distance: 4px;
   /* Starting distance for JS anim */
   --service-icon-bob-decay-seconds: 1.5s;
   /* Time (seconds) over which bob decays to zero */
   --service-icon-bob-frequency: 1;
   /* How many bobs per second (approx) */
-  /* Learn More Link Hover Effects */
+  /* === Service Card Learn More Link === */
+  /* Base Style */
   --learn-more-base-color: #06b6d4;
   /* text-cyan-500 */
-  --learn-more-hover-color: #0891b2;
-  /* text-cyan-600 */
-  --learn-more-scale: 1.15;
-  /* NOTE: Unused by JS pulse - Keep for reference? Or remove? Removing for now */
-  --learn-more-arrow-translate: 3px;
   --learn-more-transition-duration: 0.2s;
   /* Slightly faster transition */
-  /* ADDED Hover Variables */
+  /* Hover Style */
+  --learn-more-hover-color: #0891b2;
+  /* Reverted to cyan-600 */
   --learn-more-hover-scale: 1.1;
   /* Scale factor on hover */
   --learn-more-hover-font-weight: 700;
   /* e.g., 400=normal, 600=semibold, 700=bold */
-  /* ADDED Lottie Arrow Hover Transform Variables */
+  /* Lottie Arrow Hover Transform */
   --lottie-arrow-hover-scale: 1.4;
   --lottie-arrow-hover-translate-y: 2px;
   --lottie-arrow-hover-translate-x: 8px;
@@ -3138,9 +3137,10 @@ video {
 }
 
 .service-card-group.is-hovered .learn-more-text {
-  /* Apply hover scale and font-weight using variables */
   transform: scale(var(--learn-more-hover-scale));
   font-weight: var(--learn-more-hover-font-weight);
+  /* Restore variable, still applied directly to text span */
+  color: var(--learn-more-hover-color);
 }
 
 /* COMMENTED OUT for Lottie replacement */
@@ -3166,6 +3166,87 @@ video {
 .service-icon-bob-disabled .service-icon-image {
   animation-name: none;
 }
+
+/* ================================================== */
+
+/* === Styles for Move Mouse Left/Right Indicator === */
+
+/* ================================================== */
+
+.hero-lottie-indicator {
+  /* Targets #lottie-hero-interaction-indicator in HTML */
+  position: absolute;
+  bottom: 10%;
+  /* Position near the bottom of the showcase area */
+  left: 155%;
+  transform: translateX(-50%);
+  width: 60px;
+  /* Adjust size as needed */
+  height: 60px;
+  /* Adjust size as needed */
+  z-index: 25;
+  /* INCREASED: Ensure it's above showcase elements */
+  pointer-events: none;
+  /* Prevent interference with showcase interaction */
+  opacity: 0.6;
+  /* Slightly transparent */
+}
+
+/* ================================================== */
+
+/* ===== Styles for Page Scroll Down Indicator ====== */
+
+/* ================================================== */
+
+/* === Lottie Scroll Indicator Animation === */
+
+@keyframes bounce-and-scale {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    /* Ease-in - start down fast */
+  }
+
+  50% {
+    /* Move down by distance, scale down by difference */
+    transform: translateY(var(--scroll-move-distance)) scale(calc(1 - var(--scroll-scale-diff)));
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    /* Ease-out - slow down at bottom */
+  }
+}
+
+#lottie-scroll-indicator {
+  /* Targets #lottie-scroll-indicator in HTML */
+  /* NOTE: Positioning for this element is handled by Tailwind classes in home.html */
+  /* This rule block only defines the animation */
+  animation-duration: var(--scroll-anim-duration);
+  animation-name: bounce-and-scale;
+  /* Apply combined animation */
+  animation-iteration-count: infinite;
+  cursor: default;
+  /* Assuming no click action needed */
+  filter: none;
+  /* Ensure no other filters affect it */
+  /* Optional: Add fade/scale out on scroll */
+  transition: opacity var(--scroll-fade-duration) ease, transform var(--scroll-fade-duration) ease;
+  transform-origin: center;
+}
+
+/* Optional: Class to hide the scroll indicator */
+
+.scroll-indicator-hidden {
+  opacity: 0;
+  transform: scale(0);
+  /* Scale down to hide */
+  pointer-events: none;
+  /* Prevent interaction when hidden */
+}
+
+/* Ensure the merged file is imported */
+
+/* @import "./components/rotating_text.css"; */
+
+/* REMOVED - Handled by JS */
 
 /* @import "./components/buttons.css"; */
 
