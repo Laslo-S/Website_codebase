@@ -10,29 +10,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
     const pauseDuration = 2000; // ms between transitions
     const transitionFactor = 0.08; // Lower = slower/smoother interpolation (0 to 1)
-    const loopSnapTransitionMs = 150; // Duration for the quick snap back to the start
     const normalTransitionTiming = 'ease-out'; // Timing function for normal steps
+
+    // MODIFY: Use a fixed transition duration for clarity and predictability
+    const normalTransitionDuration = 400; // Fixed 400ms transition (adjust as needed for visual feel)
+    const normalTransitionSettings = `transform ${normalTransitionDuration}ms ${normalTransitionTiming}`;
+    console.log(`Rotating text: Using fixed transition duration: ${normalTransitionDuration}ms`);
 
     // --- State Variables ---
     let items = []; // Now stores elements, not text
     let itemCount = 0;
     let singleLineHeight = 0;
     let animationFrameId = null;
-    let currentItemIndex = 0;
+    let currentItemIndex = 0; // Will be set properly in setDimensions
     let targetY = 0;
     let currentY = 0;
     let lastSwitchTime = 0;
-    let isLooping = false; // Flag to manage the loop reset transition
 
     // --- Functions ---
 
     /**
-     * Calculates the height of a single line item (including padding) 
+     * Calculates the height of a single line item (including padding)
      * based on the first .rotating-item element.
-     * Sets the wrapper height accordingly.
+     * Sets the wrapper height and INITIAL STATE for reversed scroll.
      */
     function setDimensions() {
-        // Get item *elements* each time
         items = span.querySelectorAll('.rotating-item');
         itemCount = items.length;
 
@@ -68,18 +70,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (singleLineHeight > 0) {
             wrapper.style.height = `${singleLineHeight}px`;
-            console.log(`Rotating text: Calculated line height: ${singleLineHeight}px. Wrapper height set.`);
+            console.log(`Rotating text UP (Jump Fix): Calculated line height: ${singleLineHeight}px.`);
 
             // Start animation only if not already running and height is valid
-            if (!animationFrameId) {
+            if (!animationFrameId) { // No isResetting check needed
                 lastSwitchTime = performance.now();
-                // --- MODIFIED: Set initial state to show the LAST item ---
-                currentItemIndex = itemCount - 1;
-                currentY = -(itemCount - 1) * singleLineHeight;
+
+                // --- MODIFIED: Start at LAST UNIQUE item (index itemCount - 2) --- //
+                currentItemIndex = itemCount - 2; // e.g., index 4 if itemCount = 6
+                currentY = -currentItemIndex * singleLineHeight; // e.g., -4h. Negative Y moves content UP, showing item towards bottom.
                 targetY = currentY;
+                span.style.transition = 'none'; // No transition for initial set
                 span.style.transform = `translateY(${currentY}px)`;
-                span.style.transition = 'none'; // Ensure no initial transition
-                animationFrameId = requestAnimationFrame(animateRotation);
+                console.log(`Rotating text UP (Jump Fix): Initialized at index ${currentItemIndex}, Y=${currentY}px`);
+
+                span.offsetHeight; // Force reflow after initial position set
+
+                // Enable transitions and start the loop AFTER initial setup
+                requestAnimationFrame(() => {
+                    span.style.transition = normalTransitionSettings;
+                    console.log("Rotating text UP (Jump Fix): Normal transitions enabled.");
+                    animationFrameId = requestAnimationFrame(animateRotation);
+                });
+                 // --- /MODIFIED --- //
             }
         } else {
             console.error("Rotating text: Could not calculate line height accurately from item.");
@@ -88,84 +101,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * The main animation loop using requestAnimationFrame.
-     * Handles switching items and interpolating the translateY position.
+     * Animation loop for REVERSED direction (UP scroll: text enters top, exits bottom).
+     * Uses index decrementing and the "Jump -> Reflow -> Transition" loop mechanism.
      */
     function animateRotation(now) {
-        if (singleLineHeight <= 0) { // Wait for valid height
-            animationFrameId = requestAnimationFrame(animateRotation);
+        // REMOVED isResetting check
+        if (singleLineHeight <= 0) {
+            // Prevent multiple RAF chains if height becomes 0 temporarily
+            if (animationFrameId === null) { animationFrameId = requestAnimationFrame(animateRotation); }
             return;
         }
 
         const elapsedTime = now - lastSwitchTime;
 
-        // --- Determine Target Position --- 
-        // Check if it's time to switch to the next item (and not already handling the loop reset)
-        if (!isLooping && elapsedTime > pauseDuration) {
-            // --- MODIFIED: Decrement index --- 
-            currentItemIndex--; 
-            
-            // --- MODIFIED: Check if loop reset needed (index < 0) --- 
-            if (currentItemIndex < 0) { 
-                isLooping = true; // Start the special loop reset process
-                // Target the *visual* position of the LAST item again for the snap
-                targetY = -(itemCount - 1) * singleLineHeight; 
-                span.style.transition = `transform ${loopSnapTransitionMs}ms ${normalTransitionTiming}`;
+        // Check if it's time to switch to the next item
+        if (elapsedTime > pauseDuration) {
+            // --- Update time immediately when starting the switch/loop logic --- //
+            lastSwitchTime = now;
+            console.log(`Switch triggered UP (Jump Fix). Elapsed: ${elapsedTime.toFixed(0)}ms. Current index: ${currentItemIndex}`);
+
+            // --- Loop Logic: Check if we are currently showing Item 0 (index 0) --- //
+            if (currentItemIndex === 0) {
+                // Finished pausing on Item 0. Need to loop to Item N-1 (index itemCount - 2).
+                console.log(`Looping UP (Jump Fix): Currently at index 0.`);
+
+                // 1. INSTANT JUMP: Position span so duplicate Item 0 (index itemCount - 1) is shown
+                const jumpY = -(itemCount - 1) * singleLineHeight; // Y pos of duplicate (e.g., -5h)
+                console.log(`   Instant Jump to Y=${jumpY}px (showing duplicate 0)`);
+                span.style.transition = 'none'; // NO transition for jump
+                span.style.transform = `translateY(${jumpY}px)`;
+                // currentY = jumpY; // Internal state update (optional)
+
+                // ---> Force browser reflow AFTER applying jump style <--- //
+                span.offsetHeight;
+
+                // 2. PREPARE & START SMOOTH TRANSITION: Target Item N-1 (index itemCount - 2)
+                // Set the target index state *before* starting the transition
+                currentItemIndex = itemCount - 2; // Target index (e.g., 4)
+                const targetY = -currentItemIndex * singleLineHeight; // Y pos of Item N-1 (e.g., -4h)
+                console.log(`   Starting Transition to index ${currentItemIndex} at Y=${targetY}px`);
+
+                // Apply transition settings *before* setting the target transform
+                span.style.transition = normalTransitionSettings;
+                // Now set the target transform to trigger the animation
+                span.style.transform = `translateY(${targetY}px)`;
+                currentY = targetY; // Update internal state tracker
+
+                // The pause timer (lastSwitchTime) was already reset at the start of the if block.
+                // The pause for Item N-1 will begin AFTER this transition completes.
+
             } else {
-                // Target the next item normally - Use NEGATIVE value for upward scroll
-                targetY = -currentItemIndex * singleLineHeight;
-                lastSwitchTime = now; // Reset pause timer only for normal steps
-                span.style.transition = `transform ${pauseDuration * transitionFactor}ms ${normalTransitionTiming}`;
+                // --- Normal Step (Index decreasing, Span moving down visually) --- //
+                const nextVisualIndex = currentItemIndex - 1;
+                currentItemIndex = nextVisualIndex; // Update index (e.g., 4 -> 3)
+                const targetY = -currentItemIndex * singleLineHeight; // Calculate target Y (e.g., -3h)
+                console.log(`Normal Step UP (Jump Fix): Transitioning to index ${currentItemIndex} at Y=${targetY}px`);
+
+                // Ensure transition settings are applied (might be redundant but safe)
+                span.style.transition = normalTransitionSettings;
+                span.style.transform = `translateY(${targetY}px)`;
+                currentY = targetY; // Update internal state tracker
             }
-        }
+             // --- / Loop & Normal Step Logic --- //
+        } // End time check
 
-        // --- Smooth Interpolation --- 
-        // Only interpolate if not currently in the special loop reset state AND not already at target
-        if (!isLooping && Math.abs(targetY - currentY) > 0.1) {
-             currentY += (targetY - currentY) * transitionFactor;
-        } else if (isLooping && Math.abs(targetY - currentY) > 0.1) {
-            // During loop reset, let the quick CSS transition handle the movement visually
-            // We just wait until the visual snap is likely complete before resetting internal state. 
-            // Alternatively, use interpolation here too for a smoother (but possibly less 'snappy') loop.
-            currentY += (targetY - currentY) * (transitionFactor * 4); // Faster interpolation during snap back
-        } else {
-            // Snap to target if very close
-            currentY = targetY;
-            
-            // --- MODIFIED: Loop Reset Logic (for index < 0) --- 
-            // If we just snapped to the target visually *during* the loop reset process
-            if (isLooping && currentItemIndex < 0) {
-                // Instantly reset internal state *after* the visual snap to show the LAST item
-                span.style.transition = 'none'; // Disable transition for internal reset
-                currentItemIndex = itemCount - 1; // Reset index to last item
-                currentY = -(itemCount - 1) * singleLineHeight; // Reset Y to last item position
-                targetY = currentY; // Target is also reset to last item position
-                span.style.transform = `translateY(${currentY}px)`; // Apply reset instantly
-                
-                lastSwitchTime = performance.now(); // Reset pause timer for the last item's display
-                isLooping = false; // End loop reset state
-                
-                // Restore normal transition for the next *actual* move
-                // We apply it slightly later to ensure the instant reset takes effect
-                requestAnimationFrame(() => { 
-                     span.style.transition = `transform ${pauseDuration * transitionFactor}ms ${normalTransitionTiming}`;
-                });
-            }
-        }
-
-        // --- Apply Transform --- 
-        // Avoid applying if already visually reset during loop handling
-        if (!isLooping || currentItemIndex < itemCount) {
-             span.style.transform = `translateY(${currentY}px)`;
-        }
-
-        // --- Continue Animation --- 
+        // --- Continue Animation Loop --- //
+        // REMOVED isResetting check
         animationFrameId = requestAnimationFrame(animateRotation);
-    }
+    } // End of animateRotation
 
     // --- Initialization & Event Listeners ---
 
-    // Initial calculation
+    // Initial calculation (which now sets the reversed start state)
     setDimensions();
 
     // Recalculate on resize (debounced)
@@ -174,11 +181,20 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             console.log("Rotating text: Resizing detected, recalculating dimensions...");
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null; // Allow animation to restart in setDimensions
-            // Reset position visually before recalculating to avoid jumpiness
-            if(span) span.style.transform = 'translateY(0px)'; 
-            setDimensions();
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            // --- REMOVED isResetting = false; --- //
+            // Reset position visually before recalculating
+            if(span) {
+                span.style.transition = 'none'; // Prevent animation during resize reset
+                // --- MODIFIED: Reset transform consistent with new initial state if needed, --- //
+                // --- but setDimensions will handle the correct initial positioning. -------- //
+                // span.style.transform = 'translateY(0px)'; // Old reset
+                 // We let setDimensions recalculate and apply the -(N-2)h transform
+            }
+            setDimensions(); // Restart the setup process
         }, 250);
     });
 
