@@ -1,4 +1,8 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js'; // TEMP: Uncommented
+// Re-add imports for Fat Lines using LineSegmentsGeometry
+import { LineMaterial } from 'https://unpkg.com/three@0.160.0/examples/jsm/lines/LineMaterial.js';
+import { LineSegmentsGeometry } from 'https://unpkg.com/three@0.160.0/examples/jsm/lines/LineSegmentsGeometry.js';
+import { LineSegments2 } from 'https://unpkg.com/three@0.160.0/examples/jsm/lines/LineSegments2.js';
 
 // console.log("services-background.js: Script loaded."); // Removed log
 
@@ -6,6 +10,7 @@ let scene, camera, renderer;
 let modelGroup;
 let mouseX = 0;
 const clock = new THREE.Clock();
+let lineMaterial; // Make global again for resize updates
 
 // --- Physics / Animation Variables ---
 let currentRotationY = 0;
@@ -21,6 +26,9 @@ let EDGE_COLOR = 0x555555; // Use numeric hex for Three.js color
 let MOUSE_SENSITIVITY = 0.2;
 let ACCELERATION_FACTOR = 0.6;
 let VELOCITY_DAMPING = 0.92;
+let LINE_WIDTH = 1.0; // Default if CSS fails
+let INITIAL_ROTATION_Y = 0;
+let SCALE = 1.0;
 
 function readConfigFromCSS() {
     try {
@@ -29,7 +37,6 @@ function readConfigFromCSS() {
         CAMERA_Z_POSITION = parseFloat(rootStyles.getPropertyValue('--sphere-camera-z').trim() || CAMERA_Z_POSITION);
         GEOMETRY_RADIUS = parseFloat(rootStyles.getPropertyValue('--sphere-geometry-radius').trim() || GEOMETRY_RADIUS);
         
-        // Parse color, removing quotes if necessary and converting hex string to number
         const baseColorStr = rootStyles.getPropertyValue('--sphere-base-color').trim().replace(/['"]/g, '') || '#cccccc';
         BASE_COLOR = new THREE.Color(baseColorStr).getHex(); 
         const edgeColorStr = rootStyles.getPropertyValue('--sphere-edge-color').trim().replace(/['"]/g, '') || '#555555';
@@ -39,12 +46,18 @@ function readConfigFromCSS() {
         MOUSE_SENSITIVITY = parseFloat(rootStyles.getPropertyValue('--sphere-mouse-sensitivity').trim() || MOUSE_SENSITIVITY);
         ACCELERATION_FACTOR = parseFloat(rootStyles.getPropertyValue('--sphere-acceleration').trim() || ACCELERATION_FACTOR);
         VELOCITY_DAMPING = parseFloat(rootStyles.getPropertyValue('--sphere-damping').trim() || VELOCITY_DAMPING);
+        LINE_WIDTH = parseFloat(rootStyles.getPropertyValue('--sphere-line-width').trim() || LINE_WIDTH); // Read but ignored
+        
+        const initialRotationDegStr = rootStyles.getPropertyValue('--sphere-initial-rotation-y').trim().replace('deg', '') || '0';
+        const initialRotationDeg = parseFloat(initialRotationDegStr);
+        INITIAL_ROTATION_Y = initialRotationDeg * Math.PI / 180;
 
-        // console.log("Sphere Config:", { CAMERA_Z_POSITION, GEOMETRY_RADIUS, BASE_COLOR, BASE_OPACITY, EDGE_COLOR, MOUSE_SENSITIVITY, ACCELERATION_FACTOR, VELOCITY_DAMPING });
+        SCALE = parseFloat(rootStyles.getPropertyValue('--sphere-scale').trim() || SCALE); // ADDED: Read scale
+
+        // console.log("Sphere Config:", { ..., SCALE });
 
     } catch (error) {
         console.error("Error reading sphere config from CSS:", error);
-        // Fallback to defaults already assigned
     }
 }
 
@@ -59,8 +72,10 @@ function init() {
         return; // Stop initialization if canvas is missing
     }
     
-    // Read configuration from CSS variables first
     readConfigFromCSS();
+
+    // REMOVED DEBUG LOG
+    // console.log("LINE_WIDTH read from CSS:", LINE_WIDTH);
 
     // Scene setup
     scene = new THREE.Scene();
@@ -78,6 +93,8 @@ function init() {
     const geometry = new THREE.IcosahedronGeometry(GEOMETRY_RADIUS, 1);
     modelGroup = new THREE.Group();
     scene.add(modelGroup);
+    
+    modelGroup.scale.set(SCALE, SCALE, SCALE);
 
     const baseMaterial = new THREE.MeshBasicMaterial({
         color: BASE_COLOR,
@@ -88,10 +105,27 @@ function init() {
     const baseMesh = new THREE.Mesh(geometry, baseMaterial);
     modelGroup.add(baseMesh);
 
+    // --- Updated Fat Lines Implementation (Edges + LineSegmentsGeometry) --- 
     const edges = new THREE.EdgesGeometry(geometry);
-    const lineMaterial = new THREE.LineBasicMaterial({ color: EDGE_COLOR });
-    const lineSegments = new THREE.LineSegments(edges, lineMaterial);
-    modelGroup.add(lineSegments);
+    const lineGeometry = new LineSegmentsGeometry();
+    lineGeometry.setPositions(edges.attributes.position.array);
+
+    lineMaterial = new LineMaterial({
+        color: EDGE_COLOR,
+        linewidth: LINE_WIDTH,
+        resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        dashed: false,
+        alphaToCoverage: true,
+    });
+
+    const lineSegments2 = new LineSegments2(lineGeometry, lineMaterial);
+    lineSegments2.computeLineDistances();
+    lineSegments2.scale.set(1, 1, 1); // Scale applied to parent group
+    modelGroup.add(lineSegments2);
+    // --- End Updated Fat Lines --- 
+
+    // --- Apply Initial Rotation ---
+    modelGroup.rotation.y = INITIAL_ROTATION_Y;
 
     // Event Listeners
     window.addEventListener('resize', onWindowResize, false);
@@ -108,6 +142,11 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Re-add update LineMaterial resolution
+    if (lineMaterial) { 
+        lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+    }
 }
 
 function onMouseMove(event) {
@@ -148,7 +187,8 @@ function animate() {
 
     // --- Apply Rotation to Model ---
     if (modelGroup) {
-        modelGroup.rotation.y = currentRotationY;
+        // Add the initial offset to the physics-driven rotation
+        modelGroup.rotation.y = INITIAL_ROTATION_Y + currentRotationY; 
         // Optionally add slight rotation on other axes for more visual interest
         // modelGroup.rotation.x = Math.sin(clock.elapsedTime * 0.1) * 0.05; 
     }

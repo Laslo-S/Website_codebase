@@ -1,11 +1,13 @@
 :root {
+    /* === Hero Section Control Variables === */
     /* Scroll animation control */
     --scroll-anim-duration: 3.2s;
     --scroll-move-distance: 12px;
     --scroll-scale-diff: 0.08;
     --scroll-fade-duration: 0.8s;
 
-    /* --- Gallery Control Variables --- */
+
+    /* === Gallery Control Variables === */
     /* Appearance */
     --gallery-slide-height: 26rem; /* Sets the fixed height of each gallery item. */
     --gallery-slide-spacing: 5px; /* Sets the horizontal gap between gallery items. */
@@ -25,28 +27,33 @@
     --gallery-mouse-speed-exponent: 1.45; /* Controls the curve of mouse speed response (>1 = faster near edge, 1 = linear). */
 
 
-    /* --- Services Section Background Sphere Animation Control --- */
+    /* === Services Section Control Variables === */
+    /* Background Sphere Animation */
     --sphere-base-color: #cccccc; /* Original Subtle Grey */
     --sphere-base-opacity: 0.00;  /* Original Subtle Opacity */
     --sphere-edge-color: '#ffffff'; /* Changed to white */
     --sphere-mouse-sensitivity: 0.2;
     --sphere-acceleration: 0.6;
     --sphere-damping: 0.92;
-    --sphere-camera-z: 3;
-    --sphere-geometry-radius: 2.61; /* Increased size */
+    --sphere-camera-z: 0.94;
+    --sphere-geometry-radius: 1; /* Increased size */
+    --sphere-line-width: 1.0; /* Controls wireframe line width */
+    --sphere-initial-rotation-y: 0deg; /* Start rotation in degrees */
+    --sphere-scale: 0.9; /* ADDED: Overall scale factor */
 
-    /* Services Section Grid Fade */
+    /* Grid Fade */
     --services-grid-fade-height: 350px;
-    --services-grid-fade-start-opacity: 0.7;
+    --services-grid-fade-start-opacity: 0.9; 
+
 
     /* === Custom Layout Colors === */
-    --services-background-color-hsl: 186 6% 96%; /* Approx #d5dfe0 - Light Mode */
+    --services-background-color-hsl: 186 8% 95%; /* Approx #d5dfe0 - Light Mode */
 
     /* === Layout Control === */
     --layout-max-width: 1280px; /* Default max content width (e.g., xl screen) */
-    --layout-padding-base: 1rem;  /* Default horizontal padding (maps to px-4) */
+    --layout-padding-base: 10rem;  /* Default horizontal padding (maps to px-4) */
     --layout-padding-sm: 1.5rem; /* Horizontal padding for sm screens+ (maps to sm:px-6) */
-    --layout-padding-lg: 2rem;  /* Horizontal padding for lg screens+ (maps to lg:px-8) */
+    --layout-padding-lg: 20rem;  /* Horizontal padding for lg screens+ (maps to lg:px-8) */
 
     /* Add future layout variables here */
     /* --layout-max-width: ... */

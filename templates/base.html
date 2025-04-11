@@ -6,10 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AV Platform{% endblock title %}</title> {# Simplified base title #}
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/lines/LineGeometry.js": "https://unpkg.com/three@0.160.0/examples/jsm/lines/LineGeometry.js",
+        "three/examples/jsm/lines/LineMaterial.js": "https://unpkg.com/three@0.160.0/examples/jsm/lines/LineMaterial.js",
+        "three/examples/jsm/lines/LineSegments2.js": "https://unpkg.com/three@0.160.0/examples/jsm/lines/LineSegments2.js"
+      }
+    }
+    </script>
     {# Use SVG Logo as Favicon #}
     <link rel="icon" href="{% static 'svg/general/Logo_Avem3D.svg' %}" type="image/svg+xml" sizes="any">
     {# Link to the compiled Tailwind output file #}
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    {# Link to Hero Interaction Indicator CSS (Now includes scroll indicator styles) #}
+    <link rel="stylesheet" href="{% static 'css/components/hero_interaction_indicator.css' %}">
+    {# REMOVED: Link to separate scroll indicator CSS #}
+    {# <link rel="stylesheet" href="{% static 'css/components/scroll_indicator.css' %}"> #}
     {# REMOVED Swiper.js CSS Link #}
     {# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/> #}
     {% block styles %}
@@ -154,6 +168,9 @@
     {# Add Services Background Animation Script #}
     <script type="module" src="{% static 'js/services-background.js' %}"></script>
     {% endblock scripts %}
+
+    {# ADDED: Hero Interaction Indicator Script #}
+    <script src="{% static 'js/hero_interaction_indicator.js' %}" defer></script>
 
     {# Lottie Player Script - RESTORED #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

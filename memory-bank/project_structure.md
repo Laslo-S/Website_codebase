@@ -1,5 +1,7 @@
 # Project Structure Overview
 
+**IMPORTANT AI AGENT NOTE:** When updating this file, preserve the detailed plaintext tree structure below. **DO NOT** summarize, simplify, or remove levels from the tree. Ensure all key directories and representative files within them are listed accurately with their brief descriptions. Maintaining this detailed view is critical for understanding the project layout.
+
 This document provides a detailed overview of the main directories and their purpose in the ArchViz Platform project, based on exploration up to Phase 20.
 
 ```plaintext
@@ -59,10 +61,20 @@ This document provides a detailed overview of the main directories and their pur
 ├── media/             # User-uploaded media files (e.g., news images, portfolio images) (Git ignored)
 ├── node_modules/      # Installed Node.js frontend dependencies (Tailwind, PostCSS, etc.) (Git ignored)
 ├── static/            # Project-wide static assets (served directly in development)
-│   ├── css/           # CSS related files (organized into base/, components/, utils/)
-│   ├── js/            # Custom JavaScript files (interactive-hero-background.js, services-background.js, css_gallery_init.js)
-│   ├── images/        # Static site images (.keep placeholder)
-│   ├── lottie/        # Lottie animation JSON files (footer icons, scroll indicator)
+│   ├── css/           # CSS related files
+│   │   ├── base/          # Base styles (variables.css, tailwind_directives.css, typography.css, layout.css)
+│   │   ├── components/    # Component-specific styles (gallery.css, our_services_card.css, scroll_indicator.css)
+│   │   ├── utils/         # Utility styles (helpers.css)
+│   │   ├── admin_overrides.css # Custom styles loaded only for Django admin
+│   │   ├── main.css       # Main CSS entry point, @imports other source files
+│   │   └── output.css     # Compiled Tailwind CSS output file (Git ignored)
+│   ├── js/            # Custom JavaScript files
+│   │   ├── css_gallery_init.js  # Logic for homepage interactive gallery scrolling and sizing
+│   │   ├── interactive-hero-background.js # Three.js animation for hero section background
+│   │   ├── services-background.js # Three.js animation for services section background sphere
+│   │   └── service_card_hover.js # JS for adding .is-hovered class to service cards
+│   ├── images/        # Static site images (e.g., logos) (currently empty, uses .keep)
+│   ├── lottie/        # Lottie animation JSON files (facebook.json, twitter.json, etc.)
 │   └── svg/           # SVG asset files
 │       ├── general/       # General purpose SVGs (Logo_Avem3D.svg, potentially arrows etc.)
 │       ├── footer/        # SVGs used in the footer (facebook.svg, instagram.svg, etc.)

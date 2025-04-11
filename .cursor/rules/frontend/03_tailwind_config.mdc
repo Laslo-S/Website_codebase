@@ -17,14 +17,17 @@ This document outlines specific configuration details and usage conventions for 
 
 *   **Main Config:** @file:tailwind.config.js - Defines theme customizations (colors, fonts, spacing), plugins, and content paths.
 *   **PostCSS Config:** @file:postcss.config.js - Configures PostCSS plugins used by Tailwind (like `autoprefixer`).
-*   **Input CSS:** @file:static/css/input.css - Contains Tailwind's base directives (`@tailwind base;`, `@tailwind components;`, `@tailwind utilities;`) and any custom CSS or `@layer` directives.
-*   **Output CSS:** @file:static/css/output.css - The compiled CSS file linked in templates (Git-ignored if generated dynamically, but currently committed).
+*   **Entry Point CSS:** @file:static/css/main.css - Main CSS entry point, imports base variables, Tailwind directives, component styles, etc.
+*   **Base Variables:** @file:static/css/base/variables.css - Centralized CSS custom properties for layout, colors, animations.
+*   **Tailwind Directives:** @file:static/css/base/tailwind_directives.css - Contains Tailwind's base directives (`@tailwind base;`, `@tailwind components;`, `@tailwind utilities;`).
+*   **Component CSS:** Files within @file:static/css/components/ (e.g., `our_services_card.css`) define styles and animations for specific components.
+*   **Output CSS:** @file:static/css/output.css - The compiled CSS file linked in templates (Git-ignored).
 
 ## Key Conventions
 
 *   **Utility-First:** Primarily use Tailwind's utility classes directly in HTML templates.
 *   **Theme Customization:** Leverage the `theme` object in `tailwind.config.js` for consistent spacing, colors, fonts, etc., rather than arbitrary values.
-*   **Avoid Custom CSS:** Minimize writing custom CSS in `input.css`. Prefer configuring Tailwind or using utility classes.
+*   **Avoid Custom CSS (in main.css):** Minimize writing extensive custom CSS directly in `main.css`. Prefer configuring Tailwind, using utility classes, or defining component-specific styles/animations in dedicated files within @file:static/css/components/.
 *   **Purging:** Ensure `content` paths in `tailwind.config.js` correctly cover all template files to allow for effective purging of unused styles in production builds.
 
 ## Plugins Used
@@ -34,4 +37,4 @@ This document outlines specific configuration details and usage conventions for 
 
 ## Build Process
 
-*   Use the `npm run build:css` script defined in @file:package.json to compile `input.css` to `output.css` during development or for production builds. 
+*   Use the `npm run build:css` script defined in @file:package.json to compile @file:static/css/main.css to `output.css` during development or for production builds. 

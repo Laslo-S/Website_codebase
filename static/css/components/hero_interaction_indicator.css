@@ -1,3 +1,23 @@
+/* ================================================== */
+/* === Styles for Move Mouse Left/Right Indicator === */
+/* ================================================== */
+
+.hero-lottie-indicator { /* Targets #lottie-hero-interaction-indicator in HTML */
+    position: absolute;
+    bottom: 10%; /* Position near the bottom of the showcase area */
+    left: 155%;
+    transform: translateX(-50%);
+    width: 60px;  /* Adjust size as needed */
+    height: 60px; /* Adjust size as needed */
+    z-index: 25;  /* INCREASED: Ensure it's above showcase elements */
+    pointer-events: none; /* Prevent interference with showcase interaction */
+    opacity: 0.6; /* Slightly transparent */
+}
+
+/* ================================================== */
+/* ===== Styles for Page Scroll Down Indicator ====== */
+/* ================================================== */
+
 /* === Lottie Scroll Indicator Animation === */
 @keyframes bounce-and-scale {
     0%, 100% {
@@ -11,7 +31,9 @@
     }
 }
 
-#lottie-scroll-indicator {
+#lottie-scroll-indicator { /* Targets #lottie-scroll-indicator in HTML */
+    /* NOTE: Positioning for this element is handled by Tailwind classes in home.html */
+    /* This rule block only defines the animation */
     animation-duration: var(--scroll-anim-duration);
     animation-name: bounce-and-scale; /* Apply combined animation */
     animation-iteration-count: infinite;

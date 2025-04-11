@@ -25,23 +25,23 @@ These rules govern the structure and presentation of the frontend components. Th
 ## 2. CSS Styling (Tailwind CSS)
 
 *   **Framework:** Use **Tailwind CSS** for all styling. Apply utility classes directly in the HTML templates.
-*   **Configuration:** Configure Tailwind via @file:tailwind.config.js. The main input file is @file:static/css/input.css and the compiled output is @file:static/css/output.css.
-*   **Global Styles & Variables:** Base styles and CSS variables (derived from v0 `globals.txt`) are defined in `input.css` (`@layer base`, `:root`). The Tailwind theme (`tailwind.config.js`) is configured to use these variables for colors (`hsl(var(--...))`) and border radius (`var(--radius)`).
-*   **Custom CSS:** Avoid writing custom CSS in `output.css`. If needed, define custom components/utilities within `input.css` using `@apply` or configure them in `tailwind.config.js`.
-*   **Consistency:** Strive for consistency in spacing, colors, and typography by leveraging the theme defined in `tailwind.config.js`.
+*   **Configuration:** Configure Tailwind via @file:tailwind.config.js. The main entry point is @file:static/css/main.css, which imports other necessary files. The compiled output is @file:static/css/output.css.
+*   **Global Styles & Variables:** Base styles are defined via Tailwind directives (@file:static/css/base/tailwind_directives.css). CSS custom properties (variables) for layout, colors, animations, etc., are centralized in @file:static/css/base/variables.css.
+*   **Component Styles:** Component-specific styles, including custom classes and `@keyframes` animations, should be defined in dedicated files within @file:static/css/components/ (e.g., `our_services_card.css`) and imported by `main.css`.
+*   **Consistency:** Strive for consistency in spacing, colors, and typography by leveraging the theme defined in `tailwind.config.js` and variables defined in `variables.css`.
 *   **Reference:** Consult @file:.cursor/rules/frontend/03_tailwind_config.mdc for specific Tailwind configuration details.
+*   **SVGs:** Use `<img>` tag with `{% static 'path/to/file.svg' %}` for standard inclusion. Organize SVGs into subdirectories within @file:static/svg/ (e.g., `general/`, `footer/`, `services/`). For internal styling via CSS, SVGs would need to be modified to use `currentColor` or inlined directly into templates (prefer modification if possible).
 
 ## 3. Client-Side Scripting (JavaScript)
 
-*   **Approach:** Write **vanilla JavaScript** in @file:static/js/script.js for basic interactions (like mobile menu). More complex interactions, like the homepage gallery, may use dedicated scripts (e.g., @file:static/js/css_gallery_init.js).
-*   **Homepage Gallery (`css_gallery_init.js`):**
-    *   Uses `requestAnimationFrame` for smooth animation.
-    *   Manipulates CSS `transform: translateX` for scrolling (avoids `scrollLeft` issues).
-    *   Implements infinite looping via item duplication and JS position reset.
-    *   Handles idle scroll and interactive mouse control with physics simulation.
-    *   Calculates dynamic item widths based on viewport and CSS variables.
-    *   All behavior (physics, appearance, sizing) is controlled via `--gallery-...` CSS variables defined in @file:templates/base.html.
-    *   Refer to @file:memory-bank/system_patterns.md for detailed pattern description.
+*   **Approach:** Write **vanilla JavaScript**. Keep JS minimal and focused.
+*   **Basic Interactions:** Use `static/js/script.js` or inline scripts in `base.html` for simple things like mobile menu toggles.
+*   **Complex Component Logic:** Use dedicated scripts (e.g., @file:static/js/css_gallery_init.js, @file:static/js/interactive-hero-background.js).
+*   **JS Hover State Toggle Pattern:** For complex hover effects involving multiple elements or animations difficult to achieve with pure Tailwind `group-hover`, use this pattern:
+    *   **HTML:** Add a marker class (e.g., `service-card-group`) to the parent hover target.
+    *   **CSS:** Define base styles and animation `@keyframes` in a component CSS file (e.g., @file:static/css/components/our_services_card.css). Create rules targeting descendant elements based on the parent having an `is-hovered` class (e.g., `.service-card-group.is-hovered .learn-more-text { animation: ...; }`).
+    *   **JS:** Create a dedicated script (e.g., @file:static/js/service_card_hover.js) that selects the parent elements and uses `mouseenter`/`mouseleave` event listeners to add/remove the `is-hovered` class.
+    *   **Benefits:** Decouples hover detection (JS) from animation/styling (CSS), avoids potential Tailwind `group-hover` conflicts with complex transforms, allows for sophisticated CSS animations.
 *   **Avoid Frameworks:** Do not introduce complex JS frameworks without discussion.
 *   **Minimalism:** Prefer server-side rendering and standard HTML/CSS solutions where possible.
 

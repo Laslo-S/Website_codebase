@@ -3,12 +3,13 @@
 /* 1. Base Variables */
 
 :root {
+  /* === Hero Section Control Variables === */
   /* Scroll animation control */
   --scroll-anim-duration: 3.2s;
   --scroll-move-distance: 12px;
   --scroll-scale-diff: 0.08;
   --scroll-fade-duration: 0.8s;
-  /* --- Gallery Control Variables --- */
+  /* === Gallery Control Variables === */
   /* Appearance */
   --gallery-slide-height: 26rem;
   /* Sets the fixed height of each gallery item. */
@@ -36,7 +37,8 @@
   /* Percentage of the gallery width (centered) where mouse movement does not affect scroll speed. */
   --gallery-mouse-speed-exponent: 1.45;
   /* Controls the curve of mouse speed response (>1 = faster near edge, 1 = linear). */
-  /* --- Services Section Background Sphere Animation Control --- */
+  /* === Services Section Control Variables === */
+  /* Background Sphere Animation */
   --sphere-base-color: #cccccc;
   /* Original Subtle Grey */
   --sphere-base-opacity: 0.00;
@@ -46,14 +48,20 @@
   --sphere-mouse-sensitivity: 0.2;
   --sphere-acceleration: 0.6;
   --sphere-damping: 0.92;
-  --sphere-camera-z: 3;
-  --sphere-geometry-radius: 2.61;
+  --sphere-camera-z: 0.94;
+  --sphere-geometry-radius: 1;
   /* Increased size */
-  /* Services Section Grid Fade */
+  --sphere-line-width: 1.6;
+  /* Controls wireframe line width */
+  --sphere-initial-rotation-y: 0deg;
+  /* Start rotation in degrees */
+  --sphere-scale: 0.9;
+  /* ADDED: Overall scale factor */
+  /* Grid Fade */
   --services-grid-fade-height: 350px;
-  --services-grid-fade-start-opacity: 0.7;
+  --services-grid-fade-start-opacity: 0.9;
   /* === Custom Layout Colors === */
-  --services-background-color-hsl: 186 6% 96%;
+  --services-background-color-hsl: 186 8% 95%;
   /* Approx #d5dfe0 - Light Mode */
   /* === Layout Control === */
   --layout-max-width: 1280px;
@@ -643,9 +651,21 @@ video {
   padding-left: 2rem;
 }
 
+.\!container {
+  width: 100% !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  padding-right: 2rem !important;
+  padding-left: 2rem !important;
+}
+
 @media (min-width: 1400px) {
   .container {
     max-width: 1400px;
+  }
+
+  .\!container {
+    max-width: 1400px !important;
   }
 }
 
@@ -2941,20 +2961,32 @@ video {
   --service-icon-hover-scale: 1.05;
   /* Scale factor for icon container */
   --service-icon-scale-duration: 0.3s;
-  --service-icon-hover-bob-enabled: 1;
-  /* Not currently used for logic, set duration/distance to 0 to disable */
-  --service-icon-hover-duration: 0.75s;
-  --service-icon-hover-bob-distance: 3px;
-  --service-icon-hover-timing-function: ease-in-out;
+  /* ADDED for JS Animation */
+  --service-icon-initial-bob-distance: 4px;
+  /* Starting distance for JS anim */
+  --service-icon-bob-decay-seconds: 1.5s;
+  /* Time (seconds) over which bob decays to zero */
+  --service-icon-bob-frequency: 1;
+  /* How many bobs per second (approx) */
   /* Learn More Link Hover Effects */
   --learn-more-base-color: #06b6d4;
   /* text-cyan-500 */
   --learn-more-hover-color: #0891b2;
   /* text-cyan-600 */
   --learn-more-scale: 1.15;
-  /* Scale factor for text */
-  --learn-more-arrow-translate: 4px;
-  --learn-more-transition-duration: 0.3s;
+  /* NOTE: Unused by JS pulse - Keep for reference? Or remove? Removing for now */
+  --learn-more-arrow-translate: 3px;
+  --learn-more-transition-duration: 0.2s;
+  /* Slightly faster transition */
+  /* ADDED Hover Variables */
+  --learn-more-hover-scale: 1.1;
+  /* Scale factor on hover */
+  --learn-more-hover-font-weight: 700;
+  /* e.g., 400=normal, 600=semibold, 700=bold */
+  /* ADDED Lottie Arrow Hover Transform Variables */
+  --lottie-arrow-hover-scale: 1.4;
+  --lottie-arrow-hover-translate-y: 2px;
+  --lottie-arrow-hover-translate-x: 8px;
 }
 
 /* Base styling using variables (applied via HTML classes) */
@@ -2967,18 +2999,18 @@ video {
   transition: transform var(--service-icon-scale-duration) ease-in-out;
 }
 
-/* Animation Keyframes */
+/* Animation Keyframes - COMMENTED OUT FOR JS ANIMATION */
 
+/*
 @keyframes service-icon-bob {
-  0%, 100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(calc(-1 * var(--service-icon-hover-bob-distance)));
-    /* Move up */
-  }
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(calc(-1 * var(--service-icon-hover-bob-distance)));
+    }
 }
+*/
 
 /* Apply hover effects */
 
@@ -2990,23 +3022,25 @@ video {
 /* --- Bobbing Logic --- */
 
 .service-icon-image {
-  /* Define animation properties but start paused */
-  animation-name: service-icon-bob;
-  animation-duration: var(--service-icon-hover-duration);
-  animation-timing-function: var(--service-icon-hover-timing-function);
-  animation-iteration-count: infinite;
-  animation-play-state: paused;
-  /* Start paused */
+  /* Animation properties - COMMENTED OUT FOR JS ANIMATION */
+  /* 
+    animation-name: service-icon-bob;
+    animation-duration: var(--service-icon-hover-duration);
+    animation-timing-function: var(--service-icon-hover-timing-function);
+    animation-iteration-count: infinite;
+    animation-play-state: paused; 
+    */
   transform: translateY(0);
   /* Ensure consistent starting point */
+  position: relative;
+  /* ADDED: Good practice for transform */
   /* Note: Add transition here if smooth start/stop is desired, otherwise remove */
   /* transition: transform 0.3s ease-in-out; */
 }
 
 .service-card-group:hover .service-icon-image {
-  /* Start animation on hover */
-  /* To disable bobbing: set --service-icon-hover-duration or --service-icon-hover-bob-distance to 0 */
-  animation-play-state: running;
+  /* Start animation on hover - COMMENTED OUT FOR JS ANIMATION */
+  /* animation-play-state: running; */
 }
 
 /* Class to forcefully disable bobbing via JS or direct application */
@@ -3020,8 +3054,7 @@ video {
 .service-icon-image {
   transform: translateY(0);
   /* Start at base position */
-  transition: transform 0.3s ease-in-out;
-  /* Add transition for smoother start/stop */
+  /* transition: transform 0.3s ease-in-out; /* REMOVE/COMMENT OUT: Interferes with JS animation */
 }
 
 /* Add rule to pause animation if bobbing is disabled via variable */
@@ -3032,25 +3065,16 @@ video {
 
 /* --- Learn More Link Styling --- */
 
-@keyframes learnMoreScaleUp {
-  from {
-    transform: scale(1);
-  }
+/* REMOVED @keyframes learnMoreScaleUp */
 
-  to {
-    transform: scale(var(--learn-more-scale));
-  }
+/* COMMENTED OUT for Lottie replacement */
+
+/*
+@keyframes arrowTranslateRight { 
+    from { transform: translateX(0); } 
+    to { transform: translateX(var(--learn-more-arrow-translate)); } 
 }
-
-@keyframes arrowTranslateRight {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(var(--learn-more-arrow-translate));
-  }
-}
+*/
 
 .learn-more-link {
   color: var(--learn-more-base-color);
@@ -3059,19 +3083,44 @@ video {
 
 .learn-more-text {
   display: inline-block;
-  /* Needed for transform */
   transform-origin: bottom left;
+  /* Keep or change to 'center left'? Let's try center left */
+  transform-origin: center left;
+  /* Re-add transitions for scale and font-weight */
+  transition: transform var(--learn-more-transition-duration) ease-in-out, 
+                font-weight var(--learn-more-transition-duration) ease-in-out;
   animation-play-state: paused;
   /* Ensure animation is paused initially */
   /* Animation properties will be applied on hover */
 }
 
+/* COMMENTED OUT for Lottie replacement */
+
+/*
 .learn-more-arrow {
-  display: inline-block;
-  /* Ensure consistent alignment */
-  animation-play-state: paused;
-  /* Ensure animation is paused initially */
-  /* Animation properties will be applied on hover */
+    display: inline-block; 
+    animation-play-state: paused; 
+}
+*/
+
+/* ADDED: Lottie Arrow Container Styling */
+
+.lottie-learn-more-arrow {
+  display: none;
+  /* Hide by default */
+  transform-origin: center center;
+  /* Define origin */
+  transition: transform 0.1s ease-out;
+  /* Optional: Add slight transition for transform */
+}
+
+/* ADDED: Apply transform when the LINK is hovered */
+
+.learn-more-link:hover .lottie-learn-more-arrow {
+  transform: 
+        translateX(var(--lottie-arrow-hover-translate-x)) 
+        translateY(var(--lottie-arrow-hover-translate-y)) 
+        scale(var(--lottie-arrow-hover-scale));
 }
 
 /* --- HOVER STATE RULES (Triggered by JS adding .is-hovered) --- */
@@ -3089,12 +3138,28 @@ video {
 }
 
 .service-card-group.is-hovered .learn-more-text {
-  animation: learnMoreScaleUp var(--learn-more-transition-duration) ease-in-out forwards;
+  /* Apply hover scale and font-weight using variables */
+  transform: scale(var(--learn-more-hover-scale));
+  font-weight: var(--learn-more-hover-font-weight);
 }
 
+/* COMMENTED OUT for Lottie replacement */
+
+/*
 .service-card-group.is-hovered .learn-more-arrow {
-  animation: arrowTranslateRight var(--learn-more-transition-duration) ease-in-out forwards;
+    animation: arrowTranslateRight var(--learn-more-transition-duration) ease-in-out forwards;
 }
+*/
+
+/* REMOVED: Rules showing/transforming Lottie on card hover */
+
+/*
+.service-card-group.is-hovered .lottie-learn-more-arrow {
+    display: inline-block; 
+    transform: scale(1.4) translateY(2px) translateX(8px); 
+    transform-origin: center center; 
+}
+*/
 
 /* Optional: Force disable bobbing class */
 

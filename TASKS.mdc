@@ -1,5 +1,10 @@
 ---
-description: Current active tasks list
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: 
 globs: 
 alwaysApply: false
 ---
@@ -122,7 +127,7 @@ This file contains tasks starting from Phase 18.
     *   [-] **19.7.2 Run Dev Server & Test:**
     *   [-] **19.7.3 Update Memory Bank & Rules:** (No major structure change to document for CSS)
 
-- [ ] **19.8 Version Control Checkpoint:** Stage changes (template consolidation only). Propose commit message (e.g., "refactor(frontend): Consolidate template partials for project and news cards"). Await confirmation.
+- [-] **19.8 Version Control Checkpoint:** (Skipped)
 
 ---
 
@@ -134,73 +139,131 @@ This file contains tasks starting from Phase 18.
 
 **Tasks:**
 
-- [ ] **20.1 Explore & Summarize Root Directory:**
-    *   [ ] List contents of the workspace root (`/`).
-    *   [ ] Read key files (`manage.py`, `.gitignore`, `.env.example`, `README.md` (if exists), `requirements.txt`, `package.json`, `tailwind.config.js`, etc.).
-    *   [ ] Summarize the purpose of root files and top-level directories.
+- [x] **20.1 Explore & Summarize Root Directory:**
+    *   [x] List contents of the workspace root (`/`).
+    *   [x] Read key files (`manage.py`, `.gitignore`, `.env.example`, `README.md` (if exists), `requirements.txt`, `package.json`, `tailwind.config.js`, etc.).
+    *   [x] Summarize the purpose of root files and top-level directories.
 
-- [ ] **20.2 Explore & Summarize `.cursor/` Directory:**
-    *   [ ] List contents of `.cursor/`.
-    *   [ ] List contents of `.cursor/rules/` and its subdirectories (`core`, `frontend`, etc.).
-    *   [ ] Read key rule files (`core/00_core_assistant_protocol.mdc`, `core/01_memory_bank_protocol.mdc`) to confirm understanding.
-    *   [ ] Summarize the purpose of the `.cursor` directory and its rule structure.
+- [x] **20.2 Explore & Summarize `.cursor/` Directory:**
+    *   [x] List contents of `.cursor/`.
+    *   [x] List contents of `.cursor/rules/` and its subdirectories (`core`, `frontend`, etc.).
+    *   [x] Read key rule files (`core/00_core_assistant_protocol.mdc`, `core/01_memory_bank_protocol.mdc`) to confirm understanding.
+    *   [x] Summarize the purpose of the `.cursor` directory and its rule structure.
 
-- [ ] **20.3 Explore & Summarize `apps/` Directory:**
-    *   [ ] List contents of `apps/`.
-    *   [ ] For each app (`core`, `accounts`, `news`, `slideshow`, etc.):
-        *   [ ] List contents of `apps/<app_name>/`.
-        *   [ ] Read key files (`models.py`, `views.py`, `urls.py`, `admin.py`, `apps.py`, representative templates in `apps/<app_name>/templates/`).
-        *   [ ] Summarize the primary responsibility of the app.
-    *   [ ] Summarize the overall structure and purpose of the `apps/` directory.
+- [x] **20.3 Explore & Summarize `apps/` Directory:**
+    *   [x] List contents of `apps/`.
+    *   [x] For each app (`core`, `accounts`, `news`, `slideshow`, etc.):
+        *   [x] List contents of `apps/<app_name>/`.
+        *   [x] Read key files (`models.py`, `views.py`, `urls.py`, `admin.py`, `apps.py`, representative templates in `apps/<app_name>/templates/`).
+        *   [x] Summarize the primary responsibility of the app.
+    *   [x] Summarize the overall structure and purpose of the `apps/` directory.
 
-- [ ] **20.4 Explore & Summarize `config/` Directory:**
-    *   [ ] List contents of `config/`.
-    *   [ ] Read key files (`settings.py`, `urls.py`, `wsgi.py`, `asgi.py`).
-    *   [ ] Summarize the purpose of the `config` directory and its files.
+- [x] **20.4 Explore & Summarize `config/` Directory:**
+    *   [x] List contents of `config/`.
+    *   [x] Read key files (`settings.py`, `urls.py`, `wsgi.py`, `asgi.py`).
+    *   [x] Summarize the purpose of the `config` directory and its files.
 
-- [ ] **20.5 Explore & Summarize `memory-bank/` Directory:**
-    *   [ ] List contents of `memory-bank/`.
-    *   [ ] Briefly review filenames to confirm purpose (no deep read needed unless structure is unclear).
-    *   [ ] Summarize the purpose of the `memory-bank` directory.
+- [x] **20.5 Explore & Summarize `memory-bank/` Directory:**
+    *   [x] List contents of `memory-bank/`.
+    *   [x] Briefly review filenames to confirm purpose (no deep read needed unless structure is unclear).
+    *   [x] Summarize the purpose of the `memory-bank` directory.
 
-- [ ] **20.6 Explore & Summarize `static/` Directory:**
-    *   [ ] List contents of `static/`.
-    *   [ ] List contents of `static/css/` (and subdirectories like `components`). Read `main.css`.
-    *   [ ] List contents of `static/js/`. Read key representative JS files (`css_gallery_init.js`, etc.).
-    *   [ ] List contents of `static/images/` (if exists).
-    *   [ ] List contents of `static/lottie/`.
-    *   [ ] Summarize the organization and purpose of static assets.
+- [x] **20.6 Explore & Summarize `static/` Directory:**
+    *   [x] List contents of `static/`.
+    *   [x] List contents of `static/css/` (and subdirectories like `components`). Read `main.css`.
+    *   [x] List contents of `static/js/`. Read key representative JS files (`css_gallery_init.js`, etc.).
+    *   [x] List contents of `static/images/` (if exists).
+    *   [x] List contents of `static/lottie/`.
+    *   [x] Summarize the organization and purpose of static assets.
 
-- [ ] **20.7 Explore & Summarize `templates/` Directory:**
-    *   [ ] List contents of `templates/` (root level).
-    *   [ ] Read `templates/base.html`.
-    *   [ ] List contents of `templates/partials/`. Read a few representative partials.
-    *   [ ] List contents of `templates/registration/`.
-    *   [ ] List contents of `templates/admin/`.
-    *   [ ] List contents of app-specific template directories already covered in 20.3 (`templates/core/`, `templates/news/`, `templates/accounts/`). List partials dirs (`templates/news/partials/`, `templates/accounts/partials/`).
-    *   [ ] Summarize the template organization strategy.
+- [x] **20.7 Explore & Summarize `templates/` Directory:**
+    *   [x] List contents of `templates/` (root level).
+    *   [x] Read `templates/base.html`.
+    *   [x] List contents of `templates/partials/`. Read a few representative partials.
+    *   [x] List contents of `templates/registration/`.
+    *   [x] List contents of `templates/admin/`.
+    *   [x] List contents of app-specific template directories already covered in 20.3 (`templates/core/`, `templates/news/`, `templates/accounts/`). List partials dirs (`templates/news/partials/`, `templates/accounts/partials/`).
+    *   [x] Summarize the template organization strategy.
 
-- [ ] **20.8 Explore & Summarize Other Root Items:**
-    *   [ ] List any remaining root-level items not covered (e.g., `media/` if present, `.venv/`, `node_modules/`, database file).
-    *   [ ] Summarize their purpose (often standard project components or generated directories).
+- [x] **20.8 Explore & Summarize Other Root Items:**
+    *   [x] List any remaining root-level items not covered (e.g., `media/` if present, `.venv/`, `node_modules/`, database file).
+    *   [x] Summarize their purpose (often standard project components or generated directories).
 
-- [ ] **20.9 Create `project_structure.mdc`:**
-    *   [ ] Create the file `memory-bank/project_structure.mdc`.
-    *   [ ] Consolidate the summaries from steps 20.1-20.8 into a clear structure within this file. Use markdown lists or code blocks to represent the tree. Add brief descriptions for key directories/files.
+- [x] **20.9 Create `project_structure.mdc`:**
+    *   [x] Create the file `memory-bank/project_structure.mdc`.
+    *   [x] Consolidate the summaries from steps 20.1-20.8 into a clear structure within this file. Use markdown lists or code blocks to represent the tree. Add brief descriptions for key directories/files.
 
-- [ ] **20.10 Update `system_patterns.mdc`:**
-    *   [ ] Read `memory-bank/system_patterns.mdc`.
-    *   [ ] Remove the entire "Directory Structure Conventions" section.
-    *   [ ] Add a sentence under a relevant heading (e.g., Core Architecture or create a new one) referencing the new documentation: "For a detailed view of the project directory layout, see @file:memory-bank/project_structure.mdc."
+- [x] **20.10 Update `system_patterns.mdc`:**
+    *   [x] Read `memory-bank/system_patterns.mdc`.
+    *   [x] Remove the entire "Directory Structure Conventions" section.
+    *   [x] Add a sentence under a relevant heading (e.g., Core Architecture or create a new one) referencing the new documentation: "For a detailed view of the project directory layout, see @file:memory-bank/project_structure.mdc."
 
-- [ ] **20.11 Create Structure Maintenance Rule:**
-    *   [ ] Create a new rule file: `.cursor/rules/core/02_project_structure_maintenance.mdc`.
-    *   [ ] Add rule content mandating that `memory-bank/project_structure.mdc` MUST be updated whenever significant changes are made to the project's directory or key file structure (e.g., adding/removing apps, static/template directories, key config files).
+- [x] **20.11 Create Structure Maintenance Rule:**
+    *   [x] Create a new rule file: `.cursor/rules/core/02_project_structure_maintenance.mdc`.
+    *   [x] Add rule content mandating that `memory-bank/project_structure.mdc` MUST be updated whenever significant changes are made to the project's directory or key file structure (e.g., adding/removing apps, static/template directories, key config files).
 
-- [ ] **20.12 Final Verification & Commit:**
-    *   [ ] Briefly review `project_structure.mdc`, the modified `system_patterns.mdc`, and the new rule file for accuracy and clarity.
-    *   [ ] Stage relevant changes (`memory-bank/`, `.cursor/rules/`).
-    *   [ ] Propose commit message (e.g., "docs: Add project structure documentation and maintenance rule"). Await confirmation.
+- [x] **20.12 Final Verification & Commit:**
+    *   [x] Briefly review `project_structure.mdc`, the modified `system_patterns.mdc`, and the new rule file for accuracy and clarity.
+    *   [x] Stage relevant changes (`memory-bank/`, `.cursor/rules/`).
+    *   [x] Propose commit message (e.g., "docs: Add project structure documentation and maintenance rule"). Await confirmation.
+
+---
+
+**Phase 21: Enhance "Our Services" Section**
+
+*AI Assistant Guidance: Refine the "Our Services" section on the homepage (`home.html`) by restructuring the `static/svg/` directory, integrating specific SVG icons, implementing advanced CSS hover animations for the service cards, creating an adaptive layout for icons/text based on screen width, and adding interactive hover effects to the "Learn more" links and icons. Reference @file:templates/partials/_service_card.html and apply changes there primarily, ensuring updates reflect on @file:templates/core/home.html. Adhere to frontend rules @file:.cursor/rules/frontend/04_styling_layout.mdc and @file:.cursor/rules/frontend/03_tailwind_config.mdc.*
+
+- [ ] **21.1 Restructure SVG Directory & Integrate Service Icons:**
+    *   [ ] **21.1.1 Propose SVG Structure:** Propose new structure: `static/svg/general/` (for logo?), `static/svg/footer/`, `static/svg/services/`. Identify existing SVGs (e.g., `Logo_Avem3D.svg` in `static/svg/`) and suggest placement (e.g., move logo to `general/`).
+    *   [ ] **21.1.2 Confirm Structure & File Placement:** *User Confirmation Needed:* User confirms proposed structure and placement of existing SVGs.
+    *   [ ] **21.1.3 Execute Restructuring:** Create new directories (`general/`, `footer/`, `services/`). Move existing SVGs according to confirmation. Update references in code (e.g., favicon link in `base.html` for `Logo_Avem3D.svg`) if files moved.
+    *   [ ] **21.1.4 Prepare Service SVG Files:** User confirms availability of SVG files/code for "3D Scans", "Video Renderings", "Still Imagery". AI places files/code into the new `static/svg/services/` directory (e.g., `scan_icon.svg`, `video_icon.svg`, `still_icon.svg`).
+    *   [ ] **21.1.5 Update Project Structure Docs:** Update `@file:memory-bank/project_structure.md` to reflect the new `static/svg/` subdirectories (`general/`, `footer/`, `services/`) and placement of key SVGs, following rule @file:.cursor/rules/core/02_project_structure_maintenance.mdc.
+    *   [ ] **21.1.6 Update Service Card Partial (`_service_card.html`):** Modify the partial to dynamically include the correct SVG from `static/svg/services/` based on the `title` or a new `icon_slug` context variable passed from the `home.html` include tag. Use `{% include %}` tag for SVGs.
+    *   [ ] **21.1.7 Update Homepage Inclusion:** In `@file:templates/core/home.html`, ensure the `{% include "partials/_service_card.html" ... %}` tags pass the correct `title` (or `icon_slug`) for the conditional logic.
+    *   [ ] **21.1.8 Apply Base Icon Styling:** Apply consistent Tailwind classes to the SVG container/SVG within the partial for size (e.g., `w-12 h-12`), color (prefer theme colors like `text-primary`), and margin (`mb-6`).
+    *   [ ] **21.1.9 Verification:** Verify references to moved SVGs work correctly (e.g., favicon). Check homepage Services section for correct custom SVG icons.
+
+- [ ] **21.2 Implement Card Hover Animation (Grow & Lift):**
+    *   [ ] **21.2.1 Add CSS Classes:** In `_service_card.html`, apply transition and hover transform classes: `transition-all duration-300 ease-in-out`, `hover:transform hover:-translate-y-2 hover:scale-[1.03]`. Ensure `hover:shadow-xl` is present.
+    *   [ ] **21.2.2 Verification:** Hover over service cards. Verify smooth scale/lift animation.
+
+- [ ] **21.3 Implement Adaptive Icon/Text Layout:**
+    *   [ ] **21.3.1 Refactor Card Structure:** In `_service_card.html`, wrap the icon container and the text content in a parent `div`.
+    *   [ ] **21.3.2 Apply Responsive Flexbox:** Apply classes to the parent `div`: Default (Mobile): `flex flex-col items-center text-center`. Medium Screens Up: `lg:flex-row lg:items-start lg:text-left lg:space-x-6`.
+    *   [ ] **21.3.3 Size Icon Container:** Give the icon container div a fixed width on larger screens (e.g., `lg:w-16 lg:flex-shrink-0`).
+    *   [ ] **21.3.4 Verification:** Resize browser window. Verify layout change.
+
+- [ ] **21.4 Implement "Learn More" Link Hover Animation:**
+    *   [ ] **21.4.1 Target Link Text:** Focus on the text span within the "Learn more" `<a>` tag in `_service_card.html`.
+    *   [ ] **21.4.2 Apply Simple CSS Hover:** Add Tailwind classes: `group-hover:tracking-wide transition-all duration-200`.
+    *   [ ] **21.4.3 Verification:** Hover over "Learn more". Verify text subtly changes.
+
+- [ ] **21.5 Implement Arrow Icon & Animation:**
+    *   [ ] **21.5.1 Add Arrow SVG:** Replace placeholder span (`→`) in "Learn more" link with appropriate arrow SVG code. *(Will likely be placed in `static/svg/general/` during step 21.1.3 or added here)*.
+    *   [ ] **21.5.2 Apply Styling & Animation:** Style SVG (`w-4 h-4 ml-2`). Apply `group-hover:translate-x-1 transition-transform duration-200`.
+    *   [ ] **21.5.3 Verification:** Hover over "Learn more". Verify arrow appears and slides right.
+
+- [ ] **21.6 Implement Service Icon Hover Animation:**
+    *   [ ] **21.6.1 Target Icon:** Focus on the icon container `div` or the `svg` itself.
+    *   [ ] **21.6.2 Apply Animation:** Add Tailwind classes: `group-hover:scale-110 transition-transform duration-300 ease-in-out`.
+    *   [ ] **21.6.3 Verification:** Hover over the entire service card. Verify the icon subtly scales.
+
+- [ ] **21.7 Update Styling Rules:**
+    *   [ ] **21.7.1 Review Rules:** Read `@file:.cursor/rules/frontend/04_styling_layout.mdc` and `@file:.cursor/rules/frontend/03_tailwind_config.mdc`.
+    *   [ ] **21.7.2 Update Rules:** If necessary, update rules to document new patterns (SVG structure, adaptive layout, card hover). *(Note: `03_tailwind_config.mdc` refers to `input.css` which was removed in Phase 18; this rule itself needs updating later)*.
+
+- [ ] **21.8 Final Verification:**
+    *   [ ] **21.8.1 Test All Interactions:** Test all hover states and adaptive layout.
+    *   [ ] **21.8.2 Report:** Confirm all enhancements function as expected.
+
+- [ ] **21.9 Documentation & Memory Update:**
+    *   [ ] **21.9.1 Update `README.md`/Docs (If applicable):** Describe enhanced Service Card interactions and SVG structure.
+    *   [ ] **21.9.2 Update Memory Bank:** Update `@file:memory-bank/progress.md` and `@file:memory-bank/active_context.md`. Update `@file:memory-bank/system_patterns.md` if significant new patterns emerged.
+
+- [ ] **21.10 Version Control Checkpoint:**
+    *   [ ] **21.10.1 Stage Changes:** `git add .`
+    *   [ ] **21.10.2 Propose Commit Message:** (e.g., "feat(frontend): Enhance Services section cards with icons and hover animations"). Await confirmation to commit.
 
 ---
 
